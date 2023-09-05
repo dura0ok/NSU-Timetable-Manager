@@ -1,0 +1,148 @@
+\documentclass[a4paper]{report}
+
+\usepackage[a4paper, top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+\usepackage[T1, T2A]{fontenc}
+\usepackage[fontsize=12pt]{fontsize}
+\usepackage{anyfontsize}
+\usepackage[english, russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{sectsty}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{physics}
+\usepackage{cleveref}
+\usepackage{titlesec}
+\usepackage{indentfirst}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\usepackage{enumitem}
+\usepackage{ulem}
+\usepackage{float}
+\usepackage{cmap}
+\usepackage{pscyr}
+\usepackage{lastpage}
+
+\renewcommand{\rmdefault}{ftm}
+
+\titleformat{\chapter}[display]
+{\normalfont\huge\bfseries}
+{\chaptertitlename\ \thechapter\bigskip}{0pt}{\Huge}
+
+\titleformat{\section}
+{\normalfont\huge\bfseries}
+{\thesection}{1em}{\huge}
+
+\titleformat{\subsection}
+{\normalfont\LARGE\bfseries}
+{\thesubsection}{1em}{\LARGE}
+
+\hypersetup{
+	colorlinks=true,
+	urlcolor=cyan,
+	linkcolor=cyan,
+}
+
+\newcommand{\ProjectName}{<<Менеджер расписания>>}
+\newcommand{\Version}{1.0.1}
+\newcommand{\Comment}[1]{{\color{blue}#1}}
+
+\fancyhf{}
+\fancyfoot[R]{\thepage\;(\pageref{LastPage})}
+
+%\frenchspacing
+
+\begin{document}
+	\pagestyle{empty}
+	\begin{center}
+		{\large Новосибирский Государственный Университет
+		
+		Факультет Информационных Технологий}
+	\end{center}
+
+	\begin{flushright}
+		\bfseries{\huge Техническое описание проекта
+		
+		по курсу ООАД
+
+		\bigskip
+
+		\ProjectName
+		
+		\bigskip
+		
+		Студенты ФИТ НГУ
+		
+		Неретин Степан Иванович
+		
+		Кондренко Кирилл Павлович
+		
+		Группа 21203}
+		
+		\bigskip
+		
+		{\large Версия \Version}
+	\end{flushright}
+
+	{\hypersetup{hidelinks}\tableofcontents\pagestyle{fancy}}
+
+	\pagestyle{fancy}
+
+	\chapter{Введение}
+		\section{Цель}
+			Данный документ представляет собой техническое описание проекта \ProjectName и содержит основные требования к разрабатываемой в рамках проекта программной системе и описание архитектуры программного решения.
+		\section{Область действия}
+			Документ разработан в рамках проекта \ProjectName на основе стандартного шаблона и предназначен для использования студентами ФИТ и преподавателями дисциплины ООАД
+		\section{Определения и сокращения}
+	
+		\section{Ссылки}
+		
+		\section{Краткое описание}	
+	\chapter{Предметная область проекта}
+		\Comment{
+			[Здесь должно быть дано краткое введение в предметную область проекта. Текст должен давать достаточно информации для того, чтобы непосвященный человек ознакомился с предметом, но не должен быть перегружен деталями.]
+		}
+	
+		\section{Существующие проблемы}
+			\Comment{
+				[Перечень объективных и субъективных проблем предметной области, побуждающих к выполнению задач данного проекта. Описание проблемы должно включать
+				
+				\begin{itemize}
+					\item Суть проблемы;
+					
+					\item Порождающие ее причины и их влияние на участников (stakeholders)  предметной области;
+					
+					\item Пути решения этой проблемы (через устранение соответствующих причин), которые достигаются в рамках данного проекта.]
+				\end{itemize}
+			}
+		\section{Предполагаемое решение}
+			\Comment{
+				[Здесь необходимо кратко описать, как именно предполагается решить проблемы предметной области.]
+			}
+	\chapter{Требования к программному решению}
+		\section{Роли}
+		
+		\section{Функциональные требования для роли Роль1}
+			\subsection{<Use Case Name 1>}
+		
+			\subsection{<Use Case Name 2>}
+		\section{Функциональные требования для роли Роль2}
+			\subsection{<Use Case Name 1>}
+		
+			\subsection{<Use Case Name 2>}
+			
+		\section{Нефункциональные требования}
+	\chapter{Обзор архитектуры}
+		\section{Компонентная модель системы}
+			\subsection{Компонент 1}
+				выфщвоыфлвоыфдловыфдловыфдлвфоыдл
+			\subsection{Компонент 2}
+		\section{Компоненты сторонних производителей}
+		
+		\section{Схема развёртывания приложения}
+	\chapter{Допущения и ограничения}
+	
+	\chapter{Известные проблемы}
+\end{document}
