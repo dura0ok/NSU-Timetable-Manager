@@ -22,8 +22,9 @@
 \usepackage{ulem}
 \usepackage{float}
 \usepackage{cmap}
-\usepackage{pscyr}
+\usepackage{pscyr} % For Times New Roman
 \usepackage{lastpage}
+\usepackage{tabularx}
 
 \renewcommand{\rmdefault}{ftm}
 
@@ -145,4 +146,29 @@
 	\chapter{Допущения и ограничения}
 	
 	\chapter{Известные проблемы}
+	
+	\chapter*{Лист регистрации изменений}
+		\begin{tabularx}{\textwidth}{ 
+				| >{\centering\arraybackslash}X 
+				| >{\centering\arraybackslash}X 
+				| >{\centering\arraybackslash}X
+				| >{\centering\arraybackslash}X |}
+			\hline
+			\textbf{Дата} & \textbf{Версия} & \textbf{Описание} & \textbf{Автор} \\
+			\hline
+			&&& \\
+			\hline
+		\end{tabularx}
+	\chapter*{Лист регистрации проверок}
+		\begin{tabularx}{\textwidth}{ 
+				| >{\centering\arraybackslash}X 
+				| >{\centering\arraybackslash}X 
+				| >{\centering\arraybackslash}X
+				| >{\centering\arraybackslash}X |}
+			\hline
+			\textbf{Дата} & \textbf{Версия} & \textbf{Описание} & \textbf{Автор} \\
+			\hline
+			&&& \\
+			\hline
+		\end{tabularx}
 \end{document}
