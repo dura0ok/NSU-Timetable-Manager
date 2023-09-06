@@ -1,3 +1,9 @@
 venv
 .idea
 .vscode
+
+*.aux
+*.log
+*.out
+*.gz
+*.toc
