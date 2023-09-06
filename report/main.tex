@@ -1,6 +1,6 @@
 \documentclass[a4paper]{report}
 
-\usepackage[a4paper, top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+\usepackage[top=0.9cm, bottom=1.65cm, left=2.5cm, right=1.5cm]{geometry}
 \usepackage[T1, T2A]{fontenc}
 \usepackage[fontsize=12pt]{fontsize}
 \usepackage{anyfontsize}
@@ -8,153 +8,36 @@
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
 \usepackage{fancyhdr}
-\usepackage{sectsty}
-\usepackage{amsthm}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{physics}
-\usepackage{cleveref}
 \usepackage{titlesec}
 \usepackage{indentfirst}
-\usepackage{pgfplots}
-\pgfplotsset{compat=newest}
-\usepackage{enumitem}
-\usepackage{ulem}
-\usepackage{float}
 \usepackage{cmap}
 \usepackage{pscyr} % For Times New Roman
 \usepackage{lastpage}
 \usepackage{tabularx}
 
-\renewcommand{\rmdefault}{ftm}
-
-\titleformat{\chapter}[display]
-{\normalfont\huge\bfseries}
-{\chaptertitlename\ \thechapter\bigskip}{0pt}{\Huge}
-
-\titleformat{\section}
-{\normalfont\huge\bfseries}
-{\thesection}{1em}{\huge}
-
-\titleformat{\subsection}
-{\normalfont\LARGE\bfseries}
-{\thesubsection}{1em}{\LARGE}
-
-\hypersetup{
-	colorlinks=true,
-	urlcolor=cyan,
-	linkcolor=cyan,
-}
+\input{formatting.tex}
 
 \newcommand{\ProjectName}{<<Менеджер расписания>>}
 \newcommand{\ProjectVersion}{1.0}
 \newcommand{\Comment}[1]{{\color{blue}#1}}
 
-\fancyhf{}
-\fancyfoot[R]{\thepage\;(\pageref{LastPage})}
-
 \begin{document}
-	\pagestyle{empty}
-	\begin{center}
-		{\large Новосибирский Государственный Университет
+	\thispagestyle{empty}
+	\input{content/title_page.tex}
 		
-		Факультет Информационных Технологий}
-	\end{center}
-
-	\begin{flushright}
-		\bfseries{\huge Техническое описание проекта
-		
-		по курсу ООАД
-
-		\bigskip
-
-		\ProjectName
-		
-		\bigskip
-		
-		Студенты ФИТ НГУ
-		
-		Неретин Степан Иванович
-		
-		Кондренко Кирилл Павлович
-		
-		Группа 21203}
-		
-		\bigskip
-		
-		{\large Версия \ProjectVersion}
-	\end{flushright}
-
-	{\hypersetup{hidelinks}\tableofcontents\pagestyle{fancy}}
-
-	\pagestyle{fancy}
-
-	\chapter{Введение}
-		\section{Цель}
-			Данный документ представляет собой техническое описание проекта \ProjectName и содержит основные требования к разрабатываемой в рамках проекта программной системе и описание архитектуры программного решения.
-		\section{Область действия}
-			Документ разработан в рамках проекта \ProjectName на основе стандартного шаблона и предназначен для использования студентами ФИТ и преподавателями дисциплины ООАД
-		\section{Определения и сокращения}
+	{\hypersetup{hidelinks}\tableofcontents}
 	
-		\section{Ссылки}
-		
-		\section{Краткое описание}	
-	\chapter{Предметная область проекта}
-		Надстройка в виде телеграмм-бота или расширения для браузера, улучшение текущего представление расписания для студентов НГУ посредством гибкого редактирования (скрытия <<лишних>> предметов, добавления новых).
+	\input{content/introduction/introduction.tex}
 	
-		\section{Существующие проблемы}
-			У многих студентов НГУ в расписании стоят предметы, которые они не посещают (например, это <<предметы по выбору>>, из которых студент выбрал лишь один) или же нет предметов, на которые они ходят (например, студент может по своему желанию посещать семинары других преподавателей дополнительно к своим).
-			
-			Решением этого было бы составление университетом индивидуального расписания для каждого из студентов, однако данное решение не реализуется университетом. Поэтому единственным решением в данном случае остаётся создание такой системы, с помощью которой студент сам бы мог редактировать своё расписание, при этом все изменения бы оставались и отображались там, где студент чаще всего смотрит своё расписание. 
-		\section{Предполагаемое решение}
-			Ввиду того что чаще всего студенты смотрят своё расписание через сайт в браузере и в приложении от университета для телефона, решением будет создать расширение, работающее в любом современном браузере, и телеграмм-бота, которые должны быть взаимозаменяемыми и работать друг с другом.
-	\chapter{Требования к программному решению}
-		\section{Роли}
-		
-		\section{Функциональные требования для роли Роль1}
-			\subsection{<Use Case Name 1>}
-		
-			\subsection{<Use Case Name 2>}
-		\section{Функциональные требования для роли Роль2}
-			\subsection{<Use Case Name 1>}
-		
-			\subsection{<Use Case Name 2>}
-			
-		\section{Нефункциональные требования}
-	\chapter{Обзор архитектуры}
-		\section{Компонентная модель системы}
-			\subsection{Компонент 1}
-				выфщвоыфлвоыфдловыфдловыфдлвфоыдл
-			\subsection{Компонент 2}
-		\section{Компоненты сторонних производителей}
-		
-		\section{Схема развёртывания приложения}
-	\chapter{Допущения и ограничения}
+	\input{content/subject_area/subject_area.tex}
 	
-	\chapter{Известные проблемы}
+	\input{content/requirements/requirements.tex}
 	
-	\chapter*{Лист регистрации изменений}
-		\begin{tabularx}{\textwidth}{ 
-				| >{\centering\arraybackslash}X 
-				| >{\centering\arraybackslash}X 
-				| >{\centering\arraybackslash}X
-				| >{\centering\arraybackslash}X |}
-			\hline
-			\textbf{Дата} & \textbf{Версия} & \textbf{Описание} & \textbf{Автор} \\
-			\hline
-			&&& \\
-			\hline
-		\end{tabularx}
-	\chapter*{Лист регистрации проверок}
-		\begin{tabularx}{\textwidth}{ 
-				| >{\centering\arraybackslash}X 
-				| >{\centering\arraybackslash}X 
-				| >{\centering\arraybackslash}X
-				| >{\centering\arraybackslash}X |}
-			\hline
-			\textbf{Дата} & \textbf{Версия} & \textbf{Описание} & \textbf{Автор} \\
-			\hline
-			&&& \\
-			\hline
-		\end{tabularx}
+	\input{content/architecture_overview/architecture_overview.tex}
+	
+	\input{content/assumptions_limitations/assumptions_limitations.tex}
+	
+	\input{content/known_problems/known_problems.tex}
+		
+	\input{content/registration_lists.tex}
 \end{document}
