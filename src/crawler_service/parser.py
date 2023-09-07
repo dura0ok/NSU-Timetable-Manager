@@ -9,7 +9,8 @@ def parse_timetable():
     if raw_resp.status_code != 200:
         raise Exception("invalid status code")
     soup = BeautifulSoup(raw_resp.text, 'html.parser')
-    subjects_schedule_table = soup.find_all('table')
+    subjects_schedule_table = soup.find('.time-table')
+
 
 if __name__ == "__main__":
     parse_timetable()
