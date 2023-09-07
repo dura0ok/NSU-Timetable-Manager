@@ -2,6 +2,8 @@
 
 ## How to start?
 
+`cd src`
+
 `python -m venv myvenv`
 
 `source myvenv/bin/activate`
