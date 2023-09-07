@@ -1,0 +1,48 @@
+\documentclass[a4paper]{report}
+
+\usepackage[top=0.9cm, bottom=1.65cm, left=2.5cm, right=1.5cm]{geometry}
+\usepackage[T1, T2A]{fontenc}
+\usepackage[fontsize=12pt]{fontsize}
+\usepackage{anyfontsize}
+\usepackage[english, russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{indentfirst}
+\usepackage{cmap}
+\usepackage{pscyr} % For Times New Roman
+\usepackage{lastpage}
+\usepackage{tabularx}
+
+\input{formatting.tex}
+
+\newcommand{\ProjectName}{<<Менеджер расписания>>}
+\newcommand{\ProjectVersion}{1.0}
+\newcommand{\Comment}[1]{{\color{blue}#1}}
+
+\addto\captionsrussian{
+	\renewcommand{\contentsname}%
+	{Содержание}
+}
+
+\begin{document}
+	\thispagestyle{empty}
+	\input{content/title_page.tex}
+		
+	{\hypersetup{hidelinks}\tableofcontents}
+	
+	\input{content/introduction/introduction.tex}
+	
+	\input{content/subject_area/subject_area.tex}
+	
+	\input{content/requirements/requirements.tex}
+	
+	\input{content/architecture_overview/architecture_overview.tex}
+	
+	\input{content/assumptions_limitations/assumptions_limitations.tex}
+	
+	\input{content/known_problems/known_problems.tex}
+		
+	\input{content/registration_lists.tex}
+\end{document}
