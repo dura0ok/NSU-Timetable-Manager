@@ -1,14 +1,17 @@
 from dataclasses import dataclass
-from enum import IntEnum
+from enum import IntEnum, auto
 from typing import Tuple, Optional
 
 import dataclass_wizard
 
 
 class Periodicity(IntEnum):
-    on_even = 0,
-    on_odd = 1,
-    on_all = 2
+    def _generate_next_value_(self, start, count, last_values):
+        return count
+
+    ON_EVEN = auto()
+    ON_ODD = auto()
+    ON_ALL = auto()
 
 
 @dataclass(frozen=True)
