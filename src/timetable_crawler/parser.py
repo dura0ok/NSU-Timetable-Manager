@@ -10,12 +10,10 @@ def get_timetable(group_num: str):
     raw_data = get_raw_table(table_url)
     print(f"Raw data: {type(raw_data)}")
     rows = raw_data.findAll("tr")
-    columns = zip(*[row.find_all('td') for row in rows])
-    print(columns)
-    # for item in rows:
-    #     el = item.select_one("td:nth-child(2)")
-    #     if el is not None:
-    #         print(el.text)
+    for item in rows:
+        el = item.select_one("td:nth-child(2)")
+        if el is not None:
+            print(el.text)
     return 'ok'
 
 
