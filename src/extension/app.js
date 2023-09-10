@@ -35,16 +35,28 @@ function fillDays(table) {
             const columnElementCells = columnElement.querySelectorAll(".cell")
             const variants = []
             columnElementCells.forEach(function (cell) {
-                const subject_type = cell.querySelector(".type").classList[1]
-                const subject_name = cell.querySelector(".subject").innerText
+                const subject_type = cell.querySelector(".type")
+                const subject_name = cell.querySelector(".subject")
                 const room = cell.querySelector(".room")
                 const tutor = cell.querySelector(".tutor")
                 const periodicity = cell.querySelector(".week")
+                const elements = [subject_type, subject_name, room, tutor, periodicity]
+                elements.forEach(element => {
+                    if(element == null){
+                        return
+                    }
+                    element.onclick = () => {
+                        const inputText = prompt("Enter new text");
+                        if (inputText !== null) {
+                            element.innerText = inputText;
+                        }
+                    };
+                })
                 let lesson = new Lesson(
-                    subject_name,
+                    subject_name.innerText,
                     room.innerText,
                     tutor == null ? null : new Teacher(tutor.innerText, tutor.href),
-                    getByLessonType(subject_type),
+                    getByLessonType(subject_type.classList[1]),
                     getByPeriodicityType(periodicity ? periodicity.innerText : '')
                 )
                 variants.push({"data": lesson, "element": cell})
@@ -52,7 +64,7 @@ function fillDays(table) {
             column.push(variants)
         }
         console.log(column)
-        tableView[DAYS_NAMES[i-1]] = column
+        tableView[DAYS_NAMES[i - 1]] = column
     }
 
     return tableView
