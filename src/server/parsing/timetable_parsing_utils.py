@@ -3,7 +3,7 @@ from typing import List, Optional, Mapping
 import bs4
 from bs4 import ResultSet
 
-from src.timetable import *
+from src.timetable_objects import *
 
 
 def parse_room_location(room_tag: Optional[bs4.element.Tag]) -> RoomLocation:
