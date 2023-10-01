@@ -1,22 +1,30 @@
 from typing import List, Optional, Mapping
 
 import bs4
-from bs4 import ResultSet
 
 from src.timetable_objects import *
+from .parsing_exceptions import TimetableParsingException
 
 
 def parse_room_location(room_tag: Optional[bs4.element.Tag]) -> RoomLocation:
+    error_message: str = 'Incorrect format of html: cannot parse room location'
+
     if room_tag is None:
         return empty_room_location()
 
-    onclick_arguments: List[str] = room_tag.attrs.get('onclick')[17:-1].split(',')
-    block: Optional[str] = onclick_arguments[0][1:-1]
-    level: Optional[int] = int(onclick_arguments[1])
-    x: Optional[int] = int(onclick_arguments[2])
-    y: Optional[int] = int(onclick_arguments[3])
+    attr = room_tag.attrs.get('onclick')
+    if attr is None or len(attr) <= 17:
+        raise TimetableParsingException(error_message)
 
-    return RoomLocation(block=block, level=level, x=x, y=y)
+    try:
+        onclick_arguments: List[str] = attr[17:-1].split(',')
+        block: Optional[str] = onclick_arguments[0][1:-1]
+        level: Optional[int] = int(onclick_arguments[1])
+        x: Optional[int] = int(onclick_arguments[2])
+        y: Optional[int] = int(onclick_arguments[3])
+        return RoomLocation(block=block, level=level, x=x, y=y)
+    except IndexError:
+        raise TimetableParsingException(error_message)
 
 
 def get_subject_type_color(subject_type: str) -> SubjectTypeColor:
@@ -27,7 +35,12 @@ def get_subject_type_color(subject_type: str) -> SubjectTypeColor:
         'f_2': SubjectTypeColor.ELECTIVE
     }
 
-    return subject_type_color_map.get(subject_type)
+    ret: Optional[SubjectTypeColor] = subject_type_color_map.get(subject_type)
+
+    if ret is None:
+        raise TimetableParsingException(f'Incorrect format of html: unknown color of subject "{subject_type}"')
+
+    return ret
 
 
 def parse_tutor(subject_tag: bs4.element.Tag) -> Tutor:
@@ -84,7 +97,12 @@ def parse_subject_type(subject_tag: bs4.element.Tag) -> SubjectType:
 
     short_name: str = type_tag.text.strip()
     full_name: str = type_tag.attrs.get('title')
-    color: SubjectTypeColor = get_subject_type_color(type_tag.attrs.get('class')[1])
+
+    attr = type_tag.attrs.get('class')
+    if attr is None or len(attr) < 2:
+        raise TimetableParsingException('Incorrect format of html: cannot parse type of subject')
+
+    color: SubjectTypeColor = get_subject_type_color(attr[1])
 
     return SubjectType(short_name=short_name, full_name=full_name, color=color)
 
@@ -106,7 +124,7 @@ def parse_subject(subject_tag: bs4.element.Tag) -> Subject:
 
 
 def parse_cell(cell_tag: bs4.element.Tag) -> Cell:
-    subject_elements: ResultSet = cell_tag.find_all('div', {'class': 'cell'})
+    subject_elements: bs4.ResultSet = cell_tag.find_all('div', {'class': 'cell'})
 
     subjects: List[Subject] = []
     for element in subject_elements:
