@@ -1,18 +1,15 @@
 from dataclasses import dataclass
-from enum import IntEnum, auto
 from typing import Optional
 
 import dataclass_wizard
+import strenum
 
 
-class SubjectTypeColor(IntEnum):
-    def _generate_next_value_(self, start: int, count: int, last_values: list) -> int:
-        return count
-
-    LECTURE = auto()
-    PRACTICAL = auto()
-    LAB = auto()
-    ELECTIVE = auto()
+class SubjectTypeColor(strenum.StrEnum):
+    LECTURE = 'lek'
+    PRACTICAL = 'pr'
+    LAB = 'lab'
+    ELECTIVE = 'f_2'
 
 
 @dataclass(frozen=True)
