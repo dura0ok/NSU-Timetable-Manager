@@ -60,7 +60,7 @@ def parse_tutor_by_full_name(full_name: str) -> Tutor:
 
     Examples of valid full names
 
-    Доманова Елена Дмитриевна.
+    Доманова Елена Дмитриевна
     Валишев Абрик Ибрагимович
 
     :param full_name: full name of tutor in appropriate format.
