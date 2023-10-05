@@ -1,82 +1,104 @@
-import {Lesson, LessonType, getByLessonType, Teacher, Periodicity, getByPeriodicityType} from "./cell"
+import {
+    Lesson,
+    LessonType,
+    getByLessonType,
+    Teacher,
+    Periodicity,
+    getByPeriodicityType
+} from "./cell"
 
-function getTimeTableData() {
-    const timetable_raw = '{"times": ["9:00", "10:00", "11:00"], "days": [{"name": "Понедельник", "subjects": [{"name": "Math", "teacher": "Mrs. Johnson", "place": "Room 101", "periodicity": 2, "isEmpty": true}, {"name": "Science", "teacher": "Mr. Smith", "place": "Room 202", "periodicity": 0, "isEmpty": false}, {"name": "Science", "teacher": "Ms. Thompson", "place": "Room 101", "periodicity": 0, "isEmpty": true}, {"name": "Math", "teacher": "Mrs. Johnson", "place": "Room 303", "periodicity": 0, "isEmpty": true}, {"name": "English", "teacher": "Mr. Smith", "place": "Room 101", "periodicity": 0, "isEmpty": false}, {"name": "English", "teacher": "Ms. Thompson", "place": "Room 202", "periodicity": 0, "isEmpty": false}, {"name": "English", "teacher": "Mr. Smith", "place": "Room 303", "periodicity": 1, "isEmpty": true}, {"name": "Math", "teacher": "Mrs. Johnson", "place": "Room 303", "periodicity": 1, "isEmpty": false}, {"name": "English", "teacher": "Ms. Thompson", "place": "Room 101", "periodicity": 0, "isEmpty": false}, {"name": "Science", "teacher": "Ms. Thompson", "place": "Room 101", "periodicity": 0, "isEmpty": false}]}]}'
-    return JSON.parse(timetable_raw);
+import {
+    fakeJSON
+} from "./fake";
+import {modalHtml, modalCss} from "./modal";
+
+
+const tds = document.querySelectorAll('.time-table tr:not(:first-child) td:not(:first-child)');
+const rawData = localStorage.getItem("data")
+const apiData = rawData == null ? JSON.parse(fakeJSON) : JSON.parse(rawData)
+
+
+tds.forEach((td, dataID) => {
+    td.setAttribute('data-id', dataID);
+    const id = parseInt(td.getAttribute('data-id'))
+    // console.log(td, apiData.cells[dataID])
+    const cells = td.querySelectorAll('.cell')
+    cells.forEach((cell) => {
+        const origShortName = cell.querySelector(".subject").textContent.trim()
+        //console.log(origShortName)
+        const subjectsInCell = apiData.cells[dataID]["subjects"]
+        subjectsInCell.forEach((subject, subjectID) => {
+
+            const subj = cell.querySelector(".subject")
+            if (subj) {
+                subj.textContent = subject["subjectName"]["shortName"]
+                subj.addEventListener("click", handleEdit);
+            }
+
+            const room = cell.querySelector(".room a")
+            if (room) {
+                room.textContent = subject["room"]["name"]
+                room.addEventListener("click", handleEdit);
+            }
+
+            const type = cell.querySelector(".type")
+            if (type) {
+                cell.querySelector(".type").textContent = subject["subjectType"]["shortName"]
+                type.addEventListener("click", handleEdit);
+            }
+
+
+            const tutor = cell.querySelector(".tutor a")
+            if (tutor) {
+                tutor.textContent = subject["tutor"]["name"]
+                tutor.href = subject["tutor"]["href"]
+                tutor.addEventListener("click", handleEdit);
+            }
+
+
+        })
+        //console.log(JSON.stringify(subjectsInCell))
+        //cell.querySelector(".subject").textContent = foundElement["subjectName"]["shortName"]
+    })
+})
+
+
+function handleEdit(event) {
+    console.log("asd")
+    event.preventDefault()
+    const el = event.target
+    const tdElement = el.closest("td")
+    const dataID = parseInt(tdElement.getAttribute("data-id"))
+    const cellCount = Array.from(tdElement.children).indexOf(el.parentElement);
+    const clickedObj = apiData.cells[dataID]["subjects"][cellCount]
+    modalFormNode.style.display = "block"
+
+    modalFormNode.querySelector(".submit-edit-modal").addEventListener("click", (e) => {
+         e.preventDefault()
+         const form = document.querySelector(".modal-form")
+         console.log(clickedObj, form.elements["subject-name"].value)
+         clickedObj["subjectName"]["shortName"] = form.elements["subject-name"].value
+         modalFormNode.style.display = "none"
+         console.log(clickedObj)
+
+         localStorage.setItem("data", JSON.stringify(apiData))
+    })
 }
 
 
-function generateHelpTimesArray() {
-    return timetable["times"].reduce((acc, value, index) => {
-        acc[value] = index;
-        return acc;
-    }, {});
-}
+const styleElement = document.createElement("style");
+styleElement.innerHTML = modalCss;
+document.head.appendChild(styleElement);
+document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+const modalFormNode = document.querySelector(".modal-custom-edit")
+
+document.querySelector(".close-modal").addEventListener("click", () => {
+    modalFormNode.style.display = "none"
+})
 
 
-function parseDaysNames(row) {
-    const DAYS_NAMES = []
-
-    row.querySelectorAll("th").forEach(function (day, index) {
-        if (index !== 0) {
-            DAYS_NAMES.push(day.innerText);
-        }
-    });
-    return DAYS_NAMES;
-}
-
-function fillDays(table) {
-    const tableView = {}
-    for (let i = 1; i < table.rows[0].cells.length; i++) {
-        const column = [];
-        // Iterate through each row in the column
-        for (let j = 0; j < table.rows.length; j++) {
-            const columnElement = table.rows[j].cells[i];
-            const columnElementCells = columnElement.querySelectorAll(".cell")
-            const variants = []
-            columnElementCells.forEach(function (cell) {
-                const subject_type = cell.querySelector(".type")
-                const subject_name = cell.querySelector(".subject")
-                const room = cell.querySelector(".room")
-                const tutor = cell.querySelector(".tutor")
-                const periodicity = cell.querySelector(".week")
-                const elements = [subject_type, subject_name, room, tutor, periodicity]
-                elements.forEach(element => {
-                    if(element == null){
-                        return
-                    }
-                    element.onclick = () => {
-                        const inputText = prompt("Enter new text");
-                        if (inputText !== null) {
-                            element.innerText = inputText;
-                        }
-                    };
-                })
-                let lesson = new Lesson(
-                    subject_name.innerText,
-                    room.innerText,
-                    tutor == null ? null : new Teacher(tutor.innerText, tutor.href),
-                    getByLessonType(subject_type.classList[1]),
-                    getByPeriodicityType(periodicity ? periodicity.innerText : '')
-                )
-                variants.push({"data": lesson, "element": cell})
-            })
-            column.push(variants)
-        }
-        console.log(column)
-        tableView[DAYS_NAMES[i - 1]] = column
-    }
-
-    return tableView
-}
-
-const timetable = getTimeTableData();
-const times_navigator = generateHelpTimesArray();
-const table = document.querySelector(".time-table");
-const DAYS_NAMES = parseDaysNames(table.rows[0]);
-const tableView = fillDays(table);
-console.log(tableView)
-// let t = new Lesson("kek", "214", "ivan", LessonType.LEC)
-
-
+document.querySelector(".close-modal").addEventListener("click", () => {
+    modalFormNode.style.display = "none"
+})
 
