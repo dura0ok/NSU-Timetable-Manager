@@ -7,10 +7,10 @@ from .parsing_exceptions import TimetableParsingException
 
 
 def parse_room_location(room_tag: Optional[bs4.element.Tag]) -> RoomLocation:
-    error_message: str = 'Incorrect format of html: cannot parse room location'
+    error_message: str = 'Incorrect format of HTML: cannot parse room location'
 
     if room_tag is None:
-        return empty_room_location()
+        return create_empty_room_location()
 
     attr = room_tag.attrs.get('onclick')
     if attr is None or len(attr) <= 17:
@@ -23,8 +23,8 @@ def parse_room_location(room_tag: Optional[bs4.element.Tag]) -> RoomLocation:
         x: Optional[int] = int(onclick_arguments[2])
         y: Optional[int] = int(onclick_arguments[3])
         return RoomLocation(block=block, level=level, x=x, y=y)
-    except IndexError:
-        raise TimetableParsingException(error_message)
+    except IndexError as e:
+        raise TimetableParsingException(error_message) from e
 
 
 def get_subject_type_color(subject_type: str) -> SubjectTypeColor:
@@ -38,7 +38,7 @@ def get_subject_type_color(subject_type: str) -> SubjectTypeColor:
     ret: Optional[SubjectTypeColor] = subject_type_color_map.get(subject_type)
 
     if ret is None:
-        raise TimetableParsingException(f'Incorrect format of html: unknown color of subject "{subject_type}"')
+        raise TimetableParsingException(f'Incorrect format of HTML: unknown color of subject "{subject_type}"')
 
     return ret
 
@@ -59,7 +59,7 @@ def parse_room(subject_tag: bs4.element.Tag) -> Room:
     tag: bs4.element.Tag = subject_tag.find('div', {'class': 'room'})
 
     if tag is None:
-        return empty_room()
+        return create_empty_room()
 
     room_tag: bs4.element.Tag = tag.find('a')
     name: Optional[str] = tag.text.strip() if room_tag is None else room_tag.text.strip()
@@ -81,7 +81,7 @@ def parse_subject_name(subject_tag: bs4.element.Tag) -> SubjectName:
     name_tag: bs4.element.Tag = subject_tag.find('div', {'class': 'subject'})
 
     if name_tag is None:
-        return empty_subject_name()
+        return create_empty_subject_name()
 
     short_name: str = name_tag.text.strip()
     full_name: str = name_tag.attrs.get('title')
@@ -93,14 +93,14 @@ def parse_subject_type(subject_tag: bs4.element.Tag) -> SubjectType:
     type_tag: bs4.element.Tag = subject_tag.find('span')
 
     if type_tag is None:
-        return empty_subject_type()
+        return create_empty_subject_type()
 
     short_name: str = type_tag.text.strip()
     full_name: str = type_tag.attrs.get('title')
 
     attr = type_tag.attrs.get('class')
     if attr is None or len(attr) < 2:
-        raise TimetableParsingException('Incorrect format of html: cannot parse type of subject')
+        raise TimetableParsingException('Incorrect format of HTML: cannot parse type of subject')
 
     color: SubjectTypeColor = get_subject_type_color(attr[1])
 

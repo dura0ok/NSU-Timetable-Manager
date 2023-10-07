@@ -1,18 +1,17 @@
 from dataclasses import dataclass
 from typing import List
 
-import dataclass_wizard
-
 from .subject import Subject
+from src.serialization.serializable import Serializable
 
 
 @dataclass(frozen=True)
-class Cell(dataclass_wizard.JSONWizard):
+class Cell(Serializable):
     subjects: List[Subject]
 
     def is_empty(self) -> bool:
         return len(self.subjects) == 0
 
 
-def empty_cell() -> Cell:
+def create_empty_cell() -> Cell:
     return Cell([])

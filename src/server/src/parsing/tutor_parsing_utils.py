@@ -32,7 +32,7 @@ def parse_attr_from_all_tutors_page(attr_name: str,
 
 
 def parse_tutor_name_from_single_tutor_page(html_page: str) -> str:
-    error_message: str = 'Invalid format of html: cannot parse tutor name'
+    error_message: str = 'Invalid format of HTML: cannot parse tutor name'
 
     soup: bs4.BeautifulSoup = bs4.BeautifulSoup(html_page, 'html.parser')
 
@@ -57,7 +57,7 @@ def parse_tutor_href_by_short_name(html_page: str, short_name: str) -> str:
         html_page=html_page,
         reversed_html_page=reversed_html_page,
         end_index=reversed_short_name_index,
-        error_message='Invalid html: cannot parse href of tutor'
+        error_message='Invalid HTML: cannot parse href of tutor'
     )
 
 
@@ -71,7 +71,7 @@ def parse_tutor_name_by_short_name(html_page: str, short_name: str) -> str:
         html_page=html_page,
         reversed_html_page=reversed_html_page,
         end_index=reversed_short_name_index,
-        error_message='Invalid html: cannot parse name of tutor'
+        error_message='Invalid HTML: cannot parse name of tutor'
     )
 
 
@@ -85,12 +85,12 @@ def parse_tutor_href_by_full_name(html_page: str, full_name: str) -> str:
         html_page=html_page,
         reversed_html_page=reversed_html_page,
         end_index=reversed_full_name_index,
-        error_message='Invalid html: cannot parse href of tutor'
+        error_message='Invalid HTML: cannot parse href of tutor'
     )
 
 
 def parse_tutor_name_by_full_name(html_page: str, full_name: str) -> str:
-    error_message: str = 'Invalid html: cannot parse name of tutor'
+    error_message: str = 'Invalid HTML: cannot parse name of tutor'
 
     i1: int = html_page.find(full_name)
 

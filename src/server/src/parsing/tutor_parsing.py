@@ -1,8 +1,12 @@
 from src.timetable_objects import Tutor
 from .parsing_exceptions import TutorParsingException, ParsingException
-from .tutor_parsing_utils import extract_tutor_href, parse_tutor_name_from_single_tutor_page, download_tutors_page, \
-    parse_tutor_href_by_short_name, parse_tutor_name_by_short_name, parse_tutor_href_by_full_name, \
-    parse_tutor_name_by_full_name
+from .tutor_parsing_utils import (extract_tutor_href,
+                                  parse_tutor_name_from_single_tutor_page,
+                                  download_tutors_page,
+                                  parse_tutor_href_by_short_name,
+                                  parse_tutor_name_by_short_name,
+                                  parse_tutor_href_by_full_name,
+                                  parse_tutor_name_by_full_name)
 from .utils import HTMLDownloadingException, download_html
 
 
@@ -24,8 +28,8 @@ def parse_tutor_from_url(url: str) -> Tutor:
         content = download_html(url)
         name: str = parse_tutor_name_from_single_tutor_page(content)
         return Tutor(name=name, href=href)
-    except HTMLDownloadingException:
-        raise TutorParsingException(f'Tutor not found on url {url}')
+    except HTMLDownloadingException as e:
+        raise TutorParsingException(f'Tutor not found on url {url}') from e
 
 
 def parse_tutor_by_short_name(short_name: str) -> Tutor:

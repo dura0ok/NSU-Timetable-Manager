@@ -19,26 +19,21 @@ def parse_timetable_from_html(html_page: str) -> Timetable:
     timetable_tag: bs4.Tag = soup.find('table', {'class': 'time-table'})
 
     if timetable_tag is None:
-        raise TimetableParsingException("Incorrect format of html: timetable not found")
+        raise TimetableParsingException("Incorrect format of HTML: timetable not found")
 
     trs: bs4.ResultSet = timetable_tag.find_all('tr')
     if len(trs) == 0:
-        raise TimetableParsingException("Incorrect format of html: invalid timetable")
-
-    weekdays_tag: bs4.Tag = trs[0]
-    weekdays: List[str] = [day.text.strip() for day in weekdays_tag.find_all('th')[1:]]
-    if len(weekdays) != 6:
-        raise TimetableParsingException("Incorrect format of html: invalid number of weekdays")
+        raise TimetableParsingException("Incorrect format of HTML: invalid timetable")
 
     cells: List[Cell] = []
     times: List[str] = []
 
-    #  Parsing of times and weekdays
+    #  Parsing of times and cells
     for tr in trs[1:]:
         tds: bs4.ResultSet = tr.find_all('td')
 
         if len(tds) != 7:
-            raise TimetableParsingException("Incorrect format of html: invalid number of columns in timetable")
+            raise TimetableParsingException("Incorrect format of HTML: invalid number of columns in timetable")
 
         time: str = tds[0].text.strip()
         times.append(time)
@@ -46,7 +41,7 @@ def parse_timetable_from_html(html_page: str) -> Timetable:
         for td in tds[1:]:
             cells.append(parse_cell(td))
 
-    return Timetable(cells=cells, weekdays=weekdays, times=times)
+    return Timetable(cells=cells, times=times)
 
 
 def parse_timetable_from_url(url: str) -> Timetable:
@@ -59,8 +54,8 @@ def parse_timetable_from_url(url: str) -> Timetable:
     try:
         content: str = download_html(url)
         return parse_timetable_from_html(content)
-    except HTMLDownloadingException:
-        raise TimetableParsingException(f'Invalid url "{url}"')
+    except HTMLDownloadingException as e:
+        raise TimetableParsingException(f'Invalid url "{url}"') from e
 
 
 def parse_timetable_from_group_id(group_id: str) -> Timetable:

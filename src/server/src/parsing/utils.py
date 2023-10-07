@@ -9,6 +9,6 @@ def download_html(url: str) -> str:
     response: requests.Response = requests.get(url)
 
     if not response.ok:
-        raise HTMLDownloadingException()
+        raise HTMLDownloadingException('Cannot download HTML')
 
     return response.text

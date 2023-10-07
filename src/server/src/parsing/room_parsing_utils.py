@@ -10,7 +10,7 @@ def get_room_url(room_name: str) -> str:
 
 
 def parse_room_name(html_page: str) -> str:
-    error_message: str = 'Incorrect format of html: cannot parse room name'
+    error_message: str = 'Invalid format of HTML: cannot parse room name'
 
     soup: bs4.BeautifulSoup = bs4.BeautifulSoup(html_page, 'html.parser')
 
@@ -30,7 +30,7 @@ def parse_room_name(html_page: str) -> str:
 
 
 def parse_room_location(html_page: str) -> RoomLocation:
-    error_message: str = 'Incorrect format of html: cannot parse room location'
+    error_message: str = 'Invalid format of HTML: cannot parse room location'
 
     i1 = html_page.find('room_view')
     if i1 == -1:
@@ -52,14 +52,14 @@ def parse_room_location(html_page: str) -> RoomLocation:
         x: int = int(values[2])
         y: int = int(values[3])
         return RoomLocation(block=block, level=level, x=x, y=y)
-    except IndexError:
-        raise RoomParsingException(error_message)
+    except IndexError as e:
+        raise RoomParsingException(error_message) from e
 
 
 def parse_room_from_html(html_page: str) -> Room:
     room_name: str = parse_room_name(html_page)
     if room_name.isspace():
-        raise RoomParsingException('Incorrect format of html: parsed room name cannot be empty')
+        raise RoomParsingException('Invalid format of HTML: parsed room name cannot be empty')
 
     room_location: RoomLocation = parse_room_location(html_page)
 

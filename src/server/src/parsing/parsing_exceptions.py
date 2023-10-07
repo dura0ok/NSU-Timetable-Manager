@@ -6,9 +6,9 @@ class RoomParsingException(ParsingException):
     pass
 
 
-class TimetableParsingException(ParsingException):
+class TutorParsingException(ParsingException):
     pass
 
 
-class TutorParsingException(ParsingException):
+class TimetableParsingException(ParsingException):
     pass

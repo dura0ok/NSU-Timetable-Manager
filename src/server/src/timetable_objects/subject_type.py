@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from typing import Optional
 
-import dataclass_wizard
 import strenum
+
+from src.serialization.serializable import Serializable
 
 
 class SubjectTypeColor(strenum.StrEnum):
@@ -13,12 +14,12 @@ class SubjectTypeColor(strenum.StrEnum):
 
 
 @dataclass(frozen=True)
-class SubjectType(dataclass_wizard.JSONWizard):
+class SubjectType(Serializable):
     short_name: Optional[str]
     full_name: Optional[str]
     color: Optional[SubjectTypeColor]
     is_empty: bool = False
 
 
-def empty_subject_type() -> SubjectType:
+def create_empty_subject_type() -> SubjectType:
     return SubjectType(full_name=None, short_name=None, color=None, is_empty=True)

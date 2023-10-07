@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from typing import Optional
 
-import dataclass_wizard
+from src.serialization.serializable import Serializable
 
 
 @dataclass
-class Tutor(dataclass_wizard.JSONWizard):
+class Tutor(Serializable):
     name: Optional[str]
     href: Optional[str]
     is_empty: bool = False

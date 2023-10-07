@@ -5,5 +5,6 @@ dataclass-wizard==0.22.2
 idna==3.4
 requests==2.31.0
 soupsieve==2.5
-urllib3==2.0.5
+urllib3==2.0.6
 StrEnum~=0.4.15
+flask~=3.0.0

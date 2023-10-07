@@ -1,13 +1,15 @@
 from dataclasses import dataclass
 from typing import List
 
-import dataclass_wizard
-
 from .cell import Cell
+from src.serialization.serializable import Serializable
 
 
 @dataclass
-class Timetable(dataclass_wizard.JSONWizard):
+class Timetable(Serializable):
     cells: List[Cell]  # Stored by lines
-    weekdays: List[str]
     times: List[str]
+
+
+def create_empty_timetable(times: List[str]) -> Timetable:
+    return Timetable(cells=[], times=times)

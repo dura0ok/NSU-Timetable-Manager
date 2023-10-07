@@ -1,15 +1,15 @@
 from dataclasses import dataclass
 from typing import Optional
 
-import dataclass_wizard
+from src.serialization.serializable import Serializable
 
 
 @dataclass(frozen=True)
-class SubjectName(dataclass_wizard.JSONWizard):
+class SubjectName(Serializable):
     full_name: Optional[str]
     short_name: Optional[str]
     is_empty: bool = False
 
 
-def empty_subject_name() -> SubjectName:
+def create_empty_subject_name() -> SubjectName:
     return SubjectName(full_name=None, short_name=None, is_empty=True)

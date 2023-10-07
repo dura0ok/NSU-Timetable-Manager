@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from typing import Optional
 
-import dataclass_wizard
+from src.serialization.serializable import Serializable
 
 
 @dataclass(frozen=True)
-class RoomLocation(dataclass_wizard.JSONWizard):
+class RoomLocation(Serializable):
     block: Optional[str]
     level: Optional[int]
     x: Optional[int]
@@ -13,5 +13,5 @@ class RoomLocation(dataclass_wizard.JSONWizard):
     is_empty: bool = False
 
 
-def empty_room_location() -> RoomLocation:
+def create_empty_room_location() -> RoomLocation:
     return RoomLocation(block=None, level=None, x=None, y=None, is_empty=True)
