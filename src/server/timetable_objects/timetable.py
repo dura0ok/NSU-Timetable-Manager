@@ -2,11 +2,11 @@ from dataclasses import dataclass
 from typing import List
 
 from .cell import Cell
-from src.serialization.serializable import Serializable
+from serialization import JSONSerializable
 
 
 @dataclass
-class Timetable(Serializable):
+class Timetable(JSONSerializable):
     cells: List[Cell]  # Stored by lines
     times: List[str]
 

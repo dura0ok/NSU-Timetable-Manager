@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from src.serialization.serializable import Serializable
+from serialization import JSONSerializable
 
 
 @dataclass
-class Tutor(Serializable):
+class Tutor(JSONSerializable):
     name: Optional[str]
     href: Optional[str]
     is_empty: bool = False

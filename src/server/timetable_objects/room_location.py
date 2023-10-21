@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from src.serialization.serializable import Serializable
+from serialization import JSONSerializable
 
 
 @dataclass(frozen=True)
-class RoomLocation(Serializable):
+class RoomLocation(JSONSerializable):
     block: Optional[str]
     level: Optional[int]
     x: Optional[int]

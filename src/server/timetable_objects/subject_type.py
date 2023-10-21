@@ -1,20 +1,23 @@
 from dataclasses import dataclass
 from typing import Optional
 
-import strenum
+from enum import IntEnum, auto
 
-from src.serialization.serializable import Serializable
+from serialization import JSONSerializable
 
 
-class SubjectTypeColor(strenum.StrEnum):
-    LECTURE = 'lek'
-    PRACTICAL = 'pr'
-    LAB = 'lab'
-    ELECTIVE = 'f_2'
+class SubjectTypeColor(IntEnum):
+    def _generate_next_value_(self, start, count, last_values) -> int:
+        return count
+
+    LECTURE = auto()
+    PRACTICAL = auto()
+    LAB = auto()
+    ELECTIVE = auto()
 
 
 @dataclass(frozen=True)
-class SubjectType(Serializable):
+class SubjectType(JSONSerializable):
     short_name: Optional[str]
     full_name: Optional[str]
     color: Optional[SubjectTypeColor]

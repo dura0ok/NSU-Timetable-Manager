@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from typing import List
 
-from src.serialization.serializable import Serializable
+from serialization import JSONSerializable
 
 
 @dataclass(frozen=True)
-class Times(Serializable):
+class Times(JSONSerializable):
     times: List[str]

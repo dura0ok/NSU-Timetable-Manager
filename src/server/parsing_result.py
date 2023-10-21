@@ -1,13 +1,13 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from src.serialization.serializable import Serializable
-from .parsing_codes import ParsingCodes
+from serialization import JSONSerializable
+from parsing_codes import ParsingCodes
 
 
 @dataclass(frozen=True)
-class ParsingResult(Serializable):
-    result: Optional[Serializable]
+class ParsingResult(JSONSerializable):
+    result: Optional[JSONSerializable]
     is_success: bool = True
     message: str = 'Success'
     code: ParsingCodes = ParsingCodes.SUCCESS

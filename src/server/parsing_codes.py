@@ -6,5 +6,7 @@ class ParsingCodes(IntEnum):
         return count
 
     SUCCESS = auto()
-    INVALID_HTML = auto()
+    INTERNAL_ERROR = auto()
+    UNKNOWN_GROUP = auto()
     UNKNOWN_ROOM = auto()
+    UNKNOWN_TUTOR = auto()

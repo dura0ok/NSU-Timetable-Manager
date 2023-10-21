@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from src.serialization.serializable import Serializable
+from serialization import JSONSerializable
 
 
 @dataclass(frozen=True)
-class SubjectName(Serializable):
+class SubjectName(JSONSerializable):
     full_name: Optional[str]
     short_name: Optional[str]
     is_empty: bool = False

@@ -5,12 +5,12 @@ from .periodicity import Periodicity
 from .room import Room
 from .subject_name import SubjectName
 from .subject_type import SubjectType
-from src.serialization.serializable import Serializable
+from serialization import JSONSerializable
 from .tutor import Tutor
 
 
 @dataclass(frozen=True)
-class Subject(Serializable):
+class Subject(JSONSerializable):
     subject_name: Optional[SubjectName]
     subject_type: Optional[SubjectType]
     tutor: Optional[Tutor]

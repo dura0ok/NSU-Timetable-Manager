@@ -2,11 +2,11 @@ from dataclasses import dataclass
 from typing import List
 
 from .subject import Subject
-from src.serialization.serializable import Serializable
+from serialization import JSONSerializable
 
 
 @dataclass(frozen=True)
-class Cell(Serializable):
+class Cell(JSONSerializable):
     subjects: List[Subject]
 
     def is_empty(self) -> bool:

@@ -8,7 +8,7 @@ from .subject import Subject, create_empty_subject
 from .cell import Cell, create_empty_cell
 from .timetable import Timetable
 from .times import Times
-from src.serialization.serializable import Serializable
+from serialization import JSONSerializable
 
 __all__ = [
     'SubjectName',
@@ -29,5 +29,5 @@ __all__ = [
     'create_empty_cell',
     'Timetable',
     'Times',
-    'Serializable'
+    'JSONSerializable'
 ]

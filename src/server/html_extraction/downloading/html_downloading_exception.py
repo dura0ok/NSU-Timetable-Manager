@@ -1,0 +1,2 @@
+class HTMLDownloadingException(Exception):
+    pass
