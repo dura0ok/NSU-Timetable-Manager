@@ -67,8 +67,8 @@ class HTMLTimetableParser:
         periodicity: Periodicity = HTMLTimetableParser.__parse_periodicity(subject_tag=subject_tag)
 
         return Subject(
-            subject_name=subject_name,
-            subject_type=subject_type,
+            name=subject_name,
+            type=subject_type,
             tutor=tutor,
             room=room,
             periodicity=periodicity,

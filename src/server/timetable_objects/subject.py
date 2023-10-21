@@ -11,8 +11,8 @@ from .tutor import Tutor
 
 @dataclass(frozen=True)
 class Subject(JSONSerializable):
-    subject_name: Optional[SubjectName]
-    subject_type: Optional[SubjectType]
+    name: Optional[SubjectName]
+    type: Optional[SubjectType]
     tutor: Optional[Tutor]
     room: Optional[Room]
     periodicity: Optional[Periodicity]
@@ -20,4 +20,4 @@ class Subject(JSONSerializable):
 
 
 def create_empty_subject() -> Subject:
-    return Subject(subject_name=None, subject_type=None, tutor=None, room=None, periodicity=None, is_empty=True)
+    return Subject(name=None, type=None, tutor=None, room=None, periodicity=None, is_empty=True)
