@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 
 from extractor import Extractor
 from html_extraction import HTMLExtractor
@@ -9,6 +10,7 @@ def split_url_word(url_word: str) -> str:
 
 
 app = Flask(__name__)
+CORS(app)
 extractor: Extractor = HTMLExtractor()
 
 
