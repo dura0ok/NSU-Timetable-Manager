@@ -1,16 +1,25 @@
-export const modalHtml = `
-  <div class="modal-custom-edit">
-    <div class="modal-content">
-      <span class="close-modal">&times;</span>
-      <h2>Modal Form</h2>
-      <form class="modal-form">
-        <input type="text" name="subject-name" placeholder="Name" />
-        <button type="submit" class="submit-edit-modal">Submit</button>
-      </form>
+  export const elementSelectors = [
+    { selector: ".subject", property: "textContent", dataKey: "subjectName.shortName", placeholder: "Имя предмета"},
+    { selector: ".room a", property: "textContent", dataKey: "room.name", placeholder: "Имя комнаты"},
+    { selector: ".type", property: "textContent", dataKey: "subjectType.shortName", placeholder: "Тип предмета"},
+    { selector: ".tutor a", property: "textContent", dataKey: "tutor.name", placeholder: "Тип предмета"},
+    { selector: ".tutor a", property: "href", dataKey: "tutor.href" , placeholder: "Ссылка на препода"}
+  ];
+
+  export const modalHtml = `
+    <div class="modal-custom-edit">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Modal Form</h2>
+        <form class="modal-form">
+          ${elementSelectors.map(({ selector, dataKey, placeholder }) => `
+            <input type="text" name="${dataKey}" placeholder="${placeholder}" />
+          `).join('')}
+          <button type="submit" class="submit-edit-modal">Submit</button>
+        </form>
+      </div>
     </div>
-  </div>
-  `
-;
+  `;
 
 
 // Create the CSS styles for the modal form
