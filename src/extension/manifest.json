@@ -5,6 +5,10 @@
 
   "description": "empty now",
 
+  "permissions": [
+    "activeTab", "storage", "http://*/*", "https://*/*"
+  ],
+
   "applications": {
     "gecko": {
       "id": "borderify@mozilla.org",
@@ -14,7 +18,7 @@
 
   "content_scripts": [
     {
-      "matches": ["*://table.nsu.ru/group/*"],
+      "matches": ["<all_urls>"],
       "js": ["dist/bundle.js"]
     }
   ]
