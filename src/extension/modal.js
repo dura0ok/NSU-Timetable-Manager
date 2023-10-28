@@ -1,8 +1,8 @@
   export const elementSelectors = [
-    { selector: ".subject", property: "textContent", dataKey: "subjectName.shortName", placeholder: "Имя предмета"},
+    { selector: ".subject", property: "textContent", dataKey: "name.shortName", placeholder: "Имя предмета"},
     { selector: ".room a", property: "textContent", dataKey: "room.name", placeholder: "Имя комнаты"},
-    { selector: ".type", property: "textContent", dataKey: "subjectType.shortName", placeholder: "Тип предмета"},
-    { selector: ".tutor a", property: "textContent", dataKey: "tutor.name", placeholder: "Тип предмета"},
+    { selector: ".type", property: "textContent", dataKey: "type.shortName", placeholder: "Тип предмета"},
+    { selector: ".tutor a", property: "textContent", dataKey: "tutor.name", placeholder: "Имя препода"},
     { selector: ".tutor a", property: "href", dataKey: "tutor.href" , placeholder: "Ссылка на препода"}
   ];
 
