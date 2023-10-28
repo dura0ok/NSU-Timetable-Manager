@@ -5,7 +5,7 @@ import bs4
 from common.server_codes import ServerCodes
 from common.server_response import ServerResponse, create_error_parsing_result
 from common.timetable_objects import *
-from server.html_extraction.parsing.parsing_exceptions import TimetableParsingException
+from server.extraction.html_extraction.parsing.parsing_exceptions import TimetableParsingException
 
 
 class HTMLTimetableParser:

@@ -1,6 +1,6 @@
 from common.server_codes import ServerCodes
 from common.server_response import ServerResponse, create_error_parsing_result
-from server.extractor import Extractor
+from server.extraction.extractor import Extractor
 from .downloading import *
 from .parsing import *
 

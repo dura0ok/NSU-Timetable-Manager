@@ -2,8 +2,7 @@ from flask import Flask
 from markupsafe import escape
 
 from common import Serializer, JSONSerializer
-from html_extraction import HTMLExtractor
-from server.extractor import Extractor
+from server.extraction import HTMLExtractor, Extractor
 
 
 def split_url_word(url_word: str) -> str:

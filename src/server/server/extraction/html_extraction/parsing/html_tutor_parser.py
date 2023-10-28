@@ -1,7 +1,7 @@
 from common.server_codes import ServerCodes
 from common.server_response import ServerResponse, create_error_parsing_result
 from common.timetable_objects import Tutor
-from server.html_extraction.parsing.parsing_exceptions import TutorParsingException
+from server.extraction.html_extraction.parsing.parsing_exceptions import TutorParsingException
 
 
 class HTMLTutorParser:
@@ -72,7 +72,7 @@ class HTMLTutorParser:
         if i3 == -1:
             raise TutorParsingException(error_message)
 
-        return html_page[i2+1:i3]
+        return html_page[i2 + 1:i3]
 
     @staticmethod
     def __parse_attr(attr_name: str, html_page: str, reversed_html: str, end_index: int, error_message: str) -> str:
