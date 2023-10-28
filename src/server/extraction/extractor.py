@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from common.server_response import ServerResponse
+from server_response import ServerResponse
 
 
 class Extractor(ABC):

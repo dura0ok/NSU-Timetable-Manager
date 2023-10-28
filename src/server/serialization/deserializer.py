@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from ..json_serializable import JSONSerializable
+from json_serializable import JSONSerializable
 
 
 class Deserializer(ABC):

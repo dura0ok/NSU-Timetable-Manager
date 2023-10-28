@@ -1,7 +1,7 @@
 from flask import Flask
 from markupsafe import escape
 
-from common import Serializer, JSONSerializer
+from serialization import Serializer, JSONSerializer
 from extraction import HTMLExtractor, Extractor
 
 

@@ -1,5 +1,5 @@
 from .serializer import Serializer
-from ..json_serializable import JSONSerializable
+from json_serializable import JSONSerializable
 
 
 class JSONSerializer(Serializer):

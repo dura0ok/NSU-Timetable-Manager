@@ -1,5 +1,5 @@
 from .deserializer import Deserializer
-from ..json_serializable import JSONSerializable
+from json_serializable import JSONSerializable
 
 
 class JSONDeserializer(Deserializer):
