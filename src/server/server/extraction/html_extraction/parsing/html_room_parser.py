@@ -1,9 +1,9 @@
 import bs4
 
-from server_codes import ServerCodes
-from server_response import ServerResponse, create_error_parsing_result
-from timetable_objects import Room, RoomLocation
-from extraction.html_extraction.parsing.parsing_exceptions import RoomParsingException
+from common.server_codes import ServerCodes
+from common.server_response import ServerResponse, create_error_parsing_result
+from common.timetable_objects import Room, RoomLocation
+from server.extraction.html_extraction.parsing.parsing_exceptions import RoomParsingException
 
 
 class HTMLRoomParser:
