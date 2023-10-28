@@ -1,22 +1,22 @@
 import bs4
 
-from timetable_objects import Room, RoomLocation
-from parsing_codes import ParsingCodes
-from parsing_exceptions import RoomParsingException
-from parsing_result import ParsingResult, create_error_parsing_result
+from common.server_codes import ServerCodes
+from common.server_response import ServerResponse, create_error_parsing_result
+from common.timetable_objects import Room, RoomLocation
+from server.html_extraction.parsing.parsing_exceptions import RoomParsingException
 
 
 class HTMLRoomParser:
     @staticmethod
-    def parse_room(html_content: str) -> ParsingResult:
+    def parse_room(html_content: str) -> ServerResponse:
         try:
             room_name: str = HTMLRoomParser.__parse_room_name(html_content=html_content)
             room_location: RoomLocation = HTMLRoomParser.__parse_room_location(html_content=html_content)
             room: Room = Room(name=room_name, location=room_location)
         except RoomParsingException as e:
-            return create_error_parsing_result(message=str(e), code=ParsingCodes.INTERNAL_ERROR)
+            return create_error_parsing_result(message=str(e), code=ServerCodes.INTERNAL_ERROR)
 
-        return ParsingResult(result=room)
+        return ServerResponse(result=room)
 
     @staticmethod
     def __parse_room_name(html_content: str) -> str:

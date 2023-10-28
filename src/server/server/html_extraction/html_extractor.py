@@ -1,8 +1,8 @@
-from extractor import Extractor
-from parsing_codes import ParsingCodes
-from .parsing import *
+from common.server_codes import ServerCodes
+from common.server_response import ServerResponse, create_error_parsing_result
+from server.extractor import Extractor
 from .downloading import *
-from parsing_result import ParsingResult, create_error_parsing_result
+from .parsing import *
 
 
 class HTMLExtractor(Extractor):
@@ -13,7 +13,7 @@ class HTMLExtractor(Extractor):
     __tutor_parser: HTMLTutorParser = HTMLTutorParser()
     __times_parser: HTMLTimesParser = HTMLTimesParser()
 
-    def extract_timetable(self, group_id: str) -> ParsingResult:
+    def extract_timetable(self, group_id: str) -> ServerResponse:
         striped_group_id: str = group_id.strip()
 
         try:
@@ -21,12 +21,12 @@ class HTMLExtractor(Extractor):
         except HTMLDownloadingException:
             return create_error_parsing_result(
                 message=f'Group {striped_group_id} not found',
-                code=ParsingCodes.UNKNOWN_GROUP
+                code=ServerCodes.UNKNOWN_GROUP
             )
 
         return self.__timetable_parser.parse_timetable(html_content=html_content)
 
-    def extract_room(self, room_name: str) -> ParsingResult:
+    def extract_room(self, room_name: str) -> ServerResponse:
         striped_room_name: str = room_name.strip()
 
         try:
@@ -34,12 +34,12 @@ class HTMLExtractor(Extractor):
         except HTMLDownloadingException:
             return create_error_parsing_result(
                 message=f'Room {striped_room_name} not found',
-                code=ParsingCodes.UNKNOWN_ROOM
+                code=ServerCodes.UNKNOWN_ROOM
             )
 
         return self.__room_parser.parse_room(html_content=html_content)
 
-    def extract_tutor(self, tutor_name: str) -> ParsingResult:
+    def extract_tutor(self, tutor_name: str) -> ServerResponse:
         striped_tutor_name: str = tutor_name.strip()
         all_tutors_page_url: str = self.__get_all_tutors_page_url()
 
@@ -48,12 +48,12 @@ class HTMLExtractor(Extractor):
         except HTMLDownloadingException:
             return create_error_parsing_result(
                 message=f'Cannot parse tutor from {all_tutors_page_url}',
-                code=ParsingCodes.INTERNAL_ERROR
+                code=ServerCodes.INTERNAL_ERROR
             )
 
         return self.__tutor_parser.parse_tutor(html_content=html_content, tutor_name=striped_tutor_name)
 
-    def extract_times(self) -> ParsingResult:
+    def extract_times(self) -> ServerResponse:
         times_url: str = 'https://table.nsu.ru/'
 
         try:
@@ -61,7 +61,7 @@ class HTMLExtractor(Extractor):
         except HTMLDownloadingException:
             return create_error_parsing_result(
                 message=f'Cannot parse times from {times_url}',
-                code=ParsingCodes.INTERNAL_ERROR
+                code=ServerCodes.INTERNAL_ERROR
             )
 
         return self.__times_parser.parse_times(html_content=html_content)

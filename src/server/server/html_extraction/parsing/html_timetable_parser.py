@@ -2,22 +2,22 @@ from typing import List, Optional, Mapping
 
 import bs4
 
-from timetable_objects import *
-from parsing_codes import ParsingCodes
-from parsing_exceptions import TimetableParsingException
-from parsing_result import ParsingResult, create_error_parsing_result
+from common.server_codes import ServerCodes
+from common.server_response import ServerResponse, create_error_parsing_result
+from common.timetable_objects import *
+from server.html_extraction.parsing.parsing_exceptions import TimetableParsingException
 
 
 class HTMLTimetableParser:
     @staticmethod
-    def parse_timetable(html_content: str) -> ParsingResult:
+    def parse_timetable(html_content: str) -> ServerResponse:
         try:
             soup: bs4.BeautifulSoup = bs4.BeautifulSoup(markup=html_content, features='html.parser')
             timetable: Timetable = HTMLTimetableParser.__parse_timetable(soup=soup)
         except TimetableParsingException as e:
-            return create_error_parsing_result(message=str(e), code=ParsingCodes.INTERNAL_ERROR)
+            return create_error_parsing_result(message=str(e), code=ServerCodes.INTERNAL_ERROR)
 
-        return ParsingResult(timetable)
+        return ServerResponse(timetable)
 
     @staticmethod
     def __parse_timetable(soup: bs4.BeautifulSoup) -> Timetable:

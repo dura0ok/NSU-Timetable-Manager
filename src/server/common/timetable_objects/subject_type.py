@@ -1,19 +1,8 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from enum import IntEnum, auto
-
-from serialization import JSONSerializable
-
-
-class SubjectTypeColor(IntEnum):
-    def _generate_next_value_(self, start, count, last_values) -> int:
-        return count
-
-    LECTURE = auto()
-    PRACTICAL = auto()
-    LAB = auto()
-    ELECTIVE = auto()
+from .subject_type_color import SubjectTypeColor
+from ..json_serializable import JSONSerializable
 
 
 @dataclass(frozen=True)

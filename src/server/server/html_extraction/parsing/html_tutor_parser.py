@@ -1,14 +1,14 @@
-from parsing_codes import ParsingCodes
-from parsing_exceptions import TutorParsingException
-from parsing_result import ParsingResult, create_error_parsing_result
-from timetable_objects import Tutor
+from common.server_codes import ServerCodes
+from common.server_response import ServerResponse, create_error_parsing_result
+from common.timetable_objects import Tutor
+from server.html_extraction.parsing.parsing_exceptions import TutorParsingException
 
 
 class HTMLTutorParser:
     @staticmethod
-    def parse_tutor(html_content: str, tutor_name: str) -> ParsingResult:
+    def parse_tutor(html_content: str, tutor_name: str) -> ServerResponse:
         if html_content.find(tutor_name) == -1:
-            return create_error_parsing_result(f'Tutor with name {tutor_name} not found', ParsingCodes.UNKNOWN_TUTOR)
+            return create_error_parsing_result(f'Tutor with name {tutor_name} not found', ServerCodes.UNKNOWN_TUTOR)
 
         if tutor_name.find('.') != -1:
             return HTMLTutorParser.__parse_tutor_by_short_name(html_content=html_content, short_name=tutor_name)
@@ -16,19 +16,19 @@ class HTMLTutorParser:
             return HTMLTutorParser.__parse_by_from_full_name(html_content=html_content, full_name=tutor_name)
 
     @staticmethod
-    def __parse_tutor_by_short_name(html_content: str, short_name: str) -> ParsingResult:
+    def __parse_tutor_by_short_name(html_content: str, short_name: str) -> ServerResponse:
         href: str = HTMLTutorParser.__parse_tutor_href_by_short_name(html_content=html_content, short_name=short_name)
         tutor: Tutor = Tutor(name=short_name, href=href)
 
-        return ParsingResult(result=tutor)
+        return ServerResponse(result=tutor)
 
     @staticmethod
-    def __parse_by_from_full_name(html_content: str, full_name: str) -> ParsingResult:
+    def __parse_by_from_full_name(html_content: str, full_name: str) -> ServerResponse:
         href: str = HTMLTutorParser.__parse_tutor_href_by_full_name(html_content=html_content, full_name=full_name)
         name: str = HTMLTutorParser.__parse_tutor_name_by_full_name(html_page=html_content, full_name=full_name)
         tutor: Tutor = Tutor(name=name, href=href)
 
-        return ParsingResult(result=tutor)
+        return ServerResponse(result=tutor)
 
     @staticmethod
     def __parse_tutor_href_by_short_name(html_content: str, short_name: str) -> str:

@@ -1,7 +1,7 @@
 from enum import IntEnum, auto
 
 
-class ParsingCodes(IntEnum):
+class ServerCodes(IntEnum):
     def _generate_next_value_(self, start, count, last_values) -> int:
         return count
 

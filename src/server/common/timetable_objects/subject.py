@@ -5,8 +5,8 @@ from .periodicity import Periodicity
 from .room import Room
 from .subject_name import SubjectName
 from .subject_type import SubjectType
-from serialization import JSONSerializable
 from .tutor import Tutor
+from ..json_serializable import JSONSerializable
 
 
 @dataclass(frozen=True)

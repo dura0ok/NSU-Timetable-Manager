@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import List
 
 from .cell import Cell
-from serialization import JSONSerializable
+from ..json_serializable import JSONSerializable
 
 
 @dataclass

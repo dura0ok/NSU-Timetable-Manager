@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from serialization import JSONSerializable
+from ..json_serializable import JSONSerializable
 
 
 @dataclass
