@@ -24,7 +24,7 @@ export const loadApiData = async () => {
         // If data is not available in local storage, fetch it from the API
         const apiData = await getRawData();
         const data = apiData.data
-        saveApiData(apiData)
+        saveApiData(data)
 
         return data;
     }
