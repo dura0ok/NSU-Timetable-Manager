@@ -1,6 +1,6 @@
 import {elementSelectors, modalCss, modalHtml} from "./modal";
 import {getValueByDotNotation, setValueByDotNotation} from "./helper";
-import {saveApiData} from "./dataLoader";
+import {getTutor, NSU_TABLE_URL, saveApiData} from "./dataLoader";
 
 export const renderData = (apiData) => {
     const tds = document.querySelectorAll(
@@ -21,6 +21,7 @@ export const updateCellContent = (cell, subject) => {
     elementSelectors.forEach(({ selector, property, dataKey }) => {
         const element = cell.querySelector(selector);
         if (element) {
+            //console.log(subject, dataKey, getValueByDotNotation(subject, dataKey))
             const value = getValueByDotNotation(subject, dataKey);
             if (value !== null) {
                 element[property] = value;
@@ -54,16 +55,35 @@ const populateFormInputs = (modalFormNode, clickedObj) => {
 }
 
 const submitFormHandler = (e, modalFormNode, clickedObj, apiData) => {
-        console.log("submitFormHandler")
+        //console.log("submitFormHandler")
         e.preventDefault();
-        elementSelectors.forEach(({dataKey}) => {
+        for (const {dataKey} of elementSelectors) {
             const form = modalFormNode.querySelector('.modal-form');
             const input = form.querySelector(`[name="${dataKey}"]`);
             if (input) {
                 const inputValue = input.value;
+                if(dataKey === "tutor.name" && inputValue !== ""){
+                    getTutor(inputValue)
+                        .then(response => {
+                            const data = response.data
+                            if(data != null && !data["isEmpty"]){
+                                const href = new URL(data["href"], NSU_TABLE_URL).href
+                                setValueByDotNotation(clickedObj, "tutor.href", href)
+                            }else{
+                                console.log("SET NULL " + inputValue)
+                                setValueByDotNotation(clickedObj, "tutor.href", "#")
+                            }
+                            saveApiData(apiData)
+                            renderData(apiData)
+                        })
+
+                }
                 setValueByDotNotation(clickedObj, dataKey, inputValue);
+                console.log(clickedObj)
             }
-        });
+        }
+
+        console.log(clickedObj)
         saveApiData(apiData);
         closeModal(modalFormNode)
         renderData(apiData)
@@ -73,7 +93,7 @@ const closeModal = (modalFormNode) => {
     modalFormNode.style.display = 'none';
     const modal = modalFormNode.querySelector('.modal-form')
     modal.replaceWith(modal.cloneNode(true));
-    console.log("form closed")
+    //console.log("form closed")
 }
 
 export const handleEdit = (e, apiData) => {
