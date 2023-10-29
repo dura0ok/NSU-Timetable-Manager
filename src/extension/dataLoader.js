@@ -15,8 +15,8 @@ export const getRawData = async (group_id) => {
     }
 };
 
-export const getRoom = async (fio) => {
-    const encoded = encodeURI(fio)
+export const getRoom = async (room_num) => {
+    const encoded = encodeURI(room_num)
     const url = BACKEND_SERVER_URL + '/room/' + encoded
     try {
         const response = await fetch(url);
