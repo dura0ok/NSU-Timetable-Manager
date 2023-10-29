@@ -18,7 +18,7 @@ export const renderData = (apiData) => {
 }
 
 export const updateCellContent = (cell, subject) => {
-    elementSelectors.forEach(({ selector, property, dataKey }) => {
+    elementSelectors.forEach(({selector, property, dataKey}) => {
         const element = cell.querySelector(selector);
         if (element) {
             //console.log(subject, dataKey, getValueByDotNotation(subject, dataKey))
@@ -40,12 +40,12 @@ export const setupCellEditing = (apiData) => {
 
     document.querySelector('.close-modal').addEventListener('click', (e) => {
         closeModal(modalFormNode);
-    }, );
+    },);
 
 };
 
 const populateFormInputs = (modalFormNode, clickedObj) => {
-    elementSelectors.forEach(({ dataKey }) => {
+    elementSelectors.forEach(({dataKey}) => {
         const input = modalFormNode.querySelector(`[name="${dataKey}"]`);
         if (input) {
             const value = getValueByDotNotation(clickedObj, dataKey);
@@ -55,38 +55,38 @@ const populateFormInputs = (modalFormNode, clickedObj) => {
 }
 
 const submitFormHandler = (e, modalFormNode, clickedObj, apiData) => {
-        //console.log("submitFormHandler")
-        e.preventDefault();
-        for (const {dataKey} of elementSelectors) {
-            const form = modalFormNode.querySelector('.modal-form');
-            const input = form.querySelector(`[name="${dataKey}"]`);
-            if (input) {
-                const inputValue = input.value;
-                if(dataKey === "tutor.name" && inputValue !== ""){
-                    getTutor(inputValue)
-                        .then(response => {
-                            const data = response.data
-                            if(data != null && !data["isEmpty"]){
-                                const href = new URL(data["href"], NSU_TABLE_URL).href
-                                setValueByDotNotation(clickedObj, "tutor.href", href)
-                            }else{
-                                console.log("SET NULL " + inputValue)
-                                setValueByDotNotation(clickedObj, "tutor.href", "#")
-                            }
-                            saveApiData(apiData)
-                            renderData(apiData)
-                        })
+    //console.log("submitFormHandler")
+    e.preventDefault();
+    for (const {dataKey} of elementSelectors) {
+        const form = modalFormNode.querySelector('.modal-form');
+        const input = form.querySelector(`[name="${dataKey}"]`);
+        if (input) {
+            const inputValue = input.value;
+            if (dataKey === "tutor.name" && inputValue !== "") {
+                getTutor(inputValue)
+                    .then(response => {
+                        const data = response.data
+                        if (data != null && !data["isEmpty"]) {
+                            const href = new URL(data["href"], NSU_TABLE_URL).href
+                            setValueByDotNotation(clickedObj, "tutor.href", href)
+                        } else {
+                            console.log("SET NULL " + inputValue)
+                            setValueByDotNotation(clickedObj, "tutor.href", "#")
+                        }
+                        saveApiData(apiData)
+                        renderData(apiData)
+                    })
 
-                }
-                setValueByDotNotation(clickedObj, dataKey, inputValue);
-                console.log(clickedObj)
             }
+            setValueByDotNotation(clickedObj, dataKey, inputValue);
+            console.log(clickedObj)
         }
+    }
 
-        console.log(clickedObj)
-        saveApiData(apiData);
-        closeModal(modalFormNode)
-        renderData(apiData)
+    console.log(clickedObj)
+    saveApiData(apiData);
+    closeModal(modalFormNode)
+    renderData(apiData)
 }
 
 const closeModal = (modalFormNode) => {

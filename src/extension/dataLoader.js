@@ -9,9 +9,9 @@ export const getRawData = async (group_id) => {
         const response = await fetch(url);
         const json = await response.json();
 
-        return { ok: true, data: json.result };
+        return {ok: true, data: json.result};
     } catch (error) {
-        return { ok: false, error };
+        return {ok: false, error};
     }
 };
 

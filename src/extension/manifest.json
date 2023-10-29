@@ -2,24 +2,27 @@
   "manifest_version": 2,
   "name": "timetable-manager",
   "version": "0.0.1",
-
   "description": "empty now",
-
   "permissions": [
-    "activeTab", "storage", "http://*/*", "https://*/*"
+    "activeTab",
+    "storage",
+    "http://*/*",
+    "https://*/*"
   ],
-
   "applications": {
     "gecko": {
       "id": "borderify@mozilla.org",
       "strict_min_version": "45.0"
     }
   },
-
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["dist/bundle.js"]
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "dist/bundle.js"
+      ]
     }
   ]
 }
