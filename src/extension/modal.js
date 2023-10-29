@@ -14,17 +14,20 @@ export const modalHtml = `
             <span class="close-modal">&times;</span>
             <h2>Modal Form</h2>
             <form class="modal-form">
-                ${elementSelectors.map(({ selector, dataKey, placeholder }) => {
-                if (placeholder) {
-                    if (selector === '.type') {
-                        return '<select name="' + dataKey + '">' +
-                            LessonType.map(({ className, shortName }) => '<option value="' + shortName + '">' + shortName + '</option>').join('') +
-                            '</select>';
-                    }
-                    return '<input type="text" name="' + dataKey + '" placeholder="' + placeholder + '" />';
-                }
-                return '';
-            }).join('')}
+                ${elementSelectors.map(({selector, dataKey, placeholder}) => {
+    if (placeholder) {
+        if (selector === '.type') {
+            return '<select name="' + dataKey + '">' +
+                LessonType.map(({
+                                    className,
+                                    shortName
+                                }) => '<option value="' + shortName + '">' + shortName + '</option>').join('') +
+                '</select>';
+        }
+        return '<input type="text" name="' + dataKey + '" placeholder="' + placeholder + '" />';
+    }
+    return '';
+}).join('')}
                 <button type="submit" class="submit-edit-modal">Submit</button>
             </form>
         </div>

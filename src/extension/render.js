@@ -23,7 +23,7 @@ export const renderData = (apiData) => {
 
 
             const typeElement = cell.querySelector(".type")
-            if(typeElement){
+            if (typeElement) {
                 const shortName = data["type"]["shortName"]
                 typeElement.classList.remove(typeElement.classList[1])
                 const lesson = LessonType.find(
