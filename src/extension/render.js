@@ -1,6 +1,6 @@
 import {elementSelectors, modalCss, modalHtml} from "./modal";
 import {getValueByDotNotation, setValueByDotNotation} from "./helper";
-import {getTutor, NSU_TABLE_URL, saveApiData} from "./dataLoader";
+import {getRoom, getTutor, NSU_TABLE_URL, saveApiData} from "./dataLoader";
 
 export const renderData = (apiData) => {
     const tds = document.querySelectorAll(
@@ -13,6 +13,14 @@ export const renderData = (apiData) => {
         cells.forEach((cell, index) => {
             const data = apiData.cells[dataID]['subjects'][index];
             updateCellContent(cell, data);
+            const block = data["room"]["location"]
+            const element = cell.querySelector(".room a");
+            if (element) {
+                const room_view = `return room_view('${block.block}', ${block.level}, ${block.x}, ${block.y});`;
+                element.setAttribute("onclick", room_view)
+                console.log(element)
+            }
+
         });
     });
 }
@@ -70,7 +78,6 @@ const submitFormHandler = (e, modalFormNode, clickedObj, apiData) => {
                             const href = new URL(data["href"], NSU_TABLE_URL).href
                             setValueByDotNotation(clickedObj, "tutor.href", href)
                         } else {
-                            console.log("SET NULL " + inputValue)
                             setValueByDotNotation(clickedObj, "tutor.href", "#")
                         }
                         saveApiData(apiData)
@@ -78,6 +85,21 @@ const submitFormHandler = (e, modalFormNode, clickedObj, apiData) => {
                     })
 
             }
+
+            if (dataKey === "room.name" && inputValue !== "") {
+                getRoom(inputValue)
+                    .then(response => {
+                        const data = response.data
+                        if (data != null && !data["isEmpty"]) {
+                            setValueByDotNotation(clickedObj, "room.name", data["name"])
+                            setValueByDotNotation(clickedObj, "room.location", data["location"])
+                            saveApiData(apiData)
+                            renderData(apiData)
+                        }
+                    })
+
+            }
+
             setValueByDotNotation(clickedObj, dataKey, inputValue);
             console.log(clickedObj)
         }

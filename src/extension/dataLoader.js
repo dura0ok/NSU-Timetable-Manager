@@ -15,8 +15,21 @@ export const getRawData = async (group_id) => {
     }
 };
 
-export const getTutor = async (fio) => {
+export const getRoom = async (fio) => {
     const encoded = encodeURI(fio)
+    const url = BACKEND_SERVER_URL + '/room/' + encoded
+    try {
+        const response = await fetch(url);
+        const json = await response.json();
+
+        return {ok: true, data: json.result};
+    } catch (error) {
+        return {ok: false, error};
+    }
+}
+
+export const getTutor = async (room_name) => {
+    const encoded = encodeURI(room_name)
     const url = BACKEND_SERVER_URL + '/tutor/' + encoded
     try {
         const response = await fetch(url);
