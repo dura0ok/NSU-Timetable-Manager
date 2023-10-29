@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from .subject_type_color import SubjectTypeColor
-from json_serializable import JSONSerializable
+from ..json_serializable import JSONSerializable
 
 
 @dataclass(frozen=True)

@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from server_codes import ServerCodes
-from json_serializable import JSONSerializable
+from common import ServerCodes
+from .json_serializable import JSONSerializable
 
 
 @dataclass(frozen=True)
