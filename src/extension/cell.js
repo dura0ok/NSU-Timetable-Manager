@@ -1,9 +1,9 @@
-export const LessonType = {
-    LAB: "lab",
-    PR: "pr",
-    LEC: "lek",
-    FAC_PR: "f_2"
-};
+export const LessonType = [
+    {"className": "lab", "shortName": "лаб"},
+    {"className": "pr", "shortName": "пр"},
+    {"className": "lek", "shortName": "лек"},
+    {"className": "f_2", "shortName": "ф, пр"}
+];
 export const Periodicity = {
     ODD: "нечетная",
     EVEN: "четная",

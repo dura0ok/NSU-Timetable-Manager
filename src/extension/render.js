@@ -1,6 +1,7 @@
 import {elementSelectors, modalCss, modalHtml} from "./modal";
 import {getValueByDotNotation, setValueByDotNotation} from "./helper";
 import {getRoom, getTutor, NSU_TABLE_URL, saveApiData} from "./dataLoader";
+import {LessonType} from "./cell";
 
 export const renderData = (apiData) => {
     const tds = document.querySelectorAll(
@@ -18,7 +19,19 @@ export const renderData = (apiData) => {
             if (element) {
                 const room_view = `return room_view('${block.block}', ${block.level}, ${block.x}, ${block.y});`;
                 element.setAttribute("onclick", room_view)
-                console.log(element)
+            }
+
+
+            const typeElement = cell.querySelector(".type")
+            if(typeElement){
+                const shortName = data["type"]["shortName"]
+                typeElement.classList.remove(typeElement.classList[1])
+                const lesson = LessonType.find(
+                    item => item.shortName === shortName
+                )
+                console.log(lesson, shortName)
+                typeElement.classList.add(lesson.className);
+                console.log(typeElement.classList)
             }
 
         });
@@ -57,9 +70,11 @@ const populateFormInputs = (modalFormNode, clickedObj) => {
         const input = modalFormNode.querySelector(`[name="${dataKey}"]`);
         if (input) {
             const value = getValueByDotNotation(clickedObj, dataKey);
-            input.value = value || ''; // Set the input value, or an empty string if value is null
+            input.value = value || '';
+
         }
     });
+
 }
 
 const submitFormHandler = (e, modalFormNode, clickedObj, apiData) => {
@@ -101,11 +116,12 @@ const submitFormHandler = (e, modalFormNode, clickedObj, apiData) => {
             }
 
             setValueByDotNotation(clickedObj, dataKey, inputValue);
-            console.log(clickedObj)
+            //console.log(clickedObj)
         }
     }
 
-    console.log(clickedObj)
+    //
+    // console.log(clickedObj)
     saveApiData(apiData);
     closeModal(modalFormNode)
     renderData(apiData)
