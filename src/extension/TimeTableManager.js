@@ -1,11 +1,11 @@
-import {EnvURLExtractor} from "./config";
+import {EnvConfigParser} from "./EnvConfigParser";
 
 export class TimeTableManager {
     constructor(group_id) {
         this.group_id = group_id
     }
     async #parseDataFromBackend() {
-        const url = `${EnvURLExtractor.parseBackendURL()}/timetable/${this.group_id}`;
+        const url = `${EnvConfigParser.parseBackendURL()}/timetable/${this.group_id}`;
         return (await fetch(url)).json();
     }
 

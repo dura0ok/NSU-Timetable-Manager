@@ -1,4 +1,4 @@
-export class EnvURLExtractor {
+export class EnvConfigParser {
     static #getURL(envVariableName) {
         const envValue = process.env[envVariableName];
         if (envValue === undefined) {
@@ -8,11 +8,11 @@ export class EnvURLExtractor {
     }
 
     static parseNsuTableURL = () => {
-        return EnvURLExtractor.#getURL("NSU_TABLE_URL");
+        return EnvConfigParser.#getURL("NSU_TABLE_URL");
     }
 
     static parseBackendURL = () => {
-        return EnvURLExtractor.#getURL("BACKEND_SERVER_URL");
+        return EnvConfigParser.#getURL("BACKEND_SERVER_URL");
     }
 }
 
