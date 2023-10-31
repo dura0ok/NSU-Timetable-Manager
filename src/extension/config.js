@@ -1,15 +1,18 @@
-export const getNsuTableUrl = () => {
-    const envTableUrl = process.env.NSU_TABLE_URL
-    if (envTableUrl === undefined) {
-        throw new Error("NSU_TABLE_URL is not defined in env")
+export class EnvURLExtractor {
+    static #getURL(envVariableName) {
+        const envValue = process.env[envVariableName];
+        if (envValue === undefined) {
+            throw new Error(`${envVariableName} is not defined in env`);
+        }
+        return new URL(envValue);
     }
-    return new URL(envTableUrl)
+
+    static parseNsuTableURL = () => {
+        return EnvURLExtractor.#getURL("NSU_TABLE_URL");
+    }
+
+    static parseBackendURL = () => {
+        return EnvURLExtractor.#getURL("BACKEND_SERVER_URL");
+    }
 }
 
-export const getBackendUrl = () => {
-    const envBackendUrl = process.env.BACKEND_SERVER_URL
-    if (envBackendUrl === undefined) {
-        throw new Error("BACKEND_SERVER_URL is not defined in env")
-    }
-    return new URL(envBackendUrl)
-}
