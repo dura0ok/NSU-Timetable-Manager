@@ -1,8 +1,12 @@
 import {TimeTableManager} from "./TimeTableManager";
 import {renderData} from "./render";
 
+const getGroupNumberFromURL = () => {
+    return new URL(window.location.href).pathname.split("/")[2];
+}
+
 try {
-    const groupID = new URL(window.location.href).pathname.split("/")[2]
+    const groupID = getGroupNumberFromURL()
     const timeTableManager = new TimeTableManager(groupID)
     const timeTableData = await timeTableManager.loadTimeTableData()
     console.log(timeTableData)
