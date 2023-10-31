@@ -1,4 +1,4 @@
-import {getValueByDotNotation} from "./helper";
+import {ObjectHelper} from "./ObjectHelper";
 
 export const subjectSelectors = [
     {selector: ".subject", property: "textContent", dataKey: "name.shortName", placeholder: "Имя предмета"},
@@ -68,7 +68,7 @@ export const renderData = (apiData) => {
 
 
             if (element) {
-                const value = getValueByDotNotation(subjectData, dataKey);
+                const value = ObjectHelper.getValueByDotNotation(subjectData, dataKey);
                 if (value !== null) {
                     if(funcName !== ""){
                         window[funcName](element, value)

@@ -4,7 +4,7 @@ const Dotenv = require('dotenv-webpack');
 module.exports = {
     mode: 'development',
     entry: {
-        bundle: ['./app.js', './EnvConfigParser.js', './render.js', './helper.js', './TimeTableManager.js'],
+        bundle: ['./app.js', './EnvConfigParser.js', './render.js', './ObjectHelper.js', './TimeTableManager.js'],
     },
     output: {
         filename: '[name].js',
