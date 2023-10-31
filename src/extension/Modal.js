@@ -1,4 +1,4 @@
-import {subjectSelectors, subjectType} from "./subject";
+import {subjectSelectors} from "./subject";
 const modalCss = `
   .modal-custom-edit {
     display: none;
@@ -43,7 +43,7 @@ const modalHtml = `
             <span class="close-modal">&times;</span>
             <h2>Modal Form</h2>
             <form class="modal-form">
-                ${subjectSelectors.map(({ selector, dataKey, placeholder }) => {
+                ${subjectSelectors.map(({dataKey, placeholder }) => {
                 if (!placeholder) {
                     return ''
                 }
@@ -60,6 +60,8 @@ export class Modal{
     #modalWrapperNode
     constructor() {
         this.#modalWrapperNode = this.setupCellEditing()
+        this.#modalWrapperNode.querySelector(".modal-form").addEventListener("submit", this.handleSubmit)
+        this.#modalWrapperNode.querySelector(".close-modal").addEventListener("click", this.handleClose.bind(this))
     }
     get modalWrapperNode() {
         return this.#modalWrapperNode;
@@ -70,6 +72,21 @@ export class Modal{
         styleElement.innerHTML = modalCss;
         document.head.appendChild(styleElement);
         document.body.insertAdjacentHTML('beforeend', modalHtml);
-        return document.querySelector('.modal-custom-edit');
+        return  document.querySelector('.modal-custom-edit');
+    }
+
+    handleSubmit(e){
+        e.preventDefault()
+        console.log("handle submit")
+    }
+
+    handleEdit(e, timeTableData){
+        e.preventDefault();
+        this.modalWrapperNode.style.display = 'block';
+    }
+
+    handleClose(e) {
+        e.preventDefault()
+        this.modalWrapperNode.style.display = 'none';
     }
 }

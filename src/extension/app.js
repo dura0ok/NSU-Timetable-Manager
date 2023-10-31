@@ -1,6 +1,6 @@
 import {TimeTableManager} from "./TimeTableManager";
 import {CellRender} from "./CellRender";
-import {Modal, ModalForm} from "./Modal";
+import {Modal} from "./Modal";
 
 const getGroupNumberFromURL = () => {
     return new URL(window.location.href).pathname.split("/")[2];
@@ -15,7 +15,12 @@ try {
     CellRender.renderData(timeTableData)
 
     const m = new Modal()
-    console.log(m.modalWrapperNode)
+
+    document.querySelectorAll(".subject").forEach((el) => {
+        el.addEventListener("click", (e) => m.handleEdit(e, timeTableData));
+    });
+
+
 } catch (e) {
     console.error("[Timetable extension] Something went wrong: ", e.message);
     console.log(e)
