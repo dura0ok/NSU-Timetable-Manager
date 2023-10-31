@@ -5,7 +5,7 @@ export class CustomRenderHandlersManager {
         if (subjectData["isEmpty"]) {
             return;
         }
-        const room_view = `room_view(${subjectData.block}, ${subjectData.level}, ${subjectData.x}, ${subjectData.y})`;
+        const room_view = `room_view('${subjectData.block}', ${subjectData.level}, ${subjectData.x}, ${subjectData.y})`;
         element.setAttribute("onclick", room_view);
     };
 
