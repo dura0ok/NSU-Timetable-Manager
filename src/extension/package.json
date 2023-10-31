@@ -6,5 +6,8 @@
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "watch": "webpack --config webpack.config.js --watch"
+  },
+  "dependencies": {
+    "dotenv-webpack": "^8.0.1"
   }
 }

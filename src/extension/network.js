@@ -21,7 +21,7 @@ export const loadTimeTableData = async (group_id) => {
     } else {
         const apiData = await parseDataFromBackend(group_id);
 
-        if(!apiData["isSuccess"]){
+        if (!apiData["isSuccess"]) {
             throw new Error("Can`t load data from server.")
         }
 
