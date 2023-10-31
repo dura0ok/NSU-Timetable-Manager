@@ -5,9 +5,19 @@ export const subjectSelectors = [
     {selector: ".room a", property: "textContent", dataKey: "room.name", placeholder: "Имя комнаты"},
     {selector: ".room a", property: "renderMap()", dataKey: "room.location"},
     {selector: ".type", property: "textContent", dataKey: "type.shortName", placeholder: "Тип предмета"},
+    {selector: ".type", property: "renderType()", dataKey: "type", placeholder: "Тип предмета"},
     {selector: ".tutor", property: "textContent", dataKey: "tutor.name", placeholder: "Имя препода"},
     {selector: ".tutor", property: "href", dataKey: "tutor.href"},
 ];
+
+export const subjectType = new Map(Object.entries({
+    "лаб": "lab",
+    "пр": "pr",
+    "лек": "lek",
+    "ф, пр": "f_2"
+}))
+
+
 const renderMap = (element, subjectData) => {
     if(subjectData["isEmpty"]){
         return
@@ -16,8 +26,22 @@ const renderMap = (element, subjectData) => {
     element.setAttribute("onclick", room_view);
 }
 
+const renderType = (element, subjectData) => {
+    if(subjectData["isEmpty"]){
+        return
+    }
+
+    const shortName = subjectData["shortName"]
+    if(subjectType.has(shortName)){
+        element.classList.remove(element.classList[1])
+        element.classList.add(subjectType.get(shortName))
+    }
+
+}
+
 const registerHandlers = () => {
     window.renderMap = renderMap
+    window.renderType = renderType
 }
 
 const parseFunctionName = (s) => {
@@ -58,7 +82,7 @@ export const renderData = (apiData) => {
 
     const renderCell = (cell, cellIndex) => {
         const subjectsDataInCell = apiData[cellIndex]['subjects']
-        subjectsDataInCell.forEach((subjectData, subjectIndex) => {
+        subjectsDataInCell.forEach((subjectData) => {
             renderSubject(cell, subjectData)
         })
     };
