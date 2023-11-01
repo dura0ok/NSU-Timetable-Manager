@@ -10,7 +10,7 @@ export class TimeTableManager {
         return (await fetch(url)).json();
     }
 
-    #saveTimeTableData(data) {
+    saveTimeTableData(data) {
         localStorage.setItem(`${this.group_id}-timetable`, JSON.stringify(data));
     }
 
@@ -31,7 +31,7 @@ export class TimeTableManager {
                 throw new Error("Can't load data from the server.");
             }
 
-            TimeTableManager.#saveTimeTableData(
+            this.saveTimeTableData(
                 apiData["result"]["cells"]
             );
             return apiData;

@@ -14,7 +14,7 @@ try {
     timeTableData[3]["subjects"][0].name["shortName"] = "123"
     CellRender.renderData(timeTableData)
 
-    const m = new Modal()
+    const m = new Modal(timeTableData, timeTableManager)
 
     document.querySelectorAll(".subject").forEach((el) => {
         el.addEventListener("click", (e) => m.handleEdit(e, timeTableData));

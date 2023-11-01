@@ -1,6 +1,6 @@
-import { subjectSelectors, subjectType } from "./subject"
-import { ObjectHelper } from "./ObjectHelper"
-import { FunctionParser } from "./FunctionParser"
+import {subjectSelectors, subjectType} from "./subject"
+import {ObjectHelper} from "./ObjectHelper"
+import {FunctionParser} from "./FunctionParser"
 
 const modalCss = `
   .modal-custom-edit {
@@ -42,11 +42,13 @@ const modalCss = `
 
 export class Modal {
     #modalWrapperNode
+    #currentEvent;
 
-    constructor() {
+    constructor(timeTableData, timeTableManager) {
         this.#modalWrapperNode = this.setupModal()
-        this.#modalWrapperNode.querySelector(".modal-form").addEventListener("submit", this.handleSubmit.bind(this))
+        this.#modalWrapperNode.querySelector(".modal-form").addEventListener("submit", (e) => this.handleSubmit(e, timeTableData))
         this.#modalWrapperNode.querySelector(".close-modal").addEventListener("click", this.handleClose.bind(this))
+        this.timeTableManager = timeTableManager
     }
 
     setupModal() {
@@ -70,19 +72,19 @@ export class Modal {
                   <h2>Modal Form</h2>
                   <form class="modal-form">
                     ${subjectSelectors
-                        .map(({dataKey, placeholder, formRender}) => {
-                            if (!placeholder) {
-                                return ""
-                            }
-                            if (formRender) {
-                                const customRenderFunc = FunctionParser.parseFunctionName(formRender);
-                                if (typeof window[customRenderFunc] === "function") {
-                                    return window[customRenderFunc](dataKey);
-                                }
-                            }
-                            return '<input type="text" name="' + dataKey + '" placeholder="' + placeholder + '" />'
-                        })
-                        .join("")}
+            .map(({dataKey, placeholder, formRender}) => {
+                if (!placeholder) {
+                    return ""
+                }
+                if (formRender) {
+                    const customRenderFunc = FunctionParser.parseFunctionName(formRender);
+                    if (typeof window[customRenderFunc] === "function") {
+                        return window[customRenderFunc](dataKey);
+                    }
+                }
+                return '<input type="text" name="' + dataKey + '" placeholder="' + placeholder + '" />'
+            })
+            .join("")}
                     <button type="submit" class="submit-edit-modal">Submit</button>
                   </form>
                 </div>
@@ -95,38 +97,60 @@ export class Modal {
     #renderTypeSelect(dataKey) {
         return `
       <select name="${dataKey}">
-        ${Array.from(subjectType, ([name, value]) => `<option value="${value}">${name}</option>`).join("\n")}
+        ${Array.from(subjectType, ([name, value]) =>
+            `<option value="${value}">${name}</option>`).join("\n")}
       </select>
     `;
     }
 
     handleEdit(e, timeTableData) {
         e.preventDefault();
-        const el = e.target;
-        const tdElement = el.closest("td")
-        const dataID = parseInt(tdElement.getAttribute("data-id"))
-        const cellCount = Array.from(tdElement.children).indexOf(el.parentElement)
-        const subjectData = timeTableData[dataID]["subjects"][cellCount]
+        this.#currentEvent = e; // Store the event object
+        const subjectData = this.getClickedObjData(e, timeTableData);
         this.fillFormInputs(subjectData)
         this.#modalWrapperNode.style.display = "block"
     }
 
-    handleSubmit(e) {
-        e.preventDefault();
-        console.log("handle submit");
+
+    getClickedObjData(e, timeTableData) {
+        const el = e.target;
+        const tdElement = el.closest("td")
+        const dataID = parseInt(tdElement.getAttribute("data-id"))
+        const cellCount = Array.from(tdElement.children).indexOf(el.parentElement)
+        return timeTableData[dataID]["subjects"][cellCount];
+    }
+
+    handleSubmit(originalEvent, timeTableData) {
+        originalEvent.preventDefault()
+        const e = this.#currentEvent;
+        if(!e){
+            this.#currentEvent = null;
+            return
+        }
+
+        console.log(e.target, e.target.closest("td"))
+        const formNode = this.#modalWrapperNode.querySelector('.modal-form');
+        const formData = Object.fromEntries(new FormData(formNode));
+        const subjectData = this.getClickedObjData(e, timeTableData);
+        Object.keys(formData).forEach(key => {
+            ObjectHelper.setValueByDotNotation(subjectData, key, formData[key])
+        });
+        this.timeTableManager.
+        this.handleClose(e);
     }
 
     handleClose(e) {
         e.preventDefault();
         this.#modalWrapperNode.style.display = "none";
+        this.#currentEvent = null
     }
 
     fillFormInputs(subjectData) {
-        subjectSelectors.forEach(({ dataKey, formRender }) => {
+        subjectSelectors.forEach(({dataKey, formRender}) => {
             const input = this.#modalWrapperNode.querySelector(`[name="${dataKey}"]`)
             if (input) {
                 const value = ObjectHelper.getValueByDotNotation(subjectData, dataKey)
-                if(formRender === "renderTypeSelect()"){
+                if (formRender === "renderTypeSelect()") {
                     input.value = subjectType.get(value)
                     return
                 }
