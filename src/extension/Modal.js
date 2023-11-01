@@ -1,6 +1,7 @@
 import {subjectSelectors, subjectType} from "./subject"
 import {ObjectHelper} from "./ObjectHelper"
 import {FunctionParser} from "./FunctionParser"
+import {CellRender} from "./CellRender";
 
 const modalCss = `
   .modal-custom-edit {
@@ -135,7 +136,8 @@ export class Modal {
         Object.keys(formData).forEach(key => {
             ObjectHelper.setValueByDotNotation(subjectData, key, formData[key])
         });
-        this.timeTableManager.
+        this.timeTableManager.saveTimeTableData(timeTableData)
+        CellRender.renderData(timeTableData)
         this.handleClose(e);
     }
 
