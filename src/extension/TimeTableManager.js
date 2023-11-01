@@ -4,6 +4,7 @@ export class TimeTableManager {
     constructor(group_id) {
         this.group_id = group_id
     }
+
     async #parseDataFromBackend() {
         const url = `${EnvConfigParser.parseBackendURL()}/timetable/${this.group_id}`;
         return (await fetch(url)).json();

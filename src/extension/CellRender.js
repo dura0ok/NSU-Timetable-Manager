@@ -1,7 +1,7 @@
-import {ObjectHelper} from "./ObjectHelper";
-import {subjectSelectors} from "./subject";
+import {ObjectHelper} from "./ObjectHelper"
+import {subjectSelectors} from "./subject"
 import {FunctionParser} from "./FunctionParser"
-import {CustomRenderHandlersManager} from "./customRenderHandlers";
+import {CustomRenderHandlersManager} from "./customRenderHandlers"
 
 export class CellRender {
     static #tds = document.querySelectorAll(
@@ -21,13 +21,13 @@ export class CellRender {
             const funcName = FunctionParser.parseFunctionName(property)
 
             if (element) {
-                const value = ObjectHelper.getValueByDotNotation(subjectData, dataKey);
+                const value = ObjectHelper.getValueByDotNotation(subjectData, dataKey)
                 if (value !== null) {
-                    if(funcName !== ""){
+                    if (funcName !== "") {
                         window[funcName](element, value)
                         return
                     }
-                    element[property] = value;
+                    element[property] = value
                 }
             }
         });
@@ -35,8 +35,8 @@ export class CellRender {
 
     static renderData = (apiData) => {
         this.#tds.forEach((td, dataID) => {
-            td.setAttribute('data-id', dataID.toString());
-            const cells = td.querySelectorAll('.cell');
+            td.setAttribute('data-id', dataID.toString())
+            const cells = td.querySelectorAll('.cell')
             cells.forEach((cell) => {
                 this.#renderCell(cell, apiData, dataID)
             })
