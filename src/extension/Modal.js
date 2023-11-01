@@ -1,4 +1,5 @@
 import {subjectSelectors} from "./subject";
+import {ObjectHelper} from "./ObjectHelper";
 const modalCss = `
   .modal-custom-edit {
     display: none;
@@ -82,11 +83,28 @@ export class Modal{
 
     handleEdit(e, timeTableData){
         e.preventDefault();
+        const el = e.target;
+        const tdElement = el.closest('td');
+        const dataID = parseInt(tdElement.getAttribute('data-id'));
+        const cellCount = Array.from(tdElement.children).indexOf(el.parentElement);
+        const subjectData = timeTableData[dataID]['subjects'][cellCount];
+        this.fillFormInputs(subjectData)
         this.modalWrapperNode.style.display = 'block';
     }
 
     handleClose(e) {
         e.preventDefault()
         this.modalWrapperNode.style.display = 'none';
+    }
+
+    fillFormInputs(subjectData){
+        subjectSelectors.forEach(({dataKey}) => {
+            const input = this.modalWrapperNode.querySelector(`[name="${dataKey}"]`);
+            if (input) {
+                const value = ObjectHelper.getValueByDotNotation(subjectData, dataKey);
+                input.value = value || '';
+
+            }
+        });
     }
 }
