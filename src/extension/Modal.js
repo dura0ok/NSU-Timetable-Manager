@@ -124,7 +124,7 @@ export class Modal {
     handleSubmit(originalEvent, timeTableData) {
         originalEvent.preventDefault()
         const e = this.#currentEvent;
-        if(!e){
+        if (!e) {
             this.#currentEvent = null;
             return
         }
