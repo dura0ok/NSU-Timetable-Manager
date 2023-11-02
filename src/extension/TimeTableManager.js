@@ -31,10 +31,11 @@ export class TimeTableManager {
                 throw new Error("Can't load data from the server.");
             }
 
+            const timeTableData = apiData["result"]["cells"]
             this.saveTimeTableData(
-                apiData["result"]["cells"]
+                timeTableData
             );
-            return apiData;
+            return timeTableData
         }
     }
 }
