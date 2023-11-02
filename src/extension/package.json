@@ -1,13 +1,11 @@
 {
   "devDependencies": {
+    "dotenv-webpack": "^8.0.1",
     "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4"
   },
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "watch": "webpack --config webpack.config.js --watch"
-  },
-  "dependencies": {
-    "dotenv-webpack": "^8.0.1"
   }
 }
