@@ -45,6 +45,12 @@ export class Modal {
     #modalWrapperNode
     #currentEvent;
 
+    #submitHandlerMap = {
+        'room': SubmitHandlers.roomSubmitHandler,
+        'type': SubmitHandlers.typeSubmitHandler,
+        'tutor': SubmitHandlers.tutorSubmitHandler
+    };
+
     constructor(timeTableData, timeTableManager) {
         this.#modalWrapperNode = this.setupModal()
         this.#modalWrapperNode.querySelector(".modal-form").addEventListener("submit", (e) => this.handleSubmit(e, timeTableData))
@@ -134,6 +140,7 @@ export class Modal {
         const formData = Object.fromEntries(new FormData(formNode));
         const subjectData = this.getClickedObjData(e, timeTableData);
         Object.keys(formData).forEach(key => {
+            console.log(key)
             ObjectHelper.setValueByDotNotation(subjectData, key, formData[key])
         });
         this.timeTableManager.saveTimeTableData(timeTableData)
