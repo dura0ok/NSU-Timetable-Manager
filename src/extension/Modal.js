@@ -2,6 +2,8 @@ import {subjectSelectors, subjectType} from "./subject"
 import {ObjectHelper} from "./ObjectHelper"
 import {FunctionParser} from "./FunctionParser"
 import {CellRender} from "./CellRender";
+import {SubmitHandlers} from "./SubmitHandlers"
+import {TimeTableManager} from "./TimeTableManager";
 
 const modalCss = `
   .modal-custom-edit {
@@ -45,11 +47,11 @@ export class Modal {
     #modalWrapperNode
     #currentEvent;
 
-    #submitHandlerMap = {
+    #submitHandlerMap = new Map(Object.entries({
         'room': SubmitHandlers.roomSubmitHandler,
         'type': SubmitHandlers.typeSubmitHandler,
         'tutor': SubmitHandlers.tutorSubmitHandler
-    };
+    }));
 
     constructor(timeTableData, timeTableManager) {
         this.#modalWrapperNode = this.setupModal()
@@ -105,7 +107,7 @@ export class Modal {
         return `
       <select name="${dataKey}">
         ${Array.from(subjectType, ([name, value]) =>
-            `<option value="${value}">${name}</option>`).join("\n")}
+            `<option value="${name}">${name}</option>`).join("\n")}
       </select>
     `;
     }
@@ -123,30 +125,42 @@ export class Modal {
         const el = e.target;
         const tdElement = el.closest("td")
         const dataID = parseInt(tdElement.getAttribute("data-id"))
+        //console.log("DATA ID ", dataID)
         const cellCount = Array.from(tdElement.children).indexOf(el.parentElement)
         return timeTableData[dataID]["subjects"][cellCount];
     }
 
-    handleSubmit(originalEvent, timeTableData) {
-        originalEvent.preventDefault()
+    async handleSubmit(originalEvent, timeTableData) {
+        originalEvent.preventDefault();
         const e = this.#currentEvent;
         if (!e) {
             this.#currentEvent = null;
-            return
+            return;
         }
 
-        console.log(e.target, e.target.closest("td"))
         const formNode = this.#modalWrapperNode.querySelector('.modal-form');
         const formData = Object.fromEntries(new FormData(formNode));
         const subjectData = this.getClickedObjData(e, timeTableData);
-        Object.keys(formData).forEach(key => {
-            console.log(key)
-            ObjectHelper.setValueByDotNotation(subjectData, key, formData[key])
+        const asyncTasks = [];
+        Object.keys(formData).forEach(dataKey => {
+            const key = dataKey.split(".")[0];
+            if (key !== "room") return;
+
+            if (this.#submitHandlerMap.has(key)) {
+                const f = this.#submitHandlerMap.get(key);
+                const task = f(subjectData, dataKey, formData[dataKey])
+                asyncTasks.push(task);
+            } else {
+                ObjectHelper.setValueByDotNotation(subjectData, dataKey, formData[dataKey]);
+            }
         });
-        this.timeTableManager.saveTimeTableData(timeTableData)
-        CellRender.renderData(timeTableData)
+
+        await Promise.all(asyncTasks);
+        this.timeTableManager.saveTimeTableData(timeTableData);
+        CellRender.renderData(timeTableData);
         this.handleClose(e);
     }
+
 
     handleClose(e) {
         e.preventDefault();
@@ -159,10 +173,6 @@ export class Modal {
             const input = this.#modalWrapperNode.querySelector(`[name="${dataKey}"]`)
             if (input) {
                 const value = ObjectHelper.getValueByDotNotation(subjectData, dataKey)
-                if (formRender === "renderTypeSelect()") {
-                    input.value = subjectType.get(value)
-                    return
-                }
                 input.value = value || "";
             }
         })

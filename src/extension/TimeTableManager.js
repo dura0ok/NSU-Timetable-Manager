@@ -25,6 +25,7 @@ export class TimeTableManager {
             console.log("Data available in local storage");
             return JSON.parse(localData);
         } else {
+            console.log("Go to api for data");
             const apiData = await this.#parseDataFromBackend();
 
             if (!apiData["isSuccess"]) {

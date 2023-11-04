@@ -3,6 +3,7 @@ import {subjectType} from "./subject";
 export class CustomRenderHandlersManager {
     static #renderMap = (element, subjectData) => {
         if (subjectData["isEmpty"]) {
+            element.setAttribute("onclick", "")
             return
         }
         const room_view = `room_view('${subjectData.block}', ${subjectData.level}, ${subjectData.x}, ${subjectData.y})`
