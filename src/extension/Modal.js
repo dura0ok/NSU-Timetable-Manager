@@ -142,9 +142,10 @@ export class Modal {
         const formData = Object.fromEntries(new FormData(formNode));
         const subjectData = this.getClickedObjData(e, timeTableData);
         const asyncTasks = [];
+        console.log(formData)
         Object.keys(formData).forEach(dataKey => {
             const key = dataKey.split(".")[0];
-            if (key !== "room") return;
+            //if (key !== "room") return;
 
             if (this.#submitHandlerMap.has(key)) {
                 const f = this.#submitHandlerMap.get(key);
