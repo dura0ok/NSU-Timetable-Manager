@@ -23,34 +23,34 @@ export class SubmitHandlers {
 
     static roomSubmitHandler(data, dataKey, value) {
         return new Promise(async (resolve) => {
-            try{
+            try {
                 ObjectHelper.setValueByDotNotation(data, dataKey, value)
                 const r = await SubmitHandlers.#getRoom(value)
                 ObjectHelper.setValueByDotNotation(data, "room.location", r["location"])
                 resolve()
-            }catch (error){
+            } catch (error) {
                 ObjectHelper.setValueByDotNotation(data, "room.location", {"isEmpty": true})
                 resolve()
             }
         });
     }
 
-    static async typeSubmitHandler(data, dataKey, value){
+    static async typeSubmitHandler(data, dataKey, value) {
         return new Promise(async (resolve) => {
             ObjectHelper.setValueByDotNotation(data, dataKey, value)
             resolve()
         })
     }
 
-    static async tutorSubmitHandler(data, dataKey, value){
+    static async tutorSubmitHandler(data, dataKey, value) {
         return new Promise(async (resolve) => {
-            try{
+            try {
                 const r = await SubmitHandlers.#getTutor(value)
                 console.log(r)
                 ObjectHelper.setValueByDotNotation(data, dataKey, r["name"])
                 ObjectHelper.setValueByDotNotation(data, "tutor.href", r["href"])
                 resolve()
-            }catch (error){
+            } catch (error) {
                 ObjectHelper.setValueByDotNotation(data, "tutor.href", "#")
                 resolve()
             }
