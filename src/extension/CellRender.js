@@ -7,11 +7,9 @@ export class CellRender {
     static #tds = document.querySelectorAll(
         '.time-table tr:not(:first-child) td:not(:first-child)'
     )
-    static #renderCell = (cell, apiData, cellIndex) => {
-        const subjectsDataInCell = apiData[cellIndex]['subjects']
-        subjectsDataInCell.forEach((subjectData) => {
-            this.#renderSubject(cell, subjectData)
-        })
+    static #renderCell = (cell, apiData, cellIndex, index) => {
+        const subjectData = apiData[cellIndex]['subjects'][index]
+        this.#renderSubject(cell, subjectData)
     };
 
     static #renderSubject = (el, subjectData) => {
@@ -22,6 +20,7 @@ export class CellRender {
 
             if (element) {
                 const value = ObjectHelper.getValueByDotNotation(subjectData, dataKey)
+                console.log(el, selector, value)
                 if (value !== null) {
                     if (funcName !== "") {
                         window[funcName](element, value)
@@ -44,15 +43,17 @@ export class CellRender {
         week.classList.add("week")
         week.innerText = weekType.get(weekNum.toString())
         el.appendChild(week)
-        console.log(el, subjectData)
     };
 
     static renderData = (apiData) => {
         this.#tds.forEach((td, dataID) => {
             td.setAttribute('data-id', dataID.toString())
             const cells = td.querySelectorAll('.cell')
-            cells.forEach((cell) => {
-                this.#renderCell(cell, apiData, dataID)
+            // if(cells.length > 1){
+            //     debugger;
+            // }
+            cells.forEach((cell, index) => {
+                this.#renderCell(cell, apiData, dataID, index)
             })
         })
     }
