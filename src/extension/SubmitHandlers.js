@@ -43,7 +43,7 @@ export class SubmitHandlers {
     }
 
     static async tutorSubmitHandler(data, dataKey, value){
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async (resolve) => {
             try{
                 const r = await SubmitHandlers.#getTutor(value)
                 console.log(r)
