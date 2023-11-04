@@ -22,7 +22,7 @@ export class SubmitHandlers {
     }
 
     static roomSubmitHandler(data, dataKey, value) {
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async (resolve) => {
             try{
                 ObjectHelper.setValueByDotNotation(data, dataKey, value)
                 const r = await SubmitHandlers.#getRoom(value)

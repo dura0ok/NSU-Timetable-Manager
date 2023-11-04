@@ -3,7 +3,6 @@ import {ObjectHelper} from "./ObjectHelper"
 import {FunctionParser} from "./FunctionParser"
 import {CellRender} from "./CellRender";
 import {SubmitHandlers} from "./SubmitHandlers"
-import {TimeTableManager} from "./TimeTableManager";
 
 const modalCss = `
   .modal-custom-edit {
@@ -106,7 +105,7 @@ export class Modal {
     #renderTypeSelect(dataKey) {
         return `
       <select name="${dataKey}">
-        ${Array.from(subjectType, ([name, value]) =>
+        ${Array.from(subjectType, ([name]) =>
             `<option value="${name}">${name}</option>`).join("\n")}
       </select>
     `;
@@ -170,7 +169,7 @@ export class Modal {
     }
 
     fillFormInputs(subjectData) {
-        subjectSelectors.forEach(({dataKey, formRender}) => {
+        subjectSelectors.forEach(({dataKey}) => {
             const input = this.#modalWrapperNode.querySelector(`[name="${dataKey}"]`)
             if (input) {
                 const value = ObjectHelper.getValueByDotNotation(subjectData, dataKey)
