@@ -1,7 +1,7 @@
 import {getWeekNum, subjectSelectors, subjectType, weekType} from "./subject"
 import {ObjectHelper} from "./ObjectHelper"
 import {FunctionParser} from "./FunctionParser"
-import {CellRender} from "./CellRender";
+import {CellRenderer} from "./CellRenderer";
 import {SubmitHandlers} from "./SubmitHandlers"
 
 const modalCss = `
@@ -171,7 +171,7 @@ export class Modal {
 
         await Promise.all(asyncTasks);
         this.timeTableManager.saveTimeTableData(timeTableData);
-        CellRender.renderData(timeTableData);
+        CellRenderer.renderData(timeTableData);
         this.handleClose(e);
     }
 

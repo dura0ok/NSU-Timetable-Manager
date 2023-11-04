@@ -7,7 +7,7 @@ dotenv.config();
 module.exports = {
     mode: 'development',
     entry: {
-        bundle: ['./app.js', './EnvConfigParser.js', './CellRender.js',
+        bundle: ['./app.js', './EnvConfigParser.js', './CellRenderer.js',
             './ObjectHelper.js', './TimeTableManager.js', './Modal.js', './SubmitHandlers.js'],
     },
     output: {

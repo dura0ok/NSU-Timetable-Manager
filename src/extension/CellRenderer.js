@@ -3,7 +3,7 @@ import {subjectSelectors, weekType} from "./subject"
 import {FunctionParser} from "./FunctionParser"
 import {CustomRenderHandlersManager} from "./customRenderHandlers"
 
-export class CellRender {
+export class CellRenderer {
     static #tds = document.querySelectorAll(
         '.time-table tr:not(:first-child) td:not(:first-child)'
     )
@@ -20,7 +20,6 @@ export class CellRender {
 
             if (element) {
                 const value = ObjectHelper.getValueByDotNotation(subjectData, dataKey)
-                console.log(el, selector, value)
                 if (value !== null) {
                     if (funcName !== "") {
                         window[funcName](element, value)

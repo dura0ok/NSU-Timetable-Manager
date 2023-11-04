@@ -1,5 +1,5 @@
 import {TimeTableManager} from "./TimeTableManager";
-import {CellRender} from "./CellRender";
+import {CellRenderer} from "./CellRenderer";
 import {Modal} from "./Modal";
 
 const getGroupNumberFromURL = () => {
@@ -11,7 +11,7 @@ try {
     const timeTableManager = new TimeTableManager(groupID)
     const timeTableData = await timeTableManager.loadTimeTableData()
     console.log(timeTableData)
-    CellRender.renderData(timeTableData)
+    CellRenderer.renderData(timeTableData)
 
     const m = new Modal(timeTableData, timeTableManager)
 
