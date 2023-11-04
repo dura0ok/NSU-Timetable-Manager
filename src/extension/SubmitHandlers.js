@@ -36,7 +36,7 @@ export class SubmitHandlers {
     }
 
     static async typeSubmitHandler(data, dataKey, value){
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async (resolve) => {
             ObjectHelper.setValueByDotNotation(data, dataKey, value)
             resolve()
         })
