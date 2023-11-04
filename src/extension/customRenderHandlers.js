@@ -1,4 +1,4 @@
-import {subjectType} from "./subject";
+import {subjectType, weekType} from "./subject";
 
 export class CustomRenderHandlersManager {
     static #renderMap = (element, subjectData) => {
@@ -22,8 +22,16 @@ export class CustomRenderHandlersManager {
         }
     };
 
+    static #renderWeek = (element, subjectData) => {
+        const key = subjectData.toString()
+        if (weekType.has(key)) {
+            element.innerText = weekType.get(key)
+        }
+    };
+
     static registerHandlers = () => {
         window.renderMap = this.#renderMap;
         window.renderType = this.#renderType;
+        window.renderWeek = this.#renderWeek;
     };
 }

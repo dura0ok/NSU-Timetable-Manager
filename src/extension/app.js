@@ -11,7 +11,6 @@ try {
     const timeTableManager = new TimeTableManager(groupID)
     const timeTableData = await timeTableManager.loadTimeTableData()
     console.log(timeTableData)
-    timeTableData[3]["subjects"][0].name["shortName"] = "123"
     CellRender.renderData(timeTableData)
 
     const m = new Modal(timeTableData, timeTableManager)

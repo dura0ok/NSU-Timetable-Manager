@@ -1,5 +1,5 @@
 import {ObjectHelper} from "./ObjectHelper"
-import {subjectSelectors} from "./subject"
+import {subjectSelectors, weekType} from "./subject"
 import {FunctionParser} from "./FunctionParser"
 import {CustomRenderHandlersManager} from "./customRenderHandlers"
 
@@ -31,6 +31,20 @@ export class CellRender {
                 }
             }
         });
+        const weekElement = el.querySelector(".week")
+        if (weekElement) {
+            weekElement.remove()
+        }
+
+        const weekNum = subjectData["periodicity"]
+        if (weekNum === 2) {
+            return
+        }
+        const week = document.createElement("div")
+        week.classList.add("week")
+        week.innerText = weekType.get(weekNum.toString())
+        el.appendChild(week)
+        console.log(el, subjectData)
     };
 
     static renderData = (apiData) => {

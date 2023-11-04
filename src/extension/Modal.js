@@ -1,4 +1,4 @@
-import {subjectSelectors, subjectType} from "./subject"
+import {getWeekNum, subjectSelectors, subjectType, weekType} from "./subject"
 import {ObjectHelper} from "./ObjectHelper"
 import {FunctionParser} from "./FunctionParser"
 import {CellRender} from "./CellRender";
@@ -70,6 +70,7 @@ export class Modal {
 
     setupCustomRenderFormFunctions() {
         window.renderTypeSelect = this.#renderTypeSelect.bind(this)
+        window.renderWeekSelect = this.#renderWeekSelect.bind(this)
     }
 
     setupModalHtml() {
@@ -107,6 +108,15 @@ export class Modal {
       <select name="${dataKey}">
         ${Array.from(subjectType, ([name]) =>
             `<option value="${name}">${name}</option>`).join("\n")}
+      </select>
+    `;
+    }
+
+    #renderWeekSelect(dataKey) {
+        return `
+      <select name="${dataKey}">
+        ${Array.from(weekType, ([, value]) =>
+            `<option value="${value}">${value}</option>`).join("\n")}
       </select>
     `;
     }
@@ -151,7 +161,11 @@ export class Modal {
                 const task = f(subjectData, dataKey, formData[dataKey])
                 asyncTasks.push(task);
             } else {
-                ObjectHelper.setValueByDotNotation(subjectData, dataKey, formData[dataKey]);
+                let value = formData[dataKey]
+                if (dataKey === "periodicity") {
+                    value = parseInt(getWeekNum(value))
+                }
+                ObjectHelper.setValueByDotNotation(subjectData, dataKey, value);
             }
         });
 
@@ -173,6 +187,10 @@ export class Modal {
             const input = this.#modalWrapperNode.querySelector(`[name="${dataKey}"]`)
             if (input) {
                 const value = ObjectHelper.getValueByDotNotation(subjectData, dataKey)
+                if (dataKey === "periodicity") {
+                    input.value = weekType.get(value.toString())
+                    return
+                }
                 input.value = value || "";
             }
         })

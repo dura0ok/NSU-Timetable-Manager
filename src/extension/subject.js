@@ -12,6 +12,13 @@ export const subjectSelectors = [
     {selector: ".type", property: "renderType()", dataKey: "type"},
     {selector: ".tutor", property: "textContent", dataKey: "tutor.name", placeholder: "Имя препода"},
     {selector: ".tutor", property: "href", dataKey: "tutor.href"},
+    {
+        selector: ".week",
+        property: "renderWeek()",
+        dataKey: "periodicity",
+        placeholder: "Четность",
+        formRender: "renderWeekSelect()"
+    },
 ];
 
 export const subjectType = new Map(Object.entries({
@@ -20,3 +27,18 @@ export const subjectType = new Map(Object.entries({
     "лек": "lek",
     "ф, пр": "f_2"
 }))
+
+export const weekType = new Map(Object.entries({
+    0: "По чётным",
+    1: "По нечётным",
+    2: "Всегда",
+}))
+
+export const getWeekNum = (searchValue) => {
+    for (const [key, value] of weekType.entries()) {
+        if (value === searchValue) {
+            return key;
+        }
+    }
+    return null;
+}
