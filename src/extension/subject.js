@@ -42,3 +42,21 @@ export const getWeekNum = (searchValue) => {
     }
     return null;
 }
+
+const cellHtml = `
+<div class="cell">
+  <span class="type" data-toggle="tooltip" data-placement="right" title="" data-original-title=""></span>
+  <div class="subject" data-toggle="tooltip" data-placement="top" title="" data-original-title=""></div>
+  <div class="room">
+    <a href="#" onclick=""></a>
+  </div>
+  <a class="tutor" href=""></a>
+  <div class="week"></div>
+</div>
+`
+
+export const insertCells = (tdElement, n) => {
+    for (let i = 0; i < n; i++) {
+        tdElement.insertAdjacentHTML("beforeend", cellHtml);
+    }
+}

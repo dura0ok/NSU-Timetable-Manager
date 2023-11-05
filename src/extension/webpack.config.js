@@ -8,7 +8,9 @@ module.exports = {
     mode: 'development',
     entry: {
         bundle: ['./app.js', './EnvConfigParser.js', './CellRenderer.js',
-            './ObjectHelper.js', './TimeTableManager.js', './Modal.js', './SubmitHandlers.js'],
+            './ObjectHelper.js', './TimeTableManager.js', './Modal.js', './SubmitHandlers.js',
+            './EventEmitter.js'
+        ],
     },
     output: {
         filename: '[name].js',

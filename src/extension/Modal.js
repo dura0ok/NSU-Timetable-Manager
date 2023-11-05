@@ -1,7 +1,6 @@
 import {getWeekNum, subjectSelectors, subjectType, weekType} from "./subject"
 import {ObjectHelper} from "./ObjectHelper"
 import {FunctionParser} from "./FunctionParser"
-import {CellRenderer} from "./CellRenderer";
 import {SubmitHandlers} from "./SubmitHandlers"
 
 const modalCss = `
@@ -40,11 +39,16 @@ const modalCss = `
     text-decoration: none;
     cursor: pointer;
   }
+  
+  .delete-btn{
+    background:red;
+    color:white;
+  }
 `;
 
 export class Modal {
     #modalWrapperNode
-    #currentEvent;
+    #originalEvent;
 
     #submitHandlerMap = new Map(Object.entries({
         'room': SubmitHandlers.roomSubmitHandler,
@@ -52,11 +56,12 @@ export class Modal {
         'tutor': SubmitHandlers.tutorSubmitHandler
     }));
 
-    constructor(timeTableData, timeTableManager) {
+    constructor(timeTableData, timeTableManager, eventEmitter) {
         this.#modalWrapperNode = this.setupModal()
         this.#modalWrapperNode.querySelector(".modal-form").addEventListener("submit", (e) => this.handleSubmit(e, timeTableData))
         this.#modalWrapperNode.querySelector(".close-modal").addEventListener("click", this.handleClose.bind(this))
         this.timeTableManager = timeTableManager
+        this.eventEmitter = eventEmitter;
     }
 
     setupModal() {
@@ -94,7 +99,8 @@ export class Modal {
                 return '<input type="text" name="' + dataKey + '" placeholder="' + placeholder + '" />'
             })
             .join("")}
-                    <button type="submit" class="submit-edit-modal">Submit</button>
+                    <button type="submit" class="submit-delete-modal" name="delete">Delete</button>
+                    <button type="submit" class="submit-edit-modal" name="submit">Submit</button>
                   </form>
                 </div>
               </div>
@@ -123,36 +129,86 @@ export class Modal {
 
     handleEdit(e, timeTableData) {
         e.preventDefault();
-        this.#currentEvent = e; // Store the event object
-        const subjectData = this.getClickedObjData(e, timeTableData);
+        this.#originalEvent = e;
+        let subjectData = this.getClickedObjData(e, timeTableData);
+        if (!timeTableData) {
+            this.#modalWrapperNode.querySelector(".submit-delete-modal").style.display = "none"
+            subjectData = {}
+        } else {
+            this.#modalWrapperNode.querySelector(".submit-delete-modal").style.display = "block"
+        }
+
         this.fillFormInputs(subjectData)
+        if (!timeTableData) {
+            this.#modalWrapperNode.querySelectorAll("select").forEach((select) => {
+                console.log(select, select.options[0].value)
+                select.value = select.options[0].value;
+            })
+        }
         this.#modalWrapperNode.style.display = "block"
     }
 
 
-    getClickedObjData(e, timeTableData) {
+    getCellInfo(e) {
         const el = e.target;
-        const tdElement = el.closest("td")
-        const dataID = parseInt(tdElement.getAttribute("data-id"))
-        //console.log("DATA ID ", dataID)
-        const cellCount = Array.from(tdElement.children).indexOf(el.parentElement)
-        return timeTableData[dataID]["subjects"][cellCount];
+        const tdElement = el.closest("td");
+        const dataID = parseInt(tdElement.getAttribute("data-id"));
+        const cellCount = Array.from(tdElement.children).indexOf(el.parentElement);
+
+        return {dataID, cellCount};
     }
 
-    async handleSubmit(originalEvent, timeTableData) {
-        originalEvent.preventDefault();
-        const e = this.#currentEvent;
+    getClickedObjData(e, timeTableData) {
+        if (timeTableData === null) {
+            return null;
+        }
+        const {dataID, cellCount} = this.getCellInfo(e);
+        if (timeTableData[dataID] && timeTableData[dataID]["subjects"] && timeTableData[dataID]["subjects"][cellCount]) {
+            return timeTableData[dataID]["subjects"][cellCount];
+        }
+
+        return null;
+    }
+
+    removeClickedObjData(e, timeTableData) {
+        const {dataID, cellCount} = this.getCellInfo(e);
+        console.log(timeTableData[dataID]["subjects"][cellCount])
+        timeTableData[dataID]["subjects"].splice(cellCount, 1)
+        this.timeTableManager.saveTimeTableData(timeTableData);
+    }
+
+    async handleSubmit(currentEvent, timeTableData) {
+        currentEvent.preventDefault();
+        const e = this.#originalEvent;
+
         if (!e) {
-            this.#currentEvent = null;
+            this.#originalEvent = null;
             return;
         }
 
+
         const formNode = this.#modalWrapperNode.querySelector('.modal-form');
         const formData = Object.fromEntries(new FormData(formNode));
-        const subjectData = this.getClickedObjData(e, timeTableData);
+        let subjectData = this.getClickedObjData(e, timeTableData);
+        if (!subjectData) {
+            const res = this.getCellInfo(e)
+            subjectData = {}
+            subjectData.isEmpty = false
+            timeTableData[res.dataID]["subjects"].push(subjectData)
+        }
+
+        const submitterName = currentEvent.submitter.name
+        if (submitterName === "delete") {
+            console.log(subjectData, typeof subjectData)
+            this.removeClickedObjData(e, timeTableData)
+            this.eventEmitter.emit("render-data")
+            this.handleClose(e);
+            return
+        }
+
         const asyncTasks = [];
-        console.log(formData)
         Object.keys(formData).forEach(dataKey => {
+            console.log(subjectData)
             const key = dataKey.split(".")[0];
             //if (key !== "room") return;
 
@@ -171,7 +227,8 @@ export class Modal {
 
         await Promise.all(asyncTasks);
         this.timeTableManager.saveTimeTableData(timeTableData);
-        CellRenderer.renderData(timeTableData);
+        console.log(timeTableData[15])
+        this.eventEmitter.emit("render-data")
         this.handleClose(e);
     }
 
@@ -179,7 +236,7 @@ export class Modal {
     handleClose(e) {
         e.preventDefault();
         this.#modalWrapperNode.style.display = "none";
-        this.#currentEvent = null
+        this.#originalEvent = null
     }
 
     fillFormInputs(subjectData) {
@@ -187,11 +244,15 @@ export class Modal {
             const input = this.#modalWrapperNode.querySelector(`[name="${dataKey}"]`)
             if (input) {
                 const value = ObjectHelper.getValueByDotNotation(subjectData, dataKey)
+                if (!value) {
+                    input.value = ""
+                    return
+                }
                 if (dataKey === "periodicity") {
                     input.value = weekType.get(value.toString())
                     return
                 }
-                input.value = value || "";
+                input.value = value
             }
         })
     }
