@@ -1,13 +1,14 @@
 from .json_serializable import JSONSerializable
 from .serialization import *
 from .server_codes import ServerCodes
-from .server_response import ServerResponse
+from .server_response import ServerResponse, create_error_server_response
 from .timetable_objects import *
 
 __all__ = [
     'JSONSerializable',
     'ServerCodes',
     'ServerResponse',
+    'create_error_server_response',
     'Serializer',
     'Deserializer',
     'JSONSerializer',

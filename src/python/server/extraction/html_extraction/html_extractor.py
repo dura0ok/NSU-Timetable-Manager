@@ -1,5 +1,5 @@
 from common.server_codes import ServerCodes
-from common.server_response import ServerResponse, create_error_parsing_result
+from common.server_response import ServerResponse, create_error_server_response
 from extraction.extractor import Extractor
 from .downloading import *
 from .parsing import *
@@ -19,7 +19,7 @@ class HTMLExtractor(Extractor):
         try:
             html_content: str = self.__downloader.download(url=self.__get_group_url(striped_group_id))
         except HTMLDownloadingException:
-            return create_error_parsing_result(
+            return create_error_server_response(
                 message=f'Group {striped_group_id} not found',
                 code=ServerCodes.UNKNOWN_GROUP
             )
@@ -32,7 +32,7 @@ class HTMLExtractor(Extractor):
         try:
             html_content: str = self.__downloader.download(url=self.__get_room_url(striped_room_name))
         except HTMLDownloadingException:
-            return create_error_parsing_result(
+            return create_error_server_response(
                 message=f'Room {striped_room_name} not found',
                 code=ServerCodes.UNKNOWN_ROOM
             )
@@ -46,7 +46,7 @@ class HTMLExtractor(Extractor):
         try:
             html_content: str = self.__downloader.download(url=all_tutors_page_url)
         except HTMLDownloadingException:
-            return create_error_parsing_result(
+            return create_error_server_response(
                 message=f'Cannot parse tutor from {all_tutors_page_url}',
                 code=ServerCodes.INTERNAL_ERROR
             )
@@ -59,7 +59,7 @@ class HTMLExtractor(Extractor):
         try:
             html_content: str = self.__downloader.download(url=times_url)
         except HTMLDownloadingException:
-            return create_error_parsing_result(
+            return create_error_server_response(
                 message=f'Cannot parse times from {times_url}',
                 code=ServerCodes.INTERNAL_ERROR
             )

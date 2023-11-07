@@ -3,7 +3,7 @@ from typing import List, Optional, Mapping
 import bs4
 
 from common.server_codes import ServerCodes
-from common.server_response import ServerResponse, create_error_parsing_result
+from common.server_response import ServerResponse, create_error_server_response
 from common.timetable_objects import *
 from extraction.html_extraction.parsing.parsing_exceptions import TimetableParsingException
 
@@ -15,7 +15,7 @@ class HTMLTimetableParser:
             soup: bs4.BeautifulSoup = bs4.BeautifulSoup(markup=html_content, features='html.parser')
             timetable: Timetable = HTMLTimetableParser.__parse_timetable(soup=soup)
         except TimetableParsingException as e:
-            return create_error_parsing_result(message=str(e), code=ServerCodes.INTERNAL_ERROR)
+            return create_error_server_response(message=str(e), code=ServerCodes.INTERNAL_ERROR)
 
         return ServerResponse(timetable)
 

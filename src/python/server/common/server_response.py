@@ -13,5 +13,5 @@ class ServerResponse(JSONSerializable):
     code: ServerCodes = ServerCodes.SUCCESS
 
 
-def create_error_parsing_result(message: str, code: ServerCodes) -> ServerResponse:
+def create_error_server_response(message: str, code: ServerCodes) -> ServerResponse:
     return ServerResponse(result=None, is_success=False, message=message, code=code)

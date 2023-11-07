@@ -1,9 +1,7 @@
 import bs4
 
-from common.server_codes import ServerCodes
-from common.server_response import ServerResponse, create_error_parsing_result
-from common.timetable_objects import Room, RoomLocation
-from extraction.html_extraction.parsing.parsing_exceptions import RoomParsingException
+from common import ServerCodes, ServerResponse, create_error_server_response, Room, RoomLocation
+from .parsing_exceptions import RoomParsingException
 
 
 class HTMLRoomParser:
@@ -14,7 +12,7 @@ class HTMLRoomParser:
             room_location: RoomLocation = HTMLRoomParser.__parse_room_location(html_content=html_content)
             room: Room = Room(name=room_name, location=room_location)
         except RoomParsingException as e:
-            return create_error_parsing_result(message=str(e), code=ServerCodes.INTERNAL_ERROR)
+            return create_error_server_response(message=str(e), code=ServerCodes.INTERNAL_ERROR)
 
         return ServerResponse(result=room)
 

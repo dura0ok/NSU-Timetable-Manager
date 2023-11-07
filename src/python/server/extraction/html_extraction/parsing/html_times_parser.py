@@ -2,9 +2,7 @@ from typing import List
 
 import bs4
 
-from common.server_codes import ServerCodes
-from common.server_response import ServerResponse, create_error_parsing_result
-from common.timetable_objects import Times
+from common import ServerCodes, ServerResponse, create_error_server_response, Times
 
 
 class HTMLTimesParser:
@@ -16,11 +14,11 @@ class HTMLTimesParser:
 
         times_tag: bs4.Tag = soup.find(name='div', attrs={'class': 'modal-body'})
         if times_tag is None:
-            return create_error_parsing_result(message=error_message, code=ServerCodes.INTERNAL_ERROR)
+            return create_error_server_response(message=error_message, code=ServerCodes.INTERNAL_ERROR)
 
         try:
             times_list: List[str] = [tr.find_all('td')[1].text.split('-')[0] for tr in times_tag.find_all('tr')]
         except IndexError:
-            return create_error_parsing_result(error_message, ServerCodes.INTERNAL_ERROR)
+            return create_error_server_response(error_message, ServerCodes.INTERNAL_ERROR)
 
         return ServerResponse(Times(times=times_list))

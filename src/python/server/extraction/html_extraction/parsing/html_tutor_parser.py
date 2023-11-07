@@ -1,87 +1,45 @@
-from common.server_codes import ServerCodes
-from common.server_response import ServerResponse, create_error_parsing_result
-from common.timetable_objects import Tutor
-from extraction.html_extraction.parsing.parsing_exceptions import TutorParsingException
+from typing import Optional
+
+import bs4
+
+from common import ServerResponse
+from common import Tutor, ServerCodes
+from common import create_error_server_response
+from .parsing_exceptions import TutorParsingException
 
 
 class HTMLTutorParser:
     @staticmethod
     def parse_tutor(html_content: str, tutor_name: str) -> ServerResponse:
-        if html_content.find(tutor_name) == -1:
-            return create_error_parsing_result(f'Tutor with name {tutor_name} not found', ServerCodes.UNKNOWN_TUTOR)
+        soup: bs4.BeautifulSoup = bs4.BeautifulSoup(markup=html_content, features='html.parser')
+        tutor_tag: Optional[bs4.Tag] = HTMLTutorParser.__extract_tutor_tag(soup=soup, tutor_name=tutor_name)
 
-        if tutor_name.find('.') != -1:
-            return HTMLTutorParser.__parse_tutor_by_short_name(html_content=html_content, short_name=tutor_name)
-        else:
-            return HTMLTutorParser.__parse_by_from_full_name(html_content=html_content, full_name=tutor_name)
+        if tutor_tag is None:
+            return create_error_server_response(message=f'Tutor {tutor_name} not found', code=ServerCodes.UNKNOWN_TUTOR)
 
-    @staticmethod
-    def __parse_tutor_by_short_name(html_content: str, short_name: str) -> ServerResponse:
-        href: str = HTMLTutorParser.__parse_tutor_href_by_short_name(html_content=html_content, short_name=short_name)
-        tutor: Tutor = Tutor(name=short_name, href=href)
+        try:
+            tutor: Tutor = HTMLTutorParser.__parse_tutor_from_tag(tutor_tag=tutor_tag)
+        except TutorParsingException as e:
+            return create_error_server_response(message=str(e), code=ServerCodes.INTERNAL_ERROR)
 
-        return ServerResponse(result=tutor)
+        return ServerResponse(tutor)
 
     @staticmethod
-    def __parse_by_from_full_name(html_content: str, full_name: str) -> ServerResponse:
-        href: str = HTMLTutorParser.__parse_tutor_href_by_full_name(html_content=html_content, full_name=full_name)
-        name: str = HTMLTutorParser.__parse_tutor_name_by_full_name(html_page=html_content, full_name=full_name)
-        tutor: Tutor = Tutor(name=name, href=href)
-
-        return ServerResponse(result=tutor)
+    def __extract_tutor_tag(soup: bs4.BeautifulSoup, tutor_name: str) -> Optional[bs4.Tag]:
+        teacher_tag_name: str = 'a'
+        return (soup.find(name=teacher_tag_name, attrs={'title': tutor_name}) or
+                soup.find(name=teacher_tag_name, string=tutor_name))
 
     @staticmethod
-    def __parse_tutor_href_by_short_name(html_content: str, short_name: str) -> str:
-        reversed_html_content: str = html_content[::-1]
-        reversed_short_name: str = short_name[::-1]
-        reversed_short_name_index: int = reversed_html_content.find(reversed_short_name)
+    def __parse_tutor_from_tag(tutor_tag: bs4.Tag) -> Tutor:
+        attrs = tutor_tag.attrs
 
-        return HTMLTutorParser.__parse_attr(
-            attr_name='href',
-            html_page=html_content,
-            reversed_html=reversed_html_content,
-            end_index=reversed_short_name_index,
-            error_message='Invalid format of HTML: cannot parse href of tutor'
-        )
+        name = tutor_tag.text
+        if name is None:
+            raise TutorParsingException('Invalid format of HTML: cannot parse tutor name')
 
-    @staticmethod
-    def __parse_tutor_href_by_full_name(html_content: str, full_name: str) -> str:
-        reversed_html_content: str = html_content[::-1]
-        reversed_full_name: str = full_name[::-1]
-        reversed_full_name_index: int = reversed_html_content.find(reversed_full_name)
+        href = attrs.get('href')
+        if href is None:
+            raise TutorParsingException('Invalid format of HTML: cannot parse tutor href')
 
-        return HTMLTutorParser.__parse_attr(
-            attr_name='href',
-            html_page=html_content,
-            reversed_html=reversed_html_content,
-            end_index=reversed_full_name_index,
-            error_message='Invalid format of HTML: cannot parse href of tutor'
-        )
-
-    @staticmethod
-    def __parse_tutor_name_by_full_name(html_page: str, full_name: str) -> str:
-        error_message: str = 'Invalid format of HTML: cannot parse name of tutor'
-
-        i1: int = html_page.find(full_name)
-
-        i2: int = html_page.find('>', i1)
-        if i2 == -1:
-            raise TutorParsingException(error_message)
-
-        i3: int = html_page.find('<', i2)
-        if i3 == -1:
-            raise TutorParsingException(error_message)
-
-        return html_page[i2 + 1:i3]
-
-    @staticmethod
-    def __parse_attr(attr_name: str, html_page: str, reversed_html: str, end_index: int, error_message: str) -> str:
-        i1: int = reversed_html.find(attr_name[::-1], end_index)
-        if i1 == -1:
-            raise TutorParsingException(error_message)
-        attr_index: int = len(html_page) - i1 + 1
-        i2: int = html_page.find('"', attr_index + 2)
-        if i2 == -1:
-            raise TutorParsingException(error_message)
-
-        return html_page[attr_index + 1:i2]
+        return Tutor(name=name, href=href)
