@@ -20,7 +20,7 @@ class HTMLExtractor(Extractor):
             html_content: str = self.__downloader.download(url=self.__get_group_url(striped_group_id))
         except HTMLDownloadingException:
             return create_error_server_response(
-                message=f'Group {striped_group_id} not found',
+                message=f'Group "{striped_group_id}" not found',
                 code=ServerCodes.UNKNOWN_GROUP
             )
 
@@ -33,7 +33,7 @@ class HTMLExtractor(Extractor):
             html_content: str = self.__downloader.download(url=self.__get_room_url(striped_room_name))
         except HTMLDownloadingException:
             return create_error_server_response(
-                message=f'Room {striped_room_name} not found',
+                message=f'Room "{striped_room_name}" not found',
                 code=ServerCodes.UNKNOWN_ROOM
             )
 

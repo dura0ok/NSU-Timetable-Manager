@@ -15,7 +15,10 @@ class HTMLTutorParser:
         tutor_tag: Optional[bs4.Tag] = HTMLTutorParser.__extract_tutor_tag(soup=soup, tutor_name=tutor_name)
 
         if tutor_tag is None:
-            return create_error_server_response(message=f'Tutor {tutor_name} not found', code=ServerCodes.UNKNOWN_TUTOR)
+            return create_error_server_response(
+                message=f'Tutor "{tutor_name}" not found',
+                code=ServerCodes.UNKNOWN_TUTOR
+            )
 
         try:
             tutor: Tutor = HTMLTutorParser.__parse_tutor_from_tag(tutor_tag=tutor_tag)
