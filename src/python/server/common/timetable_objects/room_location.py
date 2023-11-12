@@ -1,11 +1,9 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from ..json_serializable import JSONSerializable
-
 
 @dataclass(frozen=True)
-class RoomLocation(JSONSerializable):
+class RoomLocation:
     block: Optional[str]
     level: Optional[int]
     x: Optional[int]

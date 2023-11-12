@@ -1,17 +1,16 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from common import ServerCodes
-from .json_serializable import JSONSerializable
+from .server_codes import ServerCodes
 
 
 @dataclass(frozen=True)
-class ServerResponse(JSONSerializable):
-    result: Optional[JSONSerializable]
+class ServerResponse:
+    result: Optional[object]
     is_success: bool = True
     message: str = 'Success'
     code: ServerCodes = ServerCodes.SUCCESS
 
 
-def create_error_server_response(message: str, code: ServerCodes) -> ServerResponse:
+def create_error_server_result(message: str, code: ServerCodes) -> ServerResponse:
     return ServerResponse(result=None, is_success=False, message=message, code=code)

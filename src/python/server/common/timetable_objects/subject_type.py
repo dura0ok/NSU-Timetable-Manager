@@ -1,17 +1,13 @@
-from dataclasses import dataclass
-from typing import Optional
+from enum import auto
 
-from .subject_type_color import SubjectTypeColor
-from ..json_serializable import JSONSerializable
+from common import ZeroEnum
 
 
-@dataclass(frozen=True)
-class SubjectType(JSONSerializable):
-    short_name: Optional[str]
-    full_name: Optional[str]
-    color: Optional[SubjectTypeColor]
-    is_empty: bool = False
-
-
-def create_empty_subject_type() -> SubjectType:
-    return SubjectType(full_name=None, short_name=None, color=None, is_empty=True)
+class SubjectType(ZeroEnum):
+    EMPTY = auto()
+    LECTURE = auto()
+    PRACTICAL = auto()
+    LABORATORY = auto()
+    LECTURE_ELECTIVE = auto()
+    PRACTICAL_ELECTIVE = auto()
+    LABORATORY_ELECTIVE = auto()

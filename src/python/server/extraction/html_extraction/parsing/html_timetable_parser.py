@@ -1,70 +1,96 @@
-from typing import List, Optional, Mapping
+from typing import List, Optional, Dict
 
 import bs4
 
-from common.server_codes import ServerCodes
-from common.server_response import ServerResponse, create_error_server_response
 from common.timetable_objects import *
-from extraction.html_extraction.parsing.parsing_exceptions import TimetableParsingException
+from extraction.html_extraction.parsing import HTMLTimesParser
+from .html_room_parser import HTMLRoomParser
+from .html_tutor_parser import HTMLTutorParser
+from .parsing_exceptions import TimetableParsingException, RoomParsingException, TutorParsingException
+from .utils import create_html_bs4
 
 
 class HTMLTimetableParser:
+    __timetable_line_selector: str = 'table.time-table tr'
+    __subject_selector: str = 'div.cell'
+    __subject_name_selector: str = 'div.subject'
+    __tutor_selector: str = 'a.tutor'
+    __room_selector: str = 'div.room'
+    __week_selector: str = 'div.week'
+    __cell_tag_name: str = 'td'
+    __subject_type_tag_name: str = 'span'
+    __full_subject_name_attr_name: str = 'title'
+
+    __no_timetable_found: str = 'Invalid format of HTML: cannot find timetable'
+    __no_cells_in_row: str = 'Invalid format of HTML: no cells in timetable-row'
+    __subject_without_name_tag: str = 'Invalid format of HTML: found subject without name-tag'
+    __subject_without_full_name: str = 'Invalid format of HTML: found subject without full name'
+    __subject_without_type: str = 'Invalid format of HTML: found subject without type'
+    __cannot_parse_tutor: str = 'Invalid format of HTML: cannot parse tutor of subject'
+    __cannot_parse_room: str = 'Invalid format of HTML: cannot parse room of subject'
+
+    __subject_type_map: Dict[str, SubjectType] = {
+        'лек': SubjectType.LECTURE,
+        'пр': SubjectType.PRACTICAL,
+        'лаб': SubjectType.LECTURE,
+        'ф, лек': SubjectType.LECTURE_ELECTIVE,
+        'ф, пр': SubjectType.PRACTICAL_ELECTIVE,
+        'ф, лаб': SubjectType.LABORATORY_ELECTIVE
+    }
+
+    __periodicity_map: Dict[str, Periodicity] = {
+        'Четная': Periodicity.ON_EVEN,
+        'Нечетная': Periodicity.ON_ODD,
+    }
+
     @staticmethod
-    def parse_timetable(html_content: str) -> ServerResponse:
-        try:
-            soup: bs4.BeautifulSoup = bs4.BeautifulSoup(markup=html_content, features='html.parser')
-            timetable: Timetable = HTMLTimetableParser.__parse_timetable(soup=soup)
-        except TimetableParsingException as e:
-            return create_error_server_response(message=str(e), code=ServerCodes.INTERNAL_ERROR)
+    def parse_timetable(html_content: str) -> Timetable:
+        soup: bs4.BeautifulSoup = create_html_bs4(html_content)
 
-        return ServerResponse(timetable)
-
-    @staticmethod
-    def __parse_timetable(soup: bs4.BeautifulSoup) -> Timetable:
-        timetable_tag: bs4.Tag = soup.find(name='table', attrs={'class': 'time-table'})
-
-        if timetable_tag is None:
-            raise TimetableParsingException('Invalid format of HTML: timetable not found on the page')
-
-        trs: bs4.ResultSet = timetable_tag.find_all('tr')
-        if len(trs) == 0:
-            raise TimetableParsingException('Invalid format of HTML: invalid format of timetable')
-
-        cells: List[Cell] = []
-        times: List[str] = []
-
-        #  Parsing of times and cells
-        for tr in trs[1:]:
-            tds: bs4.ResultSet = tr.find_all('td')
-
-            if len(tds) != 7:
-                raise TimetableParsingException('Invalid format of HTML: invalid number of columns in timetable')
-
-            time: str = tds[0].text.strip()
-            times.append(time)
-
-            for td in tds[1:]:
-                cells.append(HTMLTimetableParser.__parse_cell(cell_tag=td))
+        times: Times = HTMLTimesParser.parse_times(html_content)
+        cells: List[Cell] = HTMLTimetableParser.__parse_cells(soup=soup)
 
         return Timetable(cells=cells, times=times)
 
     @staticmethod
-    def __parse_cell(cell_tag: bs4.element.Tag) -> Cell:
-        subject_elements: bs4.ResultSet = cell_tag.find_all(name='div', attrs={'class': 'cell'})
+    def __parse_cells(soup: bs4.BeautifulSoup) -> List[Cell]:
+        rows: bs4.ResultSet = soup.select(HTMLTimetableParser.__timetable_line_selector)
+        if len(rows) == 0:
+            raise TimetableParsingException(HTMLTimetableParser.__no_timetable_found)
 
-        subjects: List[Subject] = []
-        for element in subject_elements:
-            subjects.append(HTMLTimetableParser.__parse_subject(subject_tag=element))
+        cells: List[Cell] = []
 
-        return Cell(subjects=subjects)
+        # We have to skip first row, because it contains only days of week
+        for row in rows[1:]:
+            cells_tags: bs4.ResultSet = row.find_all(HTMLTimetableParser.__cell_tag_name)
+
+            if len(cells_tags) == 0:
+                raise TimetableParsingException(HTMLTimetableParser.__no_cells_in_row)
+
+            # We have to skip first cell-tag because it contains only time
+            for tag in cells_tags[1:]:
+                cells.append(HTMLTimetableParser.__parse_cell(tag))
+
+        return cells
 
     @staticmethod
-    def __parse_subject(subject_tag: bs4.element.Tag) -> Subject:
-        subject_name: SubjectName = HTMLTimetableParser.__parse_subject_name(subject_tag=subject_tag)
-        subject_type: SubjectType = HTMLTimetableParser.__parse_subject_type(subject_tag=subject_tag)
-        tutor: Tutor = HTMLTimetableParser.__parse_tutor(subject_tag=subject_tag)
-        room: Room = HTMLTimetableParser.__parse_room(subject_tag=subject_tag)
-        periodicity: Periodicity = HTMLTimetableParser.__parse_periodicity(subject_tag=subject_tag)
+    def __parse_cell(cell_tag: bs4.Tag) -> Cell:
+        subjects_tags: bs4.ResultSet = cell_tag.select(HTMLTimetableParser.__subject_selector)
+        subjects: List[Subject] = []
+
+        for tag in subjects_tags:
+            subject: Subject = HTMLTimetableParser.__parse_subject(tag)
+            subjects.append(subject)
+
+        return Cell(subjects)
+
+    @staticmethod
+    def __parse_subject(subject_tag: bs4.Tag) -> Subject:
+        subject_name: SubjectName = HTMLTimetableParser.__parse_subject_name(subject_tag)
+        subject_type: SubjectType = HTMLTimetableParser.__parse_subject_type(subject_tag)
+        tutor: Tutor = HTMLTimetableParser.__parse_tutor(subject_tag)
+        room: Room = HTMLTimetableParser.__parse_room(subject_tag)
+        periodicity: Periodicity = HTMLTimetableParser.__parse_periodicity(subject_tag)
 
         return Subject(
             name=subject_name,
@@ -75,103 +101,77 @@ class HTMLTimetableParser:
         )
 
     @staticmethod
-    def __parse_subject_name(subject_tag: bs4.element.Tag) -> SubjectName:
-        name_tag: bs4.element.Tag = subject_tag.find(name='div', attrs={'class': 'subject'})
+    def __parse_subject_name(subject_tag: bs4.Tag) -> SubjectName:
+        name_tag: bs4.Tag = subject_tag.select_one(HTMLTimetableParser.__subject_name_selector)
 
         if name_tag is None:
-            return create_empty_subject_name()
+            raise TimetableParsingException(HTMLTimetableParser.__subject_without_name_tag)
 
         short_name: str = name_tag.text.strip()
-        full_name: str = name_tag.attrs.get('title')
+        full_name: Optional[str] = name_tag.attrs.get(HTMLTimetableParser.__full_subject_name_attr_name)
+
+        if full_name is None:
+            raise TimetableParsingException(HTMLTimetableParser.__subject_without_full_name)
 
         return SubjectName(full_name=full_name, short_name=short_name)
 
     @staticmethod
-    def __parse_subject_type(subject_tag: bs4.element.Tag) -> SubjectType:
-        type_tag: bs4.element.Tag = subject_tag.find(name='span')
-
+    def __parse_subject_type(subject_tag: bs4.Tag) -> SubjectType:
+        type_tag: bs4.Tag = subject_tag.find(HTMLTimetableParser.__subject_type_tag_name)
         if type_tag is None:
-            return create_empty_subject_type()
+            raise TimetableParsingException(HTMLTimetableParser.__subject_without_type)
 
-        short_name: str = type_tag.text.strip()
-        full_name: str = type_tag.attrs.get('title')
+        type_name: str = type_tag.text.strip()
+        if type_name not in HTMLTimetableParser.__subject_type_map.keys():
+            raise TimetableParsingException(HTMLTimetableParser.__get_unknown_subject_type_message(type_name))
 
-        attr = type_tag.attrs.get('class')
-        if attr is None or len(attr) < 2:
-            raise TimetableParsingException('Invalid format of HTML: cannot parse type of subject')
-
-        color: SubjectTypeColor = HTMLTimetableParser.__extract_subject_type_color(subject_type=attr[1])
-
-        return SubjectType(short_name=short_name, full_name=full_name, color=color)
+        return HTMLTimetableParser.__subject_type_map.get(type_name)
 
     @staticmethod
-    def __parse_tutor(subject_tag: bs4.element.Tag) -> Tutor:
-        tag: bs4.element.Tag = subject_tag.find(name='a', attrs={'class': 'tutor'})
+    def __parse_tutor(subject_tag: bs4.Tag) -> Tutor:
+        tutor_tag: bs4.Tag = subject_tag.select_one(HTMLTimetableParser.__tutor_selector)
 
-        if tag is None:
-            return empty_tutor()
+        if tutor_tag is None:
+            return create_empty_tutor()
 
-        tutor_href: Optional[str] = tag.attrs.get('href')
-        tutor_name: str = tag.text.strip()
+        try:
+            tutor: Tutor = HTMLTutorParser.parse_tutor_from_tag(tutor_tag)
+        except TutorParsingException as e:
+            raise TimetableParsingException(HTMLTimetableParser.__cannot_parse_tutor) from e
 
-        return Tutor(name=tutor_name, href=tutor_href)
+        return tutor
 
     @staticmethod
-    def __parse_room(subject_tag: bs4.element.Tag) -> Room:
-        tag: bs4.element.Tag = subject_tag.find(name='div', attrs={'class': 'room'})
+    def __parse_room(subject_tag: bs4.Tag) -> Room:
+        room_tag: bs4.Tag = subject_tag.select_one(HTMLTimetableParser.__room_selector)
 
-        if tag is None:
+        if room_tag is None:
             return create_empty_room()
 
-        room_tag: bs4.element.Tag = tag.find('a')
-        name: Optional[str] = tag.text.strip() if room_tag is None else room_tag.text.strip()
-        location: RoomLocation = HTMLTimetableParser.__parse_room_location(room_tag=room_tag)
+        try:
+            room: Room = HTMLRoomParser.parse_room_from_tag(room_tag)
+        except RoomParsingException as e:
+            raise TimetableParsingException(HTMLTimetableParser.__cannot_parse_room) from e
 
-        return Room(name=name, location=location)
+        return room
 
     @staticmethod
-    def __parse_periodicity(subject_tag: bs4.element) -> Periodicity:
-        week_tag: bs4.element.Tag = subject_tag.find(name='div', attrs={'class': 'week'})
+    def __parse_periodicity(subject_tag: bs4.Tag) -> Periodicity:
+        week_tag: bs4.Tag = subject_tag.select_one(HTMLTimetableParser.__week_selector)
 
         if week_tag is None:
             return Periodicity.ON_ALL
-        else:
-            return Periodicity.ON_EVEN if week_tag.text.strip() == 'Четная' else Periodicity.ON_ODD
+
+        periodicity_name: str = week_tag.text.strip()
+        if periodicity_name not in HTMLTimetableParser.__periodicity_map.keys():
+            raise TimetableParsingException(HTMLTimetableParser.__get_unknown_periodicity_message(periodicity_name))
+
+        return HTMLTimetableParser.__periodicity_map.get(periodicity_name)
 
     @staticmethod
-    def __extract_subject_type_color(subject_type: str) -> SubjectTypeColor:
-        subject_type_color_map: Mapping['str', SubjectTypeColor] = {
-            'lek': SubjectTypeColor.LECTURE,
-            'pr': SubjectTypeColor.PRACTICAL,
-            'lab': SubjectTypeColor.LAB,
-            'f_2': SubjectTypeColor.ELECTIVE
-        }
-
-        ret: Optional[SubjectTypeColor] = subject_type_color_map.get(subject_type)
-
-        if ret is None:
-            raise TimetableParsingException(f'Invalid format of HTML: unknown color of subject {subject_type}')
-
-        return ret
+    def __get_unknown_subject_type_message(subject_type: str) -> str:
+        return f'Invalid format of HTML: found unknown subject type "{subject_type}"'
 
     @staticmethod
-    def __parse_room_location(room_tag: Optional[bs4.element.Tag]) -> RoomLocation:
-        error_message: str = 'Invalid format of HTML: cannot parse location of room of subject'
-
-        if room_tag is None:
-            return create_empty_room_location()
-
-        attr: str = room_tag.attrs.get('onclick')
-        if attr is None or len(attr) <= 17:
-            raise TimetableParsingException(error_message)
-
-        try:
-            onclick_arguments: List[str] = attr[17:-1].split(',')
-            block: Optional[str] = onclick_arguments[0][1:-1]
-            level: Optional[int] = int(onclick_arguments[1])
-            x: Optional[int] = int(onclick_arguments[2])
-            y: Optional[int] = int(onclick_arguments[3])
-        except IndexError as e:
-            raise TimetableParsingException(error_message) from e
-
-        return RoomLocation(block=block, level=level, x=x, y=y)
+    def __get_unknown_periodicity_message(periodicity: str) -> str:
+        return f'Invalid format of HTML: found unknown periodicity "{periodicity}"'

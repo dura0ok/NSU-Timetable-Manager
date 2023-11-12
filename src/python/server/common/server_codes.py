@@ -1,10 +1,9 @@
-from enum import IntEnum, auto
+from enum import auto
+
+from .zero_enum import ZeroEnum
 
 
-class ServerCodes(IntEnum):
-    def _generate_next_value_(self, start, count, last_values) -> int:
-        return count
-
+class ServerCodes(ZeroEnum):
     SUCCESS = auto()
     INTERNAL_ERROR = auto()
     UNKNOWN_GROUP = auto()

@@ -1,65 +1,74 @@
+from typing import Optional, List
+
 import bs4
 
-from common import ServerCodes, ServerResponse, create_error_server_response, Room, RoomLocation
+from common.timetable_objects import Room, RoomLocation, create_empty_room_location
 from .parsing_exceptions import RoomParsingException
+from .utils import create_html_bs4
 
 
 class HTMLRoomParser:
-    @staticmethod
-    def parse_room(html_content: str) -> ServerResponse:
-        try:
-            room_name: str = HTMLRoomParser.__parse_room_name(html_content=html_content)
-            room_location: RoomLocation = HTMLRoomParser.__parse_room_location(html_content=html_content)
-            room: Room = Room(name=room_name, location=room_location)
-        except RoomParsingException as e:
-            return create_error_server_response(message=str(e), code=ServerCodes.INTERNAL_ERROR)
+    __cannot_parse_room: str = 'Invalid format of HTML: cannot parse room'
+    __cannot_parse_room_location: str = 'Invalid format of HTML: cannot parse room location'
 
-        return ServerResponse(result=room)
+    __room_tag_selector: str = 'div.main_head h1 a'
+    __onclick_attr_name: str = 'onclick'
 
     @staticmethod
-    def __parse_room_name(html_content: str) -> str:
-        error_message: str = 'Invalid format of HTML: cannot parse room name'
+    def parse_room(html_content: str) -> Room:
+        soup: bs4.BeautifulSoup = create_html_bs4(html_content)
+        room_tag: bs4.Tag = HTMLRoomParser.__find_room_tag(soup)
 
-        soup: bs4.BeautifulSoup = bs4.BeautifulSoup(html_content, features='html.parser')
+        if room_tag is None:
+            raise RoomParsingException(HTMLRoomParser.__cannot_parse_room)
 
-        tag1: bs4.Tag = soup.find(name='div', attrs={'class': 'main_head'})
-        if tag1 is None:
-            raise RoomParsingException(error_message)
-
-        tag2: bs4.Tag = tag1.find('h1')
-        if tag2 is None:
-            raise RoomParsingException(error_message)
-
-        text: str = tag2.text
-        if len(text) <= 10:
-            raise RoomParsingException(error_message)
-
-        return text[10:]
+        return HTMLRoomParser.parse_room_from_tag(room_tag=room_tag)
 
     @staticmethod
-    def __parse_room_location(html_content: str) -> RoomLocation:
-        error_message: str = 'Invalid format of HTML: cannot parse room location'
+    def parse_room_from_tag(room_tag: bs4.Tag) -> Room:
+        room_name: str = HTMLRoomParser.__parse_room_name(room_tag)
+        room_location: RoomLocation = HTMLRoomParser.__parse_room_location(room_tag)
+        return Room(name=room_name, location=room_location)
 
-        i1 = html_content.find('room_view')
-        if i1 == -1:
-            raise RoomParsingException(error_message)
+    @staticmethod
+    def __find_room_tag(soup: bs4.BeautifulSoup) -> bs4.Tag:
+        return soup.select_one(HTMLRoomParser.__room_tag_selector)
 
-        i2 = html_content.find('(', i1)
-        if i2 == -1:
-            raise RoomParsingException(error_message)
+    @staticmethod
+    def __parse_room_name(room_tag: bs4.Tag) -> str:
+        return room_tag.text.strip()
 
-        i3 = html_content.find(')', i1)
-        if i3 == -1:
-            raise RoomParsingException(error_message)
+    @staticmethod
+    def __parse_room_location(room_tag: bs4.Tag) -> RoomLocation:
+        on_click_attr: Optional[str] = room_tag.attrs.get(HTMLRoomParser.__onclick_attr_name)
 
-        values = html_content[i2 + 1:i3].split(',')
+        if on_click_attr is None:
+            return create_empty_room_location()
+
+        room_view_args: List[str] = HTMLRoomParser.__parse_first_function_args(on_click_attr)
 
         try:
-            block: str = values[0][6:-6]
-            level: int = int(values[1])
-            x: int = int(values[2])
-            y: int = int(values[3])
+            block: str = HTMLRoomParser.__remove_quotes(room_view_args[0])
+            level: int = int(room_view_args[1])
+            x: int = int(room_view_args[2])
+            y: int = int(room_view_args[3])
         except IndexError as e:
-            raise RoomParsingException(error_message) from e
+            raise RoomParsingException(HTMLRoomParser.__cannot_parse_room_location) from e
 
         return RoomLocation(block=block, level=level, x=x, y=y)
+
+    @staticmethod
+    def __parse_first_function_args(html_content: str) -> List[str]:
+        start: int = html_content.find('(')
+        if start == -1:
+            return []
+
+        stop: int = html_content.find(')', start)
+        if stop == -1:
+            return []
+
+        return html_content[start + 1:stop].split(',')
+
+    @staticmethod
+    def __remove_quotes(string: str) -> str:
+        return string.replace('"', '').replace("'", "")

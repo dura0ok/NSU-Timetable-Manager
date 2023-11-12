@@ -7,7 +7,7 @@ class Extractor(ABC):
     @abstractmethod
     def extract_timetable(self, group_id: str) -> ServerResponse:
         """
-        Extracts object of :class:`timetable_objects.Timetable` using id of group.
+        Extracts object of :class:`common.timetable_objects.Timetable` using id of group.
 
         Examples of group ids:
 
@@ -35,7 +35,7 @@ class Extractor(ABC):
     @abstractmethod
     def extract_room(self, room_name: str) -> ServerResponse:
         """
-        Extracts object of :class:`src.timetable_objects.Room` using name of room.
+        Extracts object of :class:`common.timetable_objects.Room` using name of room.
 
         Examples of valid names:
 
@@ -68,7 +68,7 @@ class Extractor(ABC):
     @abstractmethod
     def extract_tutor(self, tutor_name: str) -> ServerResponse:
         """
-        Extracts object of :class:`timetable_objects.Tutor` by name (short or full). It can contain any number of spaces
+        Extracts object of :class:`common.timetable_objects.Tutor` by name (short or full). It can contain any number of spaces
         at the beginning and at the end.
 
 
@@ -101,7 +101,7 @@ class Extractor(ABC):
     @abstractmethod
     def extract_times(self) -> ServerResponse:
         """
-        Extracts times of :class:`timetable_objects.Timetable` (timestamps when lessons begin).
+        Extracts times of :class:`common.timetable_objects.Times` (timestamps when lessons begin).
         """
 
         pass
