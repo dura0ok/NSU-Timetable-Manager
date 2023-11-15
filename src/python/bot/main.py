@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
-from config import Config
+from config_parser import ConfigParser
 
 load_dotenv()
 
@@ -22,8 +22,8 @@ async def hello(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 if __name__ == "__main__":
     try:
-        app = ApplicationBuilder().token(Config.get_bot_token()).build()
-        app.add_handler(CommandHandler("hello", hello))
+        app = ApplicationBuilder().token(ConfigParser.parse_bot_token()).build()
+        app.add_handler(CommandHandler("start", hello))
         app.run_polling()
     except KeyError as e:
         logger.exception("Key Error : " + str(e))
