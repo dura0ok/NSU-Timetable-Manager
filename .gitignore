@@ -7,6 +7,6 @@ venv
 *.out
 *.gz
 *.toc
-*/__pycache__/
+**/__pycache__/**
 
 *.env
