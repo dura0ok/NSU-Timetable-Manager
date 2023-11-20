@@ -5,7 +5,7 @@ from .downloading import *
 from .parsing import *
 from .parsing.parsing_exceptions import *
 from .parsing.utils import get_messages_chain
-from ..extractor import Extractor
+from extractor import Extractor
 
 
 class HTMLExtractor(Extractor):

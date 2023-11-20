@@ -1,8 +1,8 @@
 import uvicorn
 from fastapi import FastAPI
 
-from extraction import Extractor
-from extraction.html_extraction import HTMLExtractor
+from extractor import Extractor
+from html_extraction import HTMLExtractor
 
 from routing import Routes
 
