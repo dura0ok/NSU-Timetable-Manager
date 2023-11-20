@@ -1,11 +1,9 @@
-from common.server_codes import ServerCodes
-from common.timetable_objects import Times, Timetable, Room, Tutor
-from common.server_response import ServerResponse, create_error_server_result
+from common import ServerCodes, Times, Timetable, Room, Tutor, ServerResponse, create_error_server_response
 from .downloading import *
 from .parsing import *
 from .parsing.parsing_exceptions import *
 from .parsing.utils import get_messages_chain
-from extractor import Extractor
+from ..extractor import Extractor
 
 
 class HTMLExtractor(Extractor):
@@ -19,12 +17,12 @@ class HTMLExtractor(Extractor):
             html_content: str = HTMLDownloader.download(self.__get_group_url(group_id))
             timetable: Timetable = HTMLTimetableParser.parse_timetable(html_content)
         except HTMLDownloadingException:
-            return create_error_server_result(
+            return create_error_server_response(
                 message=HTMLExtractor.__get_cannot_download_timetable_page_message(group_id),
                 code=ServerCodes.UNKNOWN_GROUP
             )
         except (TimetableParsingException, TimesParsingException) as e:
-            return create_error_server_result(
+            return create_error_server_response(
                 message=get_messages_chain(e),
                 code=ServerCodes.INTERNAL_ERROR
             )
@@ -36,12 +34,12 @@ class HTMLExtractor(Extractor):
             html_content: str = HTMLDownloader.download(self.__get_room_url(room_name))
             room: Room = HTMLRoomParser.parse_room(html_content)
         except HTMLDownloadingException:
-            return create_error_server_result(
+            return create_error_server_response(
                 message=HTMLExtractor.__get_cannot_download_room_page_message(room_name),
                 code=ServerCodes.UNKNOWN_ROOM
             )
         except RoomParsingException as e:
-            return create_error_server_result(
+            return create_error_server_response(
                 message=get_messages_chain(e),
                 code=ServerCodes.INTERNAL_ERROR
             )
@@ -53,17 +51,17 @@ class HTMLExtractor(Extractor):
             html_content: str = HTMLDownloader.download(HTMLExtractor.__all_tutors_url)
             tutor: Tutor = HTMLTutorParser.parse_tutor(html_content=html_content, tutor_name=tutor_name)
         except HTMLDownloadingException:
-            return create_error_server_result(
+            return create_error_server_response(
                 message=HTMLExtractor.__get_cannot_download_all_tutors_page_message(),
                 code=ServerCodes.INTERNAL_ERROR
             )
         except TutorParsingException as e:
-            return create_error_server_result(
+            return create_error_server_response(
                 message=str(e),
                 code=ServerCodes.INTERNAL_ERROR
             )
         except TutorNotFoundException as e:
-            return create_error_server_result(
+            return create_error_server_response(
                 message=get_messages_chain(e),
                 code=ServerCodes.UNKNOWN_TUTOR,
             )
@@ -77,12 +75,12 @@ class HTMLExtractor(Extractor):
             html_content: str = HTMLDownloader.download(url)
             times: Times = HTMLTimesParser.parse_times(html_content)
         except HTMLDownloadingException:
-            return create_error_server_result(
+            return create_error_server_response(
                 message=HTMLExtractor.__get_cannot_download_times_page_message(),
                 code=ServerCodes.INTERNAL_ERROR
             )
         except TimesParsingException as e:
-            return create_error_server_result(
+            return create_error_server_response(
                 message=get_messages_chain(e),
                 code=ServerCodes.INTERNAL_ERROR
             )

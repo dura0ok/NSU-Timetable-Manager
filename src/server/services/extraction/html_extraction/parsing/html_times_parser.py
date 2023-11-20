@@ -2,7 +2,7 @@ from typing import List
 
 import bs4
 
-from common.timetable_objects import Times
+from common import Times
 from .parsing_exceptions import TimesParsingException
 from .utils import create_html_bs4
 

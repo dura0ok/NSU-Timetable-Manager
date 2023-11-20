@@ -2,7 +2,7 @@ from typing import Optional, List
 
 import bs4
 
-from common.timetable_objects import Room, RoomLocation, create_empty_room_location
+from common import Room, RoomLocation, create_empty_room_location
 from .parsing_exceptions import RoomParsingException
 from .utils import create_html_bs4
 

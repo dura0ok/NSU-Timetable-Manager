@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from .. import Extractor
+from services.extraction import Extractor
 
 
 class Routes:

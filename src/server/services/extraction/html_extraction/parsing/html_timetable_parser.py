@@ -2,8 +2,8 @@ from typing import List, Optional, Dict
 
 import bs4
 
-from common.timetable_objects import *
-from html_extraction.parsing import HTMLTimesParser
+from common import *
+from .html_times_parser import HTMLTimesParser
 from .html_room_parser import HTMLRoomParser
 from .html_tutor_parser import HTMLTutorParser
 from .parsing_exceptions import TimetableParsingException, RoomParsingException, TutorParsingException

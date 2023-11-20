@@ -1,6 +1,6 @@
 from enum import auto
 
-from common import ZeroEnum
+from .zero_enum import ZeroEnum
 
 
 class SubjectType(ZeroEnum):
