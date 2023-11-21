@@ -1,6 +1,6 @@
 from enum import auto
 
-from common.zero_enum import ZeroEnum
+from .zero_enum import ZeroEnum
 
 
 class Periodicity(ZeroEnum):
