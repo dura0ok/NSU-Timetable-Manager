@@ -2,10 +2,99 @@
 	\label{chapter4}
 	\phantomsection
 
-	\section{Компонентная модель системы}
-		\subsection{Компонент 1}
-		
-		\subsection{Компонент 2}
-	\section{Компоненты сторонних производителей}
+	Этот раздел описывает архитектуру проекта.
 
-	\section{Схема развёртывания приложения}
+	\section{Подсистемы и компоненты проекта}
+		Проект состоит из трёх подсистем
+		\begin{itemize}
+			\item \textbf{Телеграмм-бот};
+			
+			\item \textbf{Расширение для браузера};
+			
+			\item \textbf{Бэкенд}.
+		\end{itemize}
+			
+		\subsection{Телеграмм-бот}
+			\begin{figure}[!h]
+				\centering
+				\def\svgwidth{\columnwidth}
+				\input{bot.pdf_tex}
+			\end{figure}
+			
+			\textbf{Телеграмм-бот} является одним из фронтендов проекта, а именно фронтендом в мессенджере <<Телеграмм>>. Выделим некоторые ключевые компоненты
+			\begin{itemize}
+				\item \textit{EnvConfigParser} --- класс для парсинга конфигурации из файла .env;
+				
+				\item \textit{CommandsHandler} --- класс для взаимодействия с пользователем телеграмм (поддержание диалога и обработка пользовательских сообщений).
+				
+				\item \textit{HTTPServerAgent} --- класс для взаимодействия с бэкендом;
+				
+				\item \textit{MongoDBAgent} --- класс для взаимодействия с нереляционной базой данных MongoDB.
+			\end{itemize}
+		\subsection{Расширение для браузера}
+			\begin{figure}[h!]
+				\centering
+				\def\svgwidth{\columnwidth}
+				\input{ext.pdf_tex}
+			\end{figure}
+			
+			\textbf{Расширение для браузера} является одним из фронтендов проекта, а именно фронтендом для браузера. Выделим некоторые ключевые компоненты
+			\begin{itemize}
+				\item \textit{EnvConfigParser} --- класс для парсинга конфигурации из файла .env;
+			
+				\item \textit{HTTPServerAgent} --- класс для взаимодействия с бэкендом;
+				
+				\item \textit{LocalStorage} --- класс для взаимодействия c кэшем браузера (сохранение данных в кэш и извлечение данных из кэша);
+			
+				\item \textit{ModalForm} --- класс, представляющий собой форму для изменения предмета в расписании;
+				
+				\item \textit{DefaultTimetableRenderer} --- класс, перерисовывающий страницу с расписанием при изменении предметов (фактически он меняет HTML-код страницы);
+				
+				\item \textit{SubjectClickController} --- класс-контроллер, детектирующий нажатие пользователя на предмет в расписании;
+				
+				\item \textit{SubjectFormController} --- класс-контроллер, детектирующий изменение предмета в форме для изменений предмета.
+			\end{itemize}
+		\subsection{Бэкенд}	
+			\begin{figure}[h!]
+				\centering
+				\def\svgwidth{\columnwidth}
+				\input{server.pdf_tex}
+			\end{figure}
+			
+			\textbf{Бэкенд} представляет собой REST-сервер с API, которые по запросами парсит сайт с расписанием НГУ и возвращает информацию о расписании группы, аудитории, преподавателе или временах начала пар. Выделим некоторые ключевые компоненты
+			
+			\begin{itemize}
+				\item \textit{EnvConfigParser} --- класс для парсинга конфигурации из файла .env;
+				
+				\item \textit{Routes} --- класс, инкапсулирующий создание конечных точек для API;
+				
+				\item \textit{HTMLDownloader} --- класс для скачивания HTML-страниц из интернета по URL;
+				
+				\item \textit{HTMLTimetableParser} --- класс для парсинга расписания из HTML-страницы;
+				
+				\item \textit{HTMLRoomParser} --- класс для парсинга аудитории из HTML-страницы;
+				
+				\item \textit{HTMLTutorParser} --- класс для парсинга преподавателя из HTML-страницы;
+				
+				\item \textit{HTMLTimesParser} --- класс для парсинга времён начала пар из HTML-страницы;
+				
+				\item \textit{HTMLExtractor} --- класс, извлекающий информацию с сайта с расписанием НГУ. Он использует класс \textit{HTMLDownloader} для скачивания HTML-страниц и классы \textit{HTMLTimetableParser}, \textit{HTMLRoomParser}, \textit{HTMLTutorParser}, \textit{HTMLTimesParser} для парсинга скачанных страниц.
+			\end{itemize}
+	\section{Компоненты сторонних производителей}
+		\begin{itemize}
+			\item \textbf{python-telegram-bot} --- библиотека под Python для работы с API-телеграмма. Используется в подсистеме \textit{Телеграмм-бот}.
+			
+			\item \textbf{python-dotenv} --- библиотека под Python для парсинга файлов .env. Используется в подсистемах \textit{Телеграмм-бот} и \textit{Бэкенд} для парсинга начальной конфигурации.
+			
+			\item \textbf{beautifulsoup4} ---- библиотека под Python для парсинга текстовых документов. Используется в подсистеме \textit{Бэкенд} для парсинга информации из HTML-документов.
+			
+			\item \textbf{fastapi} --- библиотека под Python для создания своего API. Используется в подсистеме \textit{Бэкенд} для создания конечных точек.
+			
+			\item \textbf{pymongo} --- библиотека под Python, представляющая собой драйвер для работы с нереляционной базой данных MongoDB. Используется в подсистеме \textit{Телеграмм-бот} для сохранения и получения текущего расписания пользователя.
+		\end{itemize}
+	\section{Схема развёртывания проекта}
+		\subsubsection{Развёртывание расширение для браузера}
+			Сборка расширения в файлы bundle.js и manifest.json и дальнейшее добавление в каталог расширений современных браузеров.
+		\subsubsection{Развёртывание телеграмм-бота и бэкенда}
+			При изменениях в коде GitHub Actions запускает предварительно настроенный workflow. Виртуальная 	машина на GitHub Actions создает Docker-образы из актуального кода, собранные образы помещаются в Docker Hub. После этого останавливаются и удаляются старые Docker-контейнеры на VPS, а контейнеры 
+			с новыми Docker-образами создаются и запускаются, после чего бэкенд и телеграмм-бот автоматически перезапускаются.
