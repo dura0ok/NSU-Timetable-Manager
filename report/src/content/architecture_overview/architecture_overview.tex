@@ -1,3 +1,13 @@
+\newcommand{\Bot}{Bot}
+\newcommand{\Extension}{Extension}
+\newcommand{\Backend}{Backend}
+\newcommand{\Common}{Common}
+
+\newcommand{\Botbf}{\textbf{\Bot}}
+\newcommand{\Extensionbf}{\textbf{\Extension}}
+\newcommand{\Backendbf}{\textbf{\Backend}}
+\newcommand{\Commonbf}{\textbf{\Common}}
+
 \chapter{Обзор архитектуры}
 	\label{chapter4}
 	\phantomsection
@@ -5,23 +15,33 @@
 	Этот раздел описывает архитектуру проекта.
 
 	\section{Подсистемы и компоненты проекта}
-		Проект состоит из трёх подсистем
+		Если не брать в расчёт компоненты сторонних производителей, то проект состоит из подсистем
+		
 		\begin{itemize}
-			\item \textbf{Телеграмм-бот};
+			\item \Botbf;
 			
-			\item \textbf{Расширение для браузера};
+			\item \Extensionbf;
 			
-			\item \textbf{Бэкенд}.
+			\item \Backendbf.
 		\end{itemize}
+		и компонента \Commonbf.
 			
-		\subsection{Телеграмм-бот}
-			\begin{figure}[!h]
+		\subsection{\Common}
+			\begin{figure}[H]
+				\centering
+				\def\svgwidth{\columnwidth}
+				\input{common.pdf_tex}
+			\end{figure}
+			
+			\Commonbf{} является компонентом, который используют все подсистемы проекта. Он содержит основные DTO и способы их сериализации и десериализации в формат JSON и обратно.
+		\subsection{\Bot{}}
+			\begin{figure}[H]
 				\centering
 				\def\svgwidth{\columnwidth}
 				\input{bot.pdf_tex}
 			\end{figure}
 			
-			\textbf{Телеграмм-бот} является одним из фронтендов проекта, а именно фронтендом в мессенджере <<Телеграмм>>. Выделим некоторые ключевые компоненты
+			\Botbf{} является одним из фронтендов проекта, а именно фронтендом в мессенджере <<Телеграмм>>. Выделим некоторые ключевые компоненты
 			\begin{itemize}
 				\item \textit{EnvConfigParser} --- класс для парсинга конфигурации из файла .env;
 				
@@ -31,14 +51,14 @@
 				
 				\item \textit{MongoDBAgent} --- класс для взаимодействия с нереляционной базой данных MongoDB.
 			\end{itemize}
-		\subsection{Расширение для браузера}
-			\begin{figure}[h!]
+		\subsection{\Extension{}}
+			\begin{figure}[H]
 				\centering
 				\def\svgwidth{\columnwidth}
 				\input{ext.pdf_tex}
 			\end{figure}
 			
-			\textbf{Расширение для браузера} является одним из фронтендов проекта, а именно фронтендом для браузера. Выделим некоторые ключевые компоненты
+			\Extensionbf{} является одним из фронтендов проекта, а именно фронтендом для браузера. Выделим некоторые ключевые компоненты
 			\begin{itemize}
 				\item \textit{EnvConfigParser} --- класс для парсинга конфигурации из файла .env;
 			
@@ -48,20 +68,20 @@
 			
 				\item \textit{ModalForm} --- класс, представляющий собой форму для изменения предмета в расписании;
 				
-				\item \textit{DefaultTimetableRenderer} --- класс, перерисовывающий страницу с расписанием при изменении предметов (фактически он меняет HTML-код страницы);
+				\item \textit{DefaultTimetableRenderer} --- класс, перерисовывающий страницу с расписанием при изменении предметов;
 				
 				\item \textit{SubjectClickController} --- класс-контроллер, детектирующий нажатие пользователя на предмет в расписании;
 				
-				\item \textit{SubjectFormController} --- класс-контроллер, детектирующий изменение предмета в форме для изменений предмета.
+				\item \textit{SubjectFormController} --- класс-контроллер, детектирующий изменение предмета в форме.
 			\end{itemize}
-		\subsection{Бэкенд}	
-			\begin{figure}[h!]
+		\subsection{\Backend{}}	
+			\begin{figure}[H]
 				\centering
 				\def\svgwidth{\columnwidth}
 				\input{server.pdf_tex}
 			\end{figure}
 			
-			\textbf{Бэкенд} представляет собой REST-сервер с API, которые по запросами парсит сайт с расписанием НГУ и возвращает информацию о расписании группы, аудитории, преподавателе или временах начала пар. Выделим некоторые ключевые компоненты
+			\Backendbf{} представляет собой REST-сервер с API, который по запросу парсит сайт с расписанием НГУ и возвращает информацию о расписании группы, аудитории, преподавателе или временах начала пар. Выделим некоторые ключевые компоненты
 			
 			\begin{itemize}
 				\item \textit{EnvConfigParser} --- класс для парсинга конфигурации из файла .env;
@@ -78,23 +98,30 @@
 				
 				\item \textit{HTMLTimesParser} --- класс для парсинга времён начала пар из HTML-страницы;
 				
-				\item \textit{HTMLExtractor} --- класс, извлекающий информацию с сайта с расписанием НГУ. Он использует класс \textit{HTMLDownloader} для скачивания HTML-страниц и классы \textit{HTMLTimetableParser}, \textit{HTMLRoomParser}, \textit{HTMLTutorParser}, \textit{HTMLTimesParser} для парсинга скачанных страниц.
+				\item \textit{HTMLExtractor} --- класс, извлекающий информацию с сайта с расписанием НГУ. Он использует класс \textit{HTMLDownloader} для скачивания HTML-страниц и 
+				классы \textit{HTMLTimetableParser}, \textit{HTMLRoomParser}, \textit{HTMLTutorParser}, \textit{HTMLTimesParser} для парсинга скачанных страниц.
 			\end{itemize}
 	\section{Компоненты сторонних производителей}
 		\begin{itemize}
-			\item \textbf{python-telegram-bot} --- библиотека под Python для работы с API-телеграмма. Используется в подсистеме \textit{Телеграмм-бот}.
+			\item \textbf{python-telegram-Botbf} --- библиотека под Python для работы с API-телеграмма. Используется в подсистеме \Botbf{}.
 			
-			\item \textbf{python-dotenv} --- библиотека под Python для парсинга файлов .env. Используется в подсистемах \textit{Телеграмм-бот} и \textit{Бэкенд} для парсинга начальной конфигурации.
+			\item \textbf{python-dotenv} --- библиотека под Python для парсинга файлов .env. Используется в подсистемах \Botbf{} и \Backendbf{} для парсинга начальной конфигурации.
 			
-			\item \textbf{beautifulsoup4} ---- библиотека под Python для парсинга текстовых документов. Используется в подсистеме \textit{Бэкенд} для парсинга информации из HTML-документов.
+			\item \textbf{beautifulsoup4} ---- библиотека под Python для парсинга текстовых документов. Используется в подсистеме \Backendbf{} для парсинга информации из HTML-документов.
 			
-			\item \textbf{fastapi} --- библиотека под Python для создания своего API. Используется в подсистеме \textit{Бэкенд} для создания конечных точек.
+			\item \textbf{fastapi} --- библиотека под Python для создания своего API. Используется в подсистеме \Backendbf{} для создания конечных точек.
 			
-			\item \textbf{pymongo} --- библиотека под Python, представляющая собой драйвер для работы с нереляционной базой данных MongoDB. Используется в подсистеме \textit{Телеграмм-бот} для сохранения и получения текущего расписания пользователя.
+			\item \textbf{pymongo} --- библиотека под Python, представляющая собой драйвер для работы с нереляционной базой данных MongoDB. Используется в подсистеме \Botbf{} для сохранения и получения текущего расписания пользователя.
 		\end{itemize}
+	\section{Диаграмма аналитических классов проекта}
+		\begin{figure}[H]
+			\centering
+			\def\svgwidth{\columnwidth}
+			\input{all.pdf_tex}
+		\end{figure}
 	\section{Схема развёртывания проекта}
-		\subsubsection{Развёртывание расширение для браузера}
+		\subsubsection{Развёртывание \Extensionbf{}}
 			Сборка расширения в файлы bundle.js и manifest.json и дальнейшее добавление в каталог расширений современных браузеров.
-		\subsubsection{Развёртывание телеграмм-бота и бэкенда}
+		\subsubsection{Развёртывание \Botbf{} и \Backendbf{}}
 			При изменениях в коде GitHub Actions запускает предварительно настроенный workflow. Виртуальная 	машина на GitHub Actions создает Docker-образы из актуального кода, собранные образы помещаются в Docker Hub. После этого останавливаются и удаляются старые Docker-контейнеры на VPS, а контейнеры 
-			с новыми Docker-образами создаются и запускаются, после чего бэкенд и телеграмм-бот автоматически перезапускаются.
+			с новыми Docker-образами создаются и запускаются, после чего \Botbf{} и \Backendbf{} автоматически перезапускаются.

@@ -2,7 +2,7 @@
 
 \usepackage[top=0.9cm, bottom=1.65cm, left=2.5cm, right=1.5cm]{geometry}
 \usepackage[T1, T2A]{fontenc}
-\usepackage[fontsize=12pt]{fontsize}
+\usepackage[fontsize=14pt]{fontsize}
 \usepackage{anyfontsize}
 \usepackage[english, russian]{babel}
 \usepackage[utf8]{inputenc}
@@ -16,6 +16,7 @@
 \usepackage{tabularx}
 \usepackage[inkscapeformat=pdf]{svg}
 \usepackage{graphicx}
+\usepackage{float}
 
 \graphicspath{./graphics}
 
@@ -37,6 +38,8 @@
 	{\hypersetup{hidelinks}\tableofcontents}
 	
 	\pagestyle{plain}
+	
+	\sloppy
 	
 	\input{content/introduction/introduction.tex}
 	
