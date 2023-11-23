@@ -1,5 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Response
 
+from common import ServerResponse
 from services.extraction import Extractor
 
 
@@ -17,16 +18,24 @@ class Routes:
         return self.__router
 
     def __get_timetable(self, group_id: str):
-        return self.__extractor.extract_timetable(Routes.__split_url_word(group_id))
+        return Routes.__create_json_response(
+            self.__extractor.extract_timetable(Routes.__split_url_word(group_id))
+        )
 
     def __get_room(self, room_name: str):
-        return self.__extractor.extract_room(Routes.__split_url_word(room_name))
+        return Routes.__create_json_response(
+            self.__extractor.extract_room(Routes.__split_url_word(room_name))
+        )
 
     def __get_tutor(self, tutor_name: str):
-        return self.__extractor.extract_tutor(Routes.__split_url_word(tutor_name))
+        return Routes.__create_json_response(
+            self.__extractor.extract_tutor(Routes.__split_url_word(tutor_name))
+        )
 
     def __get_times(self):
-        return self.__extractor.extract_times()
+        return Routes.__create_json_response(
+            self.__extractor.extract_times()
+        )
 
     def __add_routes(self) -> None:
         self.__router.add_api_route(path='/timetable/{group_id}', endpoint=self.__get_timetable, methods=['GET'])
@@ -35,5 +44,10 @@ class Routes:
         self.__router.add_api_route(path='/times', endpoint=self.__get_times, methods=['GET'])
 
     @staticmethod
+    def __create_json_response(extraction_result: ServerResponse) -> Response:
+        return Response(content=extraction_result.to_json(), media_type='application/json')
+
+    @staticmethod
     def __split_url_word(url_word: str) -> str:
         return ' '.join(url_word.split('+'))
+

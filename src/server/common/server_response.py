@@ -1,9 +1,12 @@
 from dataclasses import dataclass
 from typing import Optional
 
+from dataclasses_json import dataclass_json
+
 from .server_codes import ServerCodes
 
 
+@dataclass_json
 @dataclass(frozen=True)
 class ServerResponse:
     result: Optional[object]
