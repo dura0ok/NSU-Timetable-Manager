@@ -1,12 +1,10 @@
-venv
-.idea
-.vscode
-
+*.idea
 *.aux
 *.log
 *.out
 *.gz
 *.toc
-**/__pycache__/**
-
 *.env
+*.lock
+
+**/__pycache__/**
