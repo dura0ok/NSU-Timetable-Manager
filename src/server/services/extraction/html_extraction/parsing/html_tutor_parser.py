@@ -2,7 +2,7 @@ from typing import Optional
 
 import bs4
 
-from common import Tutor
+from common.dto import Tutor
 from .parsing_exceptions import TutorParsingException, TutorNotFoundException
 from .utils import create_html_bs4
 

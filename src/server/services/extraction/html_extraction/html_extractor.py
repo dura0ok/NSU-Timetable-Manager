@@ -1,4 +1,4 @@
-from common import ServerCodes, Times, Timetable, Room, Tutor, ServerResponse, create_error_server_response
+from common.dto import ServerCodes, Times, Timetable, Room, Tutor, ServerResponse, create_error_server_response
 from .downloading import *
 from .parsing import *
 from .parsing.parsing_exceptions import *

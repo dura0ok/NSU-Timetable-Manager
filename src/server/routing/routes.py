@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Response
 
-from common import ServerResponse
+from common.dto import ServerResponse
 from services.extraction import Extractor
 
 
@@ -50,4 +50,3 @@ class Routes:
     @staticmethod
     def __split_url_word(url_word: str) -> str:
         return ' '.join(url_word.split('+'))
-
