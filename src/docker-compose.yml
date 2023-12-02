@@ -4,5 +4,5 @@ services:
   timetable-manager:
     image: durachok/timetable-manager:deploy
     ports:
-      - "80:80"
+      - "80:8000"
     restart: always
