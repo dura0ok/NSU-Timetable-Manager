@@ -1,3 +1,5 @@
-__all__ = ['Extractor']
+__all__ = ['Extractor', 'ExtractionResult', 'ExtractionCodes']
 
+from .extraction_codes import ExtractionCodes
+from .extraction_result import ExtractionResult
 from .extractor import Extractor

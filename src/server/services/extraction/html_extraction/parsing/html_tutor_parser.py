@@ -2,8 +2,8 @@ from typing import Optional
 
 import bs4
 
-from common.dto import Tutor
-from .parsing_exceptions import TutorParsingException, TutorNotFoundException
+from model.dto import Tutor
+from .exceptions import TutorParsingException, TutorNotFoundException
 from .utils import create_html_bs4
 
 

@@ -7,7 +7,6 @@ from .cell import Cell
 from .times import Times
 
 
-@dataclass_json
 @dataclass
 class Timetable:
     cells: List[Cell]  # Stored by lines

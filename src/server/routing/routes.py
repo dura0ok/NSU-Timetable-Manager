@@ -1,40 +1,40 @@
-from fastapi import APIRouter, Response
+import fastapi
 
-from common.dto import ServerResponse
-from services.extraction import Extractor
+from controller import Response
+from controller.extraction_controller import ExtractionController
 
 
 class Routes:
-    __extractor: Extractor
-    __router: APIRouter
+    __controller: ExtractionController
+    __router: fastapi.APIRouter
 
-    def __init__(self, extractor: Extractor) -> None:
-        self.__extractor = extractor
-        self.__router = APIRouter()
+    def __init__(self, controller: ExtractionController) -> None:
+        self.__controller = controller
+        self.__router = fastapi.APIRouter()
         self.__add_routes()
 
     @property
-    def router(self) -> APIRouter:
+    def router(self) -> fastapi.APIRouter:
         return self.__router
 
     def __get_timetable(self, group_id: str):
         return Routes.__create_json_response(
-            self.__extractor.extract_timetable(Routes.__split_url_word(group_id))
+            self.__controller.get_timetable(Routes.__split_url_word(group_id))
         )
 
     def __get_room(self, room_name: str):
         return Routes.__create_json_response(
-            self.__extractor.extract_room(Routes.__split_url_word(room_name))
+            self.__controller.get_room(Routes.__split_url_word(room_name))
         )
 
     def __get_tutor(self, tutor_name: str):
         return Routes.__create_json_response(
-            self.__extractor.extract_tutor(Routes.__split_url_word(tutor_name))
+            self.__controller.get_tutor(Routes.__split_url_word(tutor_name))
         )
 
     def __get_times(self):
         return Routes.__create_json_response(
-            self.__extractor.extract_times()
+            self.__controller.get_times()
         )
 
     def __add_routes(self) -> None:
@@ -44,8 +44,8 @@ class Routes:
         self.__router.add_api_route(path='/times', endpoint=self.__get_times, methods=['GET'])
 
     @staticmethod
-    def __create_json_response(extraction_result: ServerResponse) -> Response:
-        return Response(content=extraction_result.to_json(), media_type='application/json')
+    def __create_json_response(controller_response: Response) -> fastapi.Response:
+        return fastapi.Response(content=controller_response.to_json(), media_type='application/json')
 
     @staticmethod
     def __split_url_word(url_word: str) -> str:

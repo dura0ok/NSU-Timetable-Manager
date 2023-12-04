@@ -2,8 +2,8 @@ from typing import List
 
 import bs4
 
-from common.dto import Times
-from .parsing_exceptions import TimesParsingException
+from model.dto import Times
+from .exceptions import TimesParsingException
 from .utils import create_html_bs4
 
 
