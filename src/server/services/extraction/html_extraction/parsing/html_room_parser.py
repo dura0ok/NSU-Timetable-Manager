@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional
 
 import bs4
 
@@ -45,7 +45,7 @@ class HTMLRoomParser:
         if on_click_attr is None:
             return create_empty_room_location()
 
-        room_view_args: List[str] = HTMLRoomParser.__parse_first_function_args(on_click_attr)
+        room_view_args: list[str] = HTMLRoomParser.__parse_first_function_args(on_click_attr)
 
         try:
             block: str = HTMLRoomParser.__remove_quotes(room_view_args[0])
@@ -58,7 +58,7 @@ class HTMLRoomParser:
         return RoomLocation(block=block, level=level, x=x, y=y)
 
     @staticmethod
-    def __parse_first_function_args(html_content: str) -> List[str]:
+    def __parse_first_function_args(html_content: str) -> list[str]:
         start: int = html_content.find('(')
         if start == -1:
             return []

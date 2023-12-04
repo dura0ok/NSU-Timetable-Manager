@@ -1,13 +1,10 @@
 from dataclasses import dataclass
-from typing import List
-
-from dataclasses_json import dataclass_json
 
 from .cell import Cell
 from .times import Times
 
 
-@dataclass
+@dataclass(frozen=True)
 class Timetable:
-    cells: List[Cell]  # Stored by lines
+    cells: list[Cell]  # Stored by lines
     times: Times
