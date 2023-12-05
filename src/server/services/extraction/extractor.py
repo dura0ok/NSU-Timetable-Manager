@@ -30,8 +30,6 @@ class Extractor(ABC):
         :param group_id: id of group, can contain any number of spaces at the beginning and at the end.
         """
 
-        pass
-
     @abstractmethod
     def extract_room(self, room_name: str) -> ExtractionResult:
         """
@@ -62,8 +60,6 @@ class Extractor(ABC):
         :param room_name: name of room, can contain any positive number of spaces between words, any number of spaces at
         the beginning and at the end, case doesn't matter.
         """
-
-        pass
 
     @abstractmethod
     def extract_tutor(self, tutor_name: str) -> ExtractionResult:
@@ -96,12 +92,8 @@ class Extractor(ABC):
         :param tutor_name: name of tutor in correct format.
         """
 
-        pass
-
     @abstractmethod
     def extract_times(self) -> ExtractionResult:
         """
         Extracts times of :class:`common.timetable_objects.Times` (timestamps when lessons begin).
         """
-
-        pass

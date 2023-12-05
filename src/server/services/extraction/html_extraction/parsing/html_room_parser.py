@@ -3,7 +3,7 @@ from typing import Optional
 import bs4
 
 from model.dto import Room, RoomLocation, create_empty_room_location
-from .exceptions import RoomParsingException
+from .parsing_exceptions import RoomParsingException
 from .utils import create_html_bs4
 
 

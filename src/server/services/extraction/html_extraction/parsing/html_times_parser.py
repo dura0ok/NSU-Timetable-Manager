@@ -1,7 +1,7 @@
 import bs4
 
 from model.dto import Times
-from .exceptions import TimesParsingException
+from .parsing_exceptions import TimesParsingException
 from .utils import create_html_bs4
 
 

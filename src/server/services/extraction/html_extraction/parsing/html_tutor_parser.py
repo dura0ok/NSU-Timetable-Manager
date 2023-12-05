@@ -3,7 +3,7 @@ from typing import Optional
 import bs4
 
 from model.dto import Tutor
-from .exceptions import TutorParsingException, TutorNotFoundException
+from .parsing_exceptions import TutorParsingException, TutorNotFoundException
 from .utils import create_html_bs4
 
 

@@ -1,7 +1,8 @@
 from model.dto import Times, Timetable, Room, Tutor
-from .downloading import *
-from .parsing import *
-from .parsing.exceptions import *
+from .downloading import HTMLDownloader, HTMLDownloadingException
+from .parsing import HTMLTimetableParser, HTMLRoomParser, HTMLTutorParser, HTMLTimesParser
+from .parsing.parsing_exceptions import TimetableParsingException, TimesParsingException, RoomParsingException, \
+    TutorParsingException, TutorNotFoundException
 from .parsing.utils import get_messages_chain
 from ..extraction_codes import ExtractionCodes
 from ..extraction_result import ExtractionResult, create_error_extraction_result

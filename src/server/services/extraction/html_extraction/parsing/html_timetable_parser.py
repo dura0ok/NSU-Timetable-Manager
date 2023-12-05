@@ -2,11 +2,12 @@ from typing import Optional
 
 import bs4
 
-from model.dto import *
+from model.dto import SubjectType, Periodicity, Timetable, Times, Cell, Subject, SubjectName, Tutor, Room, \
+    create_empty_tutor, create_empty_room
 from .html_times_parser import HTMLTimesParser
 from .html_room_parser import HTMLRoomParser
 from .html_tutor_parser import HTMLTutorParser
-from .exceptions import TimetableParsingException, RoomParsingException, TutorParsingException
+from .parsing_exceptions import TimetableParsingException, RoomParsingException, TutorParsingException
 from .utils import create_html_bs4
 
 
@@ -163,7 +164,9 @@ class HTMLTimetableParser:
             return Periodicity.ON_ALL
 
         periodicity_name: str = week_tag.text.strip()
-        if periodicity_name not in HTMLTimetableParser.__periodicity_map.keys():
+
+        # Unknown periodicity
+        if HTMLTimetableParser.__periodicity_map.get(periodicity_name) is None:
             raise TimetableParsingException(HTMLTimetableParser.__get_unknown_periodicity_message(periodicity_name))
 
         return HTMLTimetableParser.__periodicity_map.get(periodicity_name)
