@@ -1,11 +1,9 @@
-from abc import ABC
-
 from services.extraction import Extractor, ExtractionResult, ExtractionCodes
 from ..response import Response
 from ..response_codes import ResponseCodes
 
 
-class ExtractionController(ABC):
+class ExtractionController:
     __extractor: Extractor
 
     def __init__(self, extractor: Extractor):
