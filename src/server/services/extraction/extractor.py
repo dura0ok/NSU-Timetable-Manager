@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 
-from common.dto import ServerResponse
+from .extraction_result import ExtractionResult
 
 
 class Extractor(ABC):
     @abstractmethod
-    def extract_timetable(self, group_id: str) -> ServerResponse:
+    def extract_timetable(self, group_id: str) -> ExtractionResult:
         """
         Extracts object of :class:`common.timetable_objects.Timetable` using id of group.
 
@@ -33,7 +33,7 @@ class Extractor(ABC):
         pass
 
     @abstractmethod
-    def extract_room(self, room_name: str) -> ServerResponse:
+    def extract_room(self, room_name: str) -> ExtractionResult:
         """
         Extracts object of :class:`common.timetable_objects.Room` using name of room.
 
@@ -66,7 +66,7 @@ class Extractor(ABC):
         pass
 
     @abstractmethod
-    def extract_tutor(self, tutor_name: str) -> ServerResponse:
+    def extract_tutor(self, tutor_name: str) -> ExtractionResult:
         """
         Extracts object of :class:`common.timetable_objects.Tutor` by name (short or full). It can contain any number of spaces
         at the beginning and at the end.
@@ -99,7 +99,7 @@ class Extractor(ABC):
         pass
 
     @abstractmethod
-    def extract_times(self) -> ServerResponse:
+    def extract_times(self) -> ExtractionResult:
         """
         Extracts times of :class:`common.timetable_objects.Times` (timestamps when lessons begin).
         """

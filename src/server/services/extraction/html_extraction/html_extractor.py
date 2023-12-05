@@ -1,8 +1,10 @@
-from common.dto import ServerCodes, Times, Timetable, Room, Tutor, ServerResponse, create_error_server_response
+from model.dto import Times, Timetable, Room, Tutor
 from .downloading import *
 from .parsing import *
-from .parsing.parsing_exceptions import *
+from .parsing.exceptions import *
 from .parsing.utils import get_messages_chain
+from ..extraction_codes import ExtractionCodes
+from ..extraction_result import ExtractionResult, create_error_extraction_result
 from ..extractor import Extractor
 
 
@@ -12,80 +14,80 @@ class HTMLExtractor(Extractor):
     __all_tutors_url: str = 'https://table.nsu.ru/teacher'
     __times_url: str = 'https://table.nsu.ru'
 
-    def extract_timetable(self, group_id: str) -> ServerResponse:
+    def extract_timetable(self, group_id: str) -> ExtractionResult:
         try:
             html_content: str = HTMLDownloader.download(self.__get_group_url(group_id))
             timetable: Timetable = HTMLTimetableParser.parse_timetable(html_content)
         except HTMLDownloadingException:
-            return create_error_server_response(
+            return create_error_extraction_result(
                 message=HTMLExtractor.__get_cannot_download_timetable_page_message(group_id),
-                code=ServerCodes.UNKNOWN_GROUP
+                code=ExtractionCodes.UNKNOWN_GROUP
             )
         except (TimetableParsingException, TimesParsingException) as e:
-            return create_error_server_response(
+            return create_error_extraction_result(
                 message=get_messages_chain(e),
-                code=ServerCodes.INTERNAL_ERROR
+                code=ExtractionCodes.INTERNAL_ERROR
             )
 
-        return ServerResponse(timetable)
+        return ExtractionResult(timetable)
 
-    def extract_room(self, room_name: str) -> ServerResponse:
+    def extract_room(self, room_name: str) -> ExtractionResult:
         try:
             html_content: str = HTMLDownloader.download(self.__get_room_url(room_name))
             room: Room = HTMLRoomParser.parse_room(html_content)
         except HTMLDownloadingException:
-            return create_error_server_response(
+            return create_error_extraction_result(
                 message=HTMLExtractor.__get_cannot_download_room_page_message(room_name),
-                code=ServerCodes.UNKNOWN_ROOM
+                code=ExtractionCodes.UNKNOWN_ROOM
             )
         except RoomParsingException as e:
-            return create_error_server_response(
+            return create_error_extraction_result(
                 message=get_messages_chain(e),
-                code=ServerCodes.INTERNAL_ERROR
+                code=ExtractionCodes.INTERNAL_ERROR
             )
 
-        return ServerResponse(room)
+        return ExtractionResult(room)
 
-    def extract_tutor(self, tutor_name: str) -> ServerResponse:
+    def extract_tutor(self, tutor_name: str) -> ExtractionResult:
         try:
             html_content: str = HTMLDownloader.download(HTMLExtractor.__all_tutors_url)
             tutor: Tutor = HTMLTutorParser.parse_tutor(html_content=html_content, tutor_name=tutor_name)
         except HTMLDownloadingException:
-            return create_error_server_response(
+            return create_error_extraction_result(
                 message=HTMLExtractor.__get_cannot_download_all_tutors_page_message(),
-                code=ServerCodes.INTERNAL_ERROR
+                code=ExtractionCodes.INTERNAL_ERROR
             )
         except TutorParsingException as e:
-            return create_error_server_response(
+            return create_error_extraction_result(
                 message=str(e),
-                code=ServerCodes.INTERNAL_ERROR
+                code=ExtractionCodes.INTERNAL_ERROR
             )
         except TutorNotFoundException as e:
-            return create_error_server_response(
+            return create_error_extraction_result(
                 message=get_messages_chain(e),
-                code=ServerCodes.UNKNOWN_TUTOR,
+                code=ExtractionCodes.UNKNOWN_TUTOR,
             )
 
-        return ServerResponse(tutor)
+        return ExtractionResult(tutor)
 
-    def extract_times(self) -> ServerResponse:
+    def extract_times(self) -> ExtractionResult:
         url: str = HTMLExtractor.__times_url
 
         try:
             html_content: str = HTMLDownloader.download(url)
             times: Times = HTMLTimesParser.parse_times(html_content)
         except HTMLDownloadingException:
-            return create_error_server_response(
+            return create_error_extraction_result(
                 message=HTMLExtractor.__get_cannot_download_times_page_message(),
-                code=ServerCodes.INTERNAL_ERROR
+                code=ExtractionCodes.INTERNAL_ERROR
             )
         except TimesParsingException as e:
-            return create_error_server_response(
+            return create_error_extraction_result(
                 message=get_messages_chain(e),
-                code=ServerCodes.INTERNAL_ERROR
+                code=ExtractionCodes.INTERNAL_ERROR
             )
 
-        return ServerResponse(times)
+        return ExtractionResult(times)
 
     @staticmethod
     def __get_group_url(group_id: str) -> str:

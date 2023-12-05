@@ -1,9 +1,7 @@
-from typing import List
-
 import bs4
 
-from common.dto import Times
-from .parsing_exceptions import TimesParsingException
+from model.dto import Times
+from .exceptions import TimesParsingException
 from .utils import create_html_bs4
 
 
@@ -27,7 +25,7 @@ class HTMLTimesParser:
 
     @staticmethod
     def __parse_times_from_tag(times_tag: bs4.Tag) -> Times:
-        times_list: List[str] = HTMLTimesParser.__parse_times_list_from_tag(times_tag)
+        times_list: list[str] = HTMLTimesParser.__parse_times_list_from_tag(times_tag)
         return Times(times_list)
 
     @staticmethod
@@ -35,14 +33,14 @@ class HTMLTimesParser:
         return soup.select_one(HTMLTimesParser.__times_tag_selector)
 
     @staticmethod
-    def __parse_times_list_from_tag(tag: bs4.Tag) -> List[str]:
+    def __parse_times_list_from_tag(tag: bs4.Tag) -> list[str]:
         try:
             tags_of_records: bs4.ResultSet = tag.find_all(HTMLTimesParser.__times_record_tag_name)
 
             # This magic needs to extract only time when lessons begin. We get rid of time when lessons end
             # and when is the break between the halves of lesson.
-            times_tags: List[bs4.Tag] = [tr.find_all(HTMLTimesParser.__times_tag_name)[1] for tr in tags_of_records]
-            times_list: List[str] = [tag.text.split(HTMLTimesParser.__times_limiter)[0] for tag in times_tags]
+            times_tags: list[bs4.Tag] = [tr.find_all(HTMLTimesParser.__times_tag_name)[1] for tr in tags_of_records]
+            times_list: list[str] = [tag.text.split(HTMLTimesParser.__times_limiter)[0] for tag in times_tags]
         except IndexError as e:
             raise TimesParsingException(HTMLTimesParser.__error_message) from e
 

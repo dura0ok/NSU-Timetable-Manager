@@ -1,12 +1,12 @@
-from typing import List, Optional, Dict
+from typing import Optional
 
 import bs4
 
-from common.dto import *
+from model.dto import *
 from .html_times_parser import HTMLTimesParser
 from .html_room_parser import HTMLRoomParser
 from .html_tutor_parser import HTMLTutorParser
-from .parsing_exceptions import TimetableParsingException, RoomParsingException, TutorParsingException
+from .exceptions import TimetableParsingException, RoomParsingException, TutorParsingException
 from .utils import create_html_bs4
 
 
@@ -29,7 +29,7 @@ class HTMLTimetableParser:
     __cannot_parse_tutor: str = 'Invalid format of HTML: cannot parse tutor of subject'
     __cannot_parse_room: str = 'Invalid format of HTML: cannot parse room of subject'
 
-    __subject_type_map: Dict[str, SubjectType] = {
+    __subject_type_map: dict[str, SubjectType] = {
         'лек': SubjectType.LECTURE,
         'пр': SubjectType.PRACTICAL,
         'лаб': SubjectType.LECTURE,
@@ -38,7 +38,7 @@ class HTMLTimetableParser:
         'ф, лаб': SubjectType.LABORATORY_ELECTIVE
     }
 
-    __periodicity_map: Dict[str, Periodicity] = {
+    __periodicity_map: dict[str, Periodicity] = {
         'Четная': Periodicity.ON_EVEN,
         'Нечетная': Periodicity.ON_ODD,
     }
@@ -48,17 +48,17 @@ class HTMLTimetableParser:
         soup: bs4.BeautifulSoup = create_html_bs4(html_content)
 
         times: Times = HTMLTimesParser.parse_times(html_content)
-        cells: List[Cell] = HTMLTimetableParser.__parse_cells(soup=soup)
+        cells: list[Cell] = HTMLTimetableParser.__parse_cells(soup=soup)
 
         return Timetable(cells=cells, times=times)
 
     @staticmethod
-    def __parse_cells(soup: bs4.BeautifulSoup) -> List[Cell]:
+    def __parse_cells(soup: bs4.BeautifulSoup) -> list[Cell]:
         rows: bs4.ResultSet = soup.select(HTMLTimetableParser.__timetable_line_selector)
         if len(rows) == 0:
             raise TimetableParsingException(HTMLTimetableParser.__no_timetable_found)
 
-        cells: List[Cell] = []
+        cells: list[Cell] = []
 
         # We have to skip first row, because it contains only days of week
         for row in rows[1:]:
@@ -76,7 +76,7 @@ class HTMLTimetableParser:
     @staticmethod
     def __parse_cell(cell_tag: bs4.Tag) -> Cell:
         subjects_tags: bs4.ResultSet = cell_tag.select(HTMLTimetableParser.__subject_selector)
-        subjects: List[Subject] = []
+        subjects: list[Subject] = []
 
         for tag in subjects_tags:
             subject: Subject = HTMLTimetableParser.__parse_subject(tag)

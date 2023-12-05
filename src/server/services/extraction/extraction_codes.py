@@ -1,9 +1,9 @@
 from enum import auto
 
-from .zero_enum import ZeroEnum
+from model.utils import ZeroEnum
 
 
-class ServerCodes(ZeroEnum):
+class ExtractionCodes(ZeroEnum):
     SUCCESS = auto()
     INTERNAL_ERROR = auto()
     UNKNOWN_GROUP = auto()
