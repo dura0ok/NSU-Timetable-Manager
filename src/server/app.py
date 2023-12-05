@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 
 from config_parsing import ConfigParser, EnvConfigParser
-from controller.extraction_controller import ExtractionController
+from controller.extraction_controller import ExtractionController, DefaultExtractionController
 from services.extraction import Extractor
 from services.extraction.html_extraction import HTMLExtractor
 
@@ -13,7 +13,7 @@ app = FastAPI()
 
 config_parser: ConfigParser = EnvConfigParser()
 extractor: Extractor = HTMLExtractor()
-controller: ExtractionController = ExtractionController(extractor)
+controller: ExtractionController = DefaultExtractionController(extractor)
 routes: Routes = Routes(controller)
 app.include_router(routes.router)
 

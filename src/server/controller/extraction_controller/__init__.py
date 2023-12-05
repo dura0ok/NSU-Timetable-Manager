@@ -1,4 +1,4 @@
-__all__ = ['ExtractionController']
+__all__ = ['ExtractionController', 'DefaultExtractionController']
 
 
-from .extraction_controller import ExtractionController
+from .default_extraction_controller import ExtractionController, DefaultExtractionController
