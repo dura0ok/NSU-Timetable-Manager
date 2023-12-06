@@ -1,0 +1,57 @@
+\newcommand{\Server}{Server}
+\newcommand{\Extension}{Extension}
+
+\newcommand{\Serverbf}{\textbf{\Server}}
+\newcommand{\Extensionbf}{\textbf{\Extension}}
+
+\chapter{Обзор архитектуры}
+	\label{chapter4}
+	\phantomsection
+
+	Этот раздел описывает архитектуру проекта.
+
+	\section{Подсистемы и компоненты проекта}
+		Если не брать в расчёт компоненты сторонних производителей, то проект состоит из подсистем
+		
+		\begin{itemize}
+			\item \Serverbf{};
+			
+			\item \Extensionbf{};
+		\end{itemize}
+			
+		\subsection{\Server{}}
+			\begin{figure}[H]
+				\centering
+				\def\svgwidth{\columnwidth}
+				\input{server_classes.pdf_tex}
+				\caption{Аналитические классы \Serverbf}
+			\end{figure}
+		
+			\begin{figure}[H]
+				\centering
+				\def\svgwidth{\columnwidth}
+				\input{server_packages.pdf_tex}
+				\caption{Пакеты \Serverbf}
+			\end{figure}
+		
+			\Serverbf{} представляет собой REST-сервер с API, который по запросу парсит сайт с расписанием НГУ и возвращает информацию о расписании группы, аудитории, преподавателе или временах начала пар. Компонента сделан в <<Чистой архитектуре>>
+			
+			\begin{itemize}
+				\item \textit{model} --- представляет собой слой с основными dto предметной области;
+				
+				\item \textit{services} --- представляет собой слой бизнес-логику (манипулирование классами предметной области);
+				
+				\item \textit{controller} --- представляет собой слой адаптеров между бизнес-логикой и запросами/ответами сервера;
+				
+				\item \textit{routing} --- представляет собой слой, отвечающие за межсетевое взаимодействие (принятие запросов и отправка ответов);
+				
+				\item \textit{config-parsing} --- представляет собой пакет, отвечающий за парсинг конфигурации сервера.
+			\end{itemize}
+			
+		\subsection{\Extension{}}
+	\section{Схема развёртывания проекта}
+		\subsubsection{Развёртывание \Extensionbf{}}
+			Сборка расширения в файлы bundle.js и manifest.json и дальнейшее добавление в каталог расширений современных браузеров.
+		\subsubsection{Развёртывание \Server{}}
+			При изменениях в коде GitHub Actions запускает предварительно настроенный workflow. Виртуальная 	машина на GitHub Actions создает Docker-образы из актуального кода, собранные образы помещаются в Docker Hub. После этого останавливаются и удаляются старые Docker-контейнеры на VPS, а контейнеры 
+			с новыми Docker-образами создаются и запускаются, после чего \Serverbf{} автоматически перезапускаются.
