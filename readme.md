@@ -1,15 +1,5 @@
-# Time Table Manager
+# Менеджер расписания
 
-## How to start?
-
-`cd src`
-
-`python -m venv myvenv`
-
-`source myvenv/bin/activate`
-
-`pip install -r requirements.txt`
-
-`python main.py`
-
-# [Report](report)
+* [Отчёт](report)
+* [Модель проекта](model)
+* [Исходный код проекта](src)
