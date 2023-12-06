@@ -1,5 +1,5 @@
-# Менеджер расписания
+# Timetable manager
 
-* [Отчёт](report)
-* [Модель проекта](model)
-* [Исходный код проекта](src)
+* [Report](report)
+* [Model](model)
+* [Sources](src)
