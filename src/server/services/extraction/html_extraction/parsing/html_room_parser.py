@@ -39,9 +39,8 @@ class HTMLRoomParser:
         return room_tag.text.strip()
 
     @staticmethod
-    def __parse_room_location(room_tag: bs4.Tag) -> RoomLocation:
-        on_click_attr: Optional[str] = room_tag.attrs.get(HTMLRoomParser.__onclick_attr_name)
-
+    def __parse_room_location(room_location_tag: bs4.Tag) -> RoomLocation:
+        on_click_attr: Optional[str] = room_location_tag.attrs.get(HTMLRoomParser.__onclick_attr_name)
         if on_click_attr is None:
             return create_empty_room_location()
 
