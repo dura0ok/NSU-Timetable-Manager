@@ -10,7 +10,7 @@ export class CustomRenderHandlersManager {
         element.innerText = subjectData["name"]
 
         const location = subjectData["location"]
-        if(location[IS_EMPTY_FLAG]){
+        if (location[IS_EMPTY_FLAG]) {
             return;
         }
 
