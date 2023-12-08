@@ -77,8 +77,7 @@ try {
         if (selectedFile) {
             // Use the importFromBlob method with the selected file
             storage.importFromBlob(selectedFile)
-                .then(async (data) => {
-                    // Handle the imported data as needed
+                .then(async () => {
                     const updatedData = await storage.fetchTimeTableData()
                     emitter.emit(RENDER_DATA_EVENT, updatedData)
                 })
@@ -88,8 +87,6 @@ try {
                 });
         }
     });
-
-
 
 
 } catch (e) {

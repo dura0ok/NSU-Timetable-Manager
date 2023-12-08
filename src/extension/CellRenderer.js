@@ -1,8 +1,8 @@
-import { ObjectHelper } from "./ObjectHelper";
-import { insertCells, subjectSelectors, weekType } from "./subject";
-import { FunctionParser } from "./FunctionParser";
-import { CustomRenderHandlersManager } from "./customRenderHandlers";
-import { RENDER_DATA_EVENT } from "./consts";
+import {ObjectHelper} from "./ObjectHelper";
+import {insertCells, subjectSelectors, weekType} from "./subject";
+import {FunctionParser} from "./FunctionParser";
+import {CustomRenderHandlersManager} from "./customRenderHandlers";
+import {RENDER_DATA_EVENT} from "./consts";
 
 export class CellRenderer {
     static #tds = document.querySelectorAll(
@@ -51,7 +51,7 @@ export class CellRenderer {
             el.innerHTML = "";
             return;
         }
-        subjectSelectors.forEach(({ selector, property, dataKey }) => {
+        subjectSelectors.forEach(({selector, property, dataKey}) => {
             const element = el.querySelector(selector);
             const funcName = FunctionParser.parseFunctionName(property);
             if (element) {

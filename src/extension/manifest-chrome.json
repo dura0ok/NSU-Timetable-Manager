@@ -9,7 +9,6 @@
     "http://*/*",
     "https://*/*"
   ],
-
   "content_scripts": [
     {
       "matches": [
