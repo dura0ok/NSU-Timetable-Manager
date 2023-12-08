@@ -21,6 +21,22 @@ try {
 
 
     const navbar = document.querySelector(".main_head")
+    const navbarStyles = document.createElement("style")
+    navbarStyles.innerHTML = `
+        .main_head button{
+              background-color: #e7e7e7;
+              border: none;
+              color: black;
+              padding: 15px 32px;
+              margin: 10px;
+              text-align: center;
+              text-decoration: none;
+            
+              font-size: 16px;
+        }
+    `
+    navbar.appendChild(navbarStyles)
+
     const exportBtn = document.createElement("button")
     exportBtn.innerText = "Экспортировать"
     navbar.appendChild(exportBtn)
