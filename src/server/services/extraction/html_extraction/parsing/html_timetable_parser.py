@@ -16,7 +16,7 @@ class HTMLTimetableParser:
     __subject_selector: str = 'div.cell'
     __subject_name_selector: str = 'div.subject'
     __tutor_selector: str = 'a.tutor'
-    __room_selector: str = 'div.room a'
+    __room_selector: str = 'div.room'
     __week_selector: str = 'div.week'
     __cell_tag_name: str = 'td'
     __subject_type_tag_name: str = 'span'

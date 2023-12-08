@@ -14,6 +14,8 @@ class HTMLRoomParser:
     __room_tag_selector: str = 'div.main_head h1 a'
     __onclick_attr_name: str = 'onclick'
 
+    __room_location_subtag: str = 'a'
+
     @staticmethod
     def parse_room(html_content: str) -> Room:
         soup: bs4.BeautifulSoup = create_html_bs4(html_content)
@@ -40,6 +42,15 @@ class HTMLRoomParser:
 
     @staticmethod
     def __parse_room_location(room_location_tag: bs4.Tag) -> RoomLocation:
+        subtag: bs4.Tag = room_location_tag.find(HTMLRoomParser.__room_location_subtag)
+
+        if subtag is None:
+            return HTMLRoomParser.__parse_room_location_(room_location_tag)
+
+        return HTMLRoomParser.__parse_room_location_(subtag)
+
+    @staticmethod
+    def __parse_room_location_(room_location_tag: bs4.Tag) -> RoomLocation:
         on_click_attr: Optional[str] = room_location_tag.attrs.get(HTMLRoomParser.__onclick_attr_name)
         if on_click_attr is None:
             return create_empty_room_location()
