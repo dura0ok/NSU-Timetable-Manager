@@ -1,13 +1,16 @@
 import {ObjectHelper} from "./ObjectHelper";
 import {EnvConfigParser} from "./EnvConfigParser";
+import {REQUEST_SUCCESS_FLAG} from "./consts";
+import {concatHostPath} from "./Helper";
 
 export class SubmitHandlers {
     static async fetchData(endpoint, room_name) {
         const encoded = encodeURI(room_name);
-        const url = EnvConfigParser.parseBackendURL() + '/' + endpoint + '/' + encoded;
+        const url = concatHostPath(EnvConfigParser.parseBackendURL().toString(), endpoint + "/" + encoded)
+
         const response = await fetch(url);
         const json = await response.json();
-        if (!json["isSuccess"]) {
+        if (!json[REQUEST_SUCCESS_FLAG]) {
             throw new Error(`${endpoint} not found`);
         }
         return json.result;
@@ -29,7 +32,7 @@ export class SubmitHandlers {
                 ObjectHelper.setValueByDotNotation(data, "room.location", r["location"])
                 resolve()
             } catch (error) {
-                ObjectHelper.setValueByDotNotation(data, "room.location", {"isEmpty": true})
+                ObjectHelper.setValueByDotNotation(data, "room.location", {IS_EMPTY_FLAG: true})
                 resolve()
             }
         });
@@ -46,7 +49,7 @@ export class SubmitHandlers {
         return new Promise(async (resolve) => {
             try {
                 const r = await SubmitHandlers.#getTutor(value)
-                console.log(r)
+                //debugger;
                 ObjectHelper.setValueByDotNotation(data, dataKey, r["name"])
                 ObjectHelper.setValueByDotNotation(data, "tutor.href", r["href"])
                 resolve()

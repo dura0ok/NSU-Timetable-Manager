@@ -2,6 +2,7 @@ import {ObjectHelper} from "./ObjectHelper"
 import {insertCells, subjectSelectors, weekType} from "./subject"
 import {FunctionParser} from "./FunctionParser"
 import {CustomRenderHandlersManager} from "./customRenderHandlers"
+import {RENDER_DATA_EVENT} from "./consts";
 
 export class CellRenderer {
     static #tds = document.querySelectorAll(
@@ -17,7 +18,7 @@ export class CellRenderer {
                 }
             })
         })
-        eventEmitter.on('render-data', this.renderData.bind(this));
+        eventEmitter.on(RENDER_DATA_EVENT, this.renderData.bind(this));
     }
 
     static #renderWeek(el, subjectData) {

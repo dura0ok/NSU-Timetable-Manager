@@ -1,11 +1,11 @@
 export const subjectSelectors = [
-    {selector: ".subject", property: "textContent", dataKey: "name.shortName", placeholder: "Имя предмета"},
+    {selector: ".subject", property: "textContent", dataKey: "name.short_name", placeholder: "Имя предмета"},
     {selector: ".room a", property: "textContent", dataKey: "room.name", placeholder: "Имя комнаты"},
-    {selector: ".room a", property: "renderMap()", dataKey: "room.location"},
+    {selector: ".room a", property: "renderMap()", dataKey: "room"},
     {
         selector: ".type",
         property: "textContent",
-        dataKey: "type.shortName",
+        dataKey: "type",
         formRender: "renderTypeSelect()",
         placeholder: "Тип предмета"
     },
@@ -21,17 +21,27 @@ export const subjectSelectors = [
     },
 ];
 
-export const subjectType = new Map(Object.entries({
-    "лаб": "lab",
-    "пр": "pr",
-    "лек": "lek",
-    "ф, пр": "f_2"
-}))
 
 export const weekType = new Map(Object.entries({
     0: "По чётным",
     1: "По нечётным",
     2: "Всегда",
+}))
+
+export const subjectType = new Map(Object.entries({
+    3: "lab",
+    2: "pr",
+    1: "lek",
+    4: "f_2",
+    5: "f_2"
+}))
+
+export const subjectTypeNames = new Map(Object.entries({
+    3: "лаб",
+    2: "пр",
+    1: "лек",
+    4: "ф.пр",
+    5: "ф.лек"
 }))
 
 export const getWeekNum = (searchValue) => {
@@ -42,6 +52,7 @@ export const getWeekNum = (searchValue) => {
     }
     return null;
 }
+
 
 const cellHtml = `
 <div class="cell">

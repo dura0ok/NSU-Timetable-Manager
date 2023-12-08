@@ -1,23 +1,21 @@
-import {TimeTableManager} from "./TimeTableManager";
 import {CellRenderer} from "./CellRenderer";
 import {Modal} from "./Modal";
 import {EventEmitter} from "./EventEmitter"
-
-const getGroupNumberFromURL = () => {
-    return new URL(window.location.href).pathname.split("/")[2];
-}
+import {Storage} from "./Storage";
+import {getGroupNumberFromURL} from "./Helper";
 
 try {
     const groupID = getGroupNumberFromURL()
-    const timeTableManager = new TimeTableManager(groupID)
-    const timeTableData = await timeTableManager.loadTimeTableData()
     const emitter = new EventEmitter()
-    const m = new Modal(timeTableData, timeTableManager, emitter)
-    const cellRenderer = new CellRenderer(timeTableData, m, emitter)
-    cellRenderer.renderData(timeTableData)
+    const storage = new Storage(groupID)
+    const timetableData = await storage.fetchTimeTableData(groupID)
+    console.log(timetableData)
+    const m = new Modal(timetableData, storage, emitter)
+    const cellRenderer = new CellRenderer(timetableData, m, emitter)
+    cellRenderer.renderData(timetableData)
 
     document.querySelectorAll(".subject").forEach((el) => {
-        el.addEventListener("click", (e) => m.handleEdit(e, timeTableData));
+        el.addEventListener("click", (e) => m.handleEdit(e, timetableData));
     });
 } catch (e) {
     console.error("[Timetable extension] Something went wrong: ", e.message);

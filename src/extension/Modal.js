@@ -1,7 +1,8 @@
-import {getWeekNum, subjectSelectors, subjectType, weekType} from "./subject"
+import {getWeekNum, subjectSelectors, subjectType, subjectTypeNames, weekType} from "./subject"
 import {ObjectHelper} from "./ObjectHelper"
 import {FunctionParser} from "./FunctionParser"
 import {SubmitHandlers} from "./SubmitHandlers"
+import {HIDE, PERIODICITY, RENDER_DATA_EVENT, SHOW, SUBJECT_KEY} from "./consts";
 
 const modalCss = `
   .modal-custom-edit {
@@ -49,6 +50,7 @@ const modalCss = `
 export class Modal {
     #modalWrapperNode
     #originalEvent;
+    #storage;
 
     #submitHandlerMap = new Map(Object.entries({
         'room': SubmitHandlers.roomSubmitHandler,
@@ -56,12 +58,13 @@ export class Modal {
         'tutor': SubmitHandlers.tutorSubmitHandler
     }));
 
-    constructor(timeTableData, timeTableManager, eventEmitter) {
+
+    constructor(timeTableData, storage, eventEmitter) {
         this.#modalWrapperNode = this.setupModal()
         this.#modalWrapperNode.querySelector(".modal-form").addEventListener("submit", (e) => this.handleSubmit(e, timeTableData))
         this.#modalWrapperNode.querySelector(".close-modal").addEventListener("click", this.handleClose.bind(this))
-        this.timeTableManager = timeTableManager
         this.eventEmitter = eventEmitter;
+        this.#storage = storage;
     }
 
     setupModal() {
@@ -113,7 +116,7 @@ export class Modal {
         return `
       <select name="${dataKey}">
         ${Array.from(subjectType, ([name]) =>
-            `<option value="${name}">${name}</option>`).join("\n")}
+            `<option value="${name}">${subjectTypeNames.get(name.toString())}</option>`).join("\n")}
       </select>
     `;
     }
@@ -132,20 +135,19 @@ export class Modal {
         this.#originalEvent = e;
         let subjectData = this.getClickedObjData(e, timeTableData);
         if (!timeTableData) {
-            this.#modalWrapperNode.querySelector(".submit-delete-modal").style.display = "none"
+            this.#modalWrapperNode.querySelector(".submit-delete-modal").style.display = HIDE
             subjectData = {}
         } else {
-            this.#modalWrapperNode.querySelector(".submit-delete-modal").style.display = "block"
+            this.#modalWrapperNode.querySelector(".submit-delete-modal").style.display = SHOW
         }
 
         this.fillFormInputs(subjectData)
         if (!timeTableData) {
             this.#modalWrapperNode.querySelectorAll("select").forEach((select) => {
-                console.log(select, select.options[0].value)
                 select.value = select.options[0].value;
             })
         }
-        this.#modalWrapperNode.style.display = "block"
+        this.#modalWrapperNode.style.display = SHOW
     }
 
 
@@ -162,19 +164,18 @@ export class Modal {
         if (timeTableData === null) {
             return null;
         }
-        const {dataID, cellCount} = this.getCellInfo(e);
-        if (timeTableData[dataID] && timeTableData[dataID]["subjects"] && timeTableData[dataID]["subjects"][cellCount]) {
-            return timeTableData[dataID]["subjects"][cellCount];
-        }
 
-        return null;
+        const {dataID, cellCount} = this.getCellInfo(e);
+        const subjectData = timeTableData[dataID]?.[SUBJECT_KEY]?.[cellCount];
+
+        return subjectData || null;
     }
+
 
     removeClickedObjData(e, timeTableData) {
         const {dataID, cellCount} = this.getCellInfo(e);
-        console.log(timeTableData[dataID]["subjects"][cellCount])
-        timeTableData[dataID]["subjects"].splice(cellCount, 1)
-        this.timeTableManager.saveTimeTableData(timeTableData);
+        timeTableData[dataID][SUBJECT_KEY].splice(cellCount, 1)
+        this.#storage.store(timeTableData);
     }
 
     async handleSubmit(currentEvent, timeTableData) {
@@ -194,31 +195,30 @@ export class Modal {
             const res = this.getCellInfo(e)
             subjectData = {}
             subjectData.isEmpty = false
-            timeTableData[res.dataID]["subjects"].push(subjectData)
+            timeTableData[res.dataID][SUBJECT_KEY].push(subjectData)
         }
 
         const submitterName = currentEvent.submitter.name
         if (submitterName === "delete") {
-            console.log(subjectData, typeof subjectData)
             this.removeClickedObjData(e, timeTableData)
-            this.eventEmitter.emit("render-data")
+            this.eventEmitter.emit(RENDER_DATA_EVENT)
             this.handleClose(e);
             return
         }
 
         const asyncTasks = [];
         Object.keys(formData).forEach(dataKey => {
-            console.log(subjectData)
             const key = dataKey.split(".")[0];
             //if (key !== "room") return;
 
             if (this.#submitHandlerMap.has(key)) {
                 const f = this.#submitHandlerMap.get(key);
+
                 const task = f(subjectData, dataKey, formData[dataKey])
                 asyncTasks.push(task);
             } else {
                 let value = formData[dataKey]
-                if (dataKey === "periodicity") {
+                if (dataKey === PERIODICITY) {
                     value = parseInt(getWeekNum(value))
                 }
                 ObjectHelper.setValueByDotNotation(subjectData, dataKey, value);
@@ -226,16 +226,15 @@ export class Modal {
         });
 
         await Promise.all(asyncTasks);
-        this.timeTableManager.saveTimeTableData(timeTableData);
-        console.log(timeTableData[15])
-        this.eventEmitter.emit("render-data")
+        this.#storage.store(timeTableData);
+        this.eventEmitter.emit(RENDER_DATA_EVENT)
         this.handleClose(e);
     }
 
 
     handleClose(e) {
         e.preventDefault();
-        this.#modalWrapperNode.style.display = "none";
+        this.#modalWrapperNode.style.display = HIDE;
         this.#originalEvent = null
     }
 
@@ -248,7 +247,7 @@ export class Modal {
                     input.value = ""
                     return
                 }
-                if (dataKey === "periodicity") {
+                if (dataKey === PERIODICITY) {
                     input.value = weekType.get(value.toString())
                     return
                 }
