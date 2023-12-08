@@ -3,6 +3,7 @@ import {Modal} from "./Modal";
 import {EventEmitter} from "./EventEmitter"
 import {Storage} from "./Storage";
 import {getGroupNumberFromURL} from "./Helper";
+import {RENDER_DATA_EVENT} from "./consts";
 
 try {
     const groupID = getGroupNumberFromURL()
@@ -11,7 +12,7 @@ try {
     const timetableData = await storage.fetchTimeTableData(groupID)
     console.log(timetableData)
     const m = new Modal(timetableData, storage, emitter)
-    const cellRenderer = new CellRenderer(timetableData, m, emitter)
+    const cellRenderer = new CellRenderer(m, emitter)
     cellRenderer.renderData(timetableData)
 
     document.querySelectorAll(".subject").forEach((el) => {
@@ -24,9 +25,21 @@ try {
     exportBtn.innerText = "Экспортировать"
     navbar.appendChild(exportBtn)
 
+
     const importBtn = document.createElement("button")
     importBtn.innerText = "Импортировать"
     navbar.appendChild(importBtn)
+
+    const clearBtn = document.createElement("button")
+    clearBtn.innerText = "Очистить расписание"
+    navbar.appendChild(clearBtn)
+
+    clearBtn.addEventListener("click", async () => {
+        storage.clear()
+        console.log("Cleared")
+        const updatedData = await storage.fetchTimeTableData()
+        emitter.emit(RENDER_DATA_EVENT, updatedData)
+    })
 
     exportBtn.addEventListener("click", () => {
         const blob = storage.exportToBlob();
@@ -64,9 +77,10 @@ try {
         if (selectedFile) {
             // Use the importFromBlob method with the selected file
             storage.importFromBlob(selectedFile)
-                .then((data) => {
+                .then(async (data) => {
                     // Handle the imported data as needed
-                    console.log("Imported data:", data);
+                    const updatedData = await storage.fetchTimeTableData()
+                    emitter.emit(RENDER_DATA_EVENT, updatedData)
                 })
                 .catch((error) => {
                     // Handle errors during the import process
@@ -74,6 +88,8 @@ try {
                 });
         }
     });
+
+
 
 
 } catch (e) {

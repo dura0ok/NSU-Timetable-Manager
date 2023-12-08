@@ -131,7 +131,6 @@ export class Modal {
     }
 
     handleEdit(e, timeTableData) {
-        debugger;
         e.preventDefault();
         this.#originalEvent = e;
         let subjectData = this.getClickedObjData(e, timeTableData);
@@ -202,7 +201,8 @@ export class Modal {
         const submitterName = currentEvent.submitter.name
         if (submitterName === "delete") {
             this.removeClickedObjData(e, timeTableData)
-            this.eventEmitter.emit(RENDER_DATA_EVENT)
+            const updatedData = await this.#storage.fetchTimeTableData()
+            this.eventEmitter.emit(RENDER_DATA_EVENT, updatedData)
             this.handleClose(e);
             return
         }
@@ -228,7 +228,8 @@ export class Modal {
 
         await Promise.all(asyncTasks);
         this.#storage.store(timeTableData);
-        this.eventEmitter.emit(RENDER_DATA_EVENT)
+        const updatedData = await this.#storage.fetchTimeTableData()
+        this.eventEmitter.emit(RENDER_DATA_EVENT, updatedData)
         this.handleClose(e);
     }
 

@@ -5,7 +5,7 @@ const {DefinePlugin} = require('webpack');
 dotenv.config();
 
 module.exports = {
-    mode: 'production',
+    mode: 'development',
     entry: {
         bundle: ['./app.js'],
     },

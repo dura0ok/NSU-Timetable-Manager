@@ -17,6 +17,21 @@ export class Storage {
         localStorage.setItem(this.#key, JSON.stringify(data));
     };
 
+    clear = () => {
+        try {
+            const data = JSON.parse(this.#fetch());
+
+            data.forEach(item => {
+                item.subjects = [];
+            });
+
+            this.store(data);
+        } catch (error) {
+            console.error("An error occurred while clearing subjects:", error);
+            // Handle the error as needed, e.g., log it, show a user-friendly message, etc.
+        }
+    }
+
     async fetchTimeTableData() {
         const localData = this.#fetch();
 
