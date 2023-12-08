@@ -33,7 +33,7 @@ class HTMLTimetableParser:
     __subject_type_map: dict[str, SubjectType] = {
         'лек': SubjectType.LECTURE,
         'пр': SubjectType.PRACTICAL,
-        'лаб': SubjectType.LECTURE,
+        'лаб': SubjectType.LABORATORY,
         'ф, лек': SubjectType.LECTURE_ELECTIVE,
         'ф, пр': SubjectType.PRACTICAL_ELECTIVE,
         'ф, лаб': SubjectType.LABORATORY_ELECTIVE
