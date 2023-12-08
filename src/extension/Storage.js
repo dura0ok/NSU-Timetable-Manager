@@ -29,4 +29,30 @@ export class Storage {
         this.store(res)
         return JSON.parse(this.#fetch())
     }
+
+    exportToBlob = () => {
+        const data = this.#fetch();
+        return new Blob([data], {type: 'application/json'});
+    };
+
+    importFromBlob = (blob) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                try {
+                    const contentType = blob.type;
+                    if (contentType === 'application/json') {
+                        const data = JSON.parse(reader.result.toString());
+                        this.store(data);
+                        resolve(data);
+                    } else {
+                        reject(new Error('Invalid file format. Expected JSON file.'));
+                    }
+                } catch (error) {
+                    reject(error);
+                }
+            };
+            reader.readAsText(blob);
+        });
+    };
 }
