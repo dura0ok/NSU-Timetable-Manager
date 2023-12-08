@@ -131,6 +131,7 @@ export class Modal {
     }
 
     handleEdit(e, timeTableData) {
+        debugger;
         e.preventDefault();
         this.#originalEvent = e;
         let subjectData = this.getClickedObjData(e, timeTableData);

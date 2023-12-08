@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "timetable-manager",
+  "version": "0.0.1",
+  "description": "Your extension description here",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "http://*/*",
+    "https://*/*"
+  ],
+
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "dist/bundle.js"
+      ]
+    }
+  ]
+}

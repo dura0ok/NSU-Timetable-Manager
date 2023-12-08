@@ -1,103 +1,82 @@
 import {CellRenderer} from "./CellRenderer";
 import {Modal} from "./Modal";
-import {EventEmitter} from "./EventEmitter";
+import {EventEmitter} from "./EventEmitter"
 import {Storage} from "./Storage";
 import {getGroupNumberFromURL} from "./Helper";
 
-const initializeApp = async () => {
-    try {
-        const groupID = getGroupNumberFromURL();
-        const emitter = new EventEmitter();
-        const storage = new Storage(groupID);
-        const timetableData = await storage.fetchTimeTableData(groupID);
-        console.log(timetableData);
-        initializeModal(timetableData, storage, emitter);
-        initializeCellRenderer(timetableData, emitter);
-        initializeExportImportButtons(storage);
-
-        // Resolve the promise when initialization is complete
-        return Promise.resolve();
-    } catch (error) {
-        console.error("Initialization error:", error.message);
-        return Promise.reject(error);
-    }
-};
-
-const initializeModal = (timetableData, storage, emitter) => {
-    const m = new Modal(timetableData, storage, emitter);
+try {
+    const groupID = getGroupNumberFromURL()
+    const emitter = new EventEmitter()
+    const storage = new Storage(groupID)
+    const timetableData = await storage.fetchTimeTableData(groupID)
+    console.log(timetableData)
+    const m = new Modal(timetableData, storage, emitter)
+    const cellRenderer = new CellRenderer(timetableData, m, emitter)
+    cellRenderer.renderData(timetableData)
 
     document.querySelectorAll(".subject").forEach((el) => {
         el.addEventListener("click", (e) => m.handleEdit(e, timetableData));
     });
-};
-
-const initializeCellRenderer = (timetableData, emitter) => {
-    const cellRenderer = new CellRenderer(timetableData, new Modal(), emitter);
-    cellRenderer.renderData(timetableData);
-};
 
 
-const initializeExportImportButtons = (storage) => {
-    const navbar = document.querySelector(".main_head");
+    const navbar = document.querySelector(".main_head")
+    const exportBtn = document.createElement("button")
+    exportBtn.innerText = "Экспортировать"
+    navbar.appendChild(exportBtn)
 
-    const exportBtn = createButton("Экспортировать", () => handleExport(storage));
-    const importBtn = createButton("Импортировать", () => handleImport(storage));
+    const importBtn = document.createElement("button")
+    importBtn.innerText = "Импортировать"
+    navbar.appendChild(importBtn)
 
-    navbar.appendChild(exportBtn);
-    navbar.appendChild(importBtn);
-};
+    exportBtn.addEventListener("click", () => {
+        const blob = storage.exportToBlob();
+        const blobURL = URL.createObjectURL(blob);
 
-const createButton = (text, clickHandler) => {
-    const button = document.createElement("button");
-    button.innerText = text;
-    button.addEventListener("click", clickHandler);
-    return button;
-};
+        const a = document.createElement("a");
+        a.href = blobURL;
+        a.download = "data.json"; // Specify the filename
 
-const handleExport = (storage) => {
-    const blob = storage.exportToBlob();
-    const blobURL = URL.createObjectURL(blob);
-    downloadBlob(blobURL, "data.json");
-};
+        // Append the anchor element to the body and simulate a click
+        document.body.appendChild(a);
+        a.click();
 
-const handleImport = (storage) => {
-    const fileInput = createFileInput();
-    fileInput.addEventListener("change", (event) => handleFileInputChange(event, storage));
-    fileInput.click();
-};
+        // Remove the anchor element and revoke the URL to free up resources
+        document.body.removeChild(a);
+        URL.revokeObjectURL(blobURL);
+    });
 
-const createFileInput = () => {
+
     const fileInput = document.createElement("input");
     fileInput.type = "file";
-    fileInput.style.display = "none";
-    document.querySelector(".main_head").appendChild(fileInput);
-    return fileInput;
-};
+    fileInput.style.display = "none"; // Hide the file input
+    navbar.appendChild(fileInput);
 
-const handleFileInputChange = (event, storage) => {
-    const selectedFile = event.target.files[0];
-    if (selectedFile) {
-        storage.importFromBlob(selectedFile)
-            .then((data) => console.log("Imported data:", data))
-            .catch((error) => console.error("Import error:", error.message));
-    }
-};
-
-const downloadBlob = (blobURL, filename) => {
-    const a = document.createElement("a");
-    a.href = blobURL;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(blobURL);
-};
-
-// Call initializeApp and handle the promise
-initializeApp()
-    .then(() => {
-        console.log("Initialization completed successfully");
-    })
-    .catch((error) => {
-        console.error("Initialization error:", error.message);
+// Attach a click event listener to the Import button
+    importBtn.addEventListener("click", () => {
+        // Trigger a click event on the hidden file input
+        fileInput.click();
     });
+
+
+    fileInput.addEventListener("change", (event) => {
+        const selectedFile = event.target["files"][0]
+
+        if (selectedFile) {
+            // Use the importFromBlob method with the selected file
+            storage.importFromBlob(selectedFile)
+                .then((data) => {
+                    // Handle the imported data as needed
+                    console.log("Imported data:", data);
+                })
+                .catch((error) => {
+                    // Handle errors during the import process
+                    console.error("Import error:", error.message);
+                });
+        }
+    });
+
+
+} catch (e) {
+    console.error("[Timetable extension] Something went wrong: ", e.message);
+    console.log(e)
+}
