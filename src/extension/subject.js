@@ -29,19 +29,23 @@ export const weekType = new Map(Object.entries({
 }))
 
 export const subjectType = new Map(Object.entries({
+    0: "noType",
     3: "lab",
     2: "pr",
     1: "lek",
     4: "f_2",
-    5: "f_2"
+    5: "f_2",
+    6: "f_2",
 }))
 
 export const subjectTypeNames = new Map(Object.entries({
+    0: "🗇",
     3: "лаб",
     2: "пр",
     1: "лек",
     4: "ф.пр",
-    5: "ф.лек"
+    5: "ф.лек",
+    6: "ф.лаб",
 }))
 
 export const getWeekNum = (searchValue) => {

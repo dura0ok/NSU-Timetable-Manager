@@ -7,12 +7,10 @@ import {RENDER_DATA_EVENT} from "./consts";
 
     // TODO location undefined not onclick after change repeat previous undefined
     // TODO empty name error!
-    // TODO add elective lab
     // todo if error import or empty name notify it
     // todo times when export should be
     // todo after import update data from localstorage
     // todo render error clear storage
-    // todo add no type subject 0 code
 
 
 try {
