@@ -4,10 +4,11 @@ import {EventEmitter} from "./EventEmitter"
 import {Storage} from "./Storage";
 import {getGroupNumberFromURL} from "./Helper";
 import {RENDER_DATA_EVENT} from "./consts";
+import {showErrorToast} from "./toasts"
+import "toastify-js/src/toastify.css"
 
     // TODO location undefined not onclick after change repeat previous undefined
     // TODO empty name error!
-    // todo if error import or empty name notify it
     // todo times when export should be
     // todo after import update data from localstorage
     // todo render error clear storage
@@ -103,8 +104,7 @@ try {
                     emitter.emit(RENDER_DATA_EVENT, updatedData)
                 })
                 .catch((error) => {
-
-                    console.error("Import error:", error.message);
+                    showErrorToast("Import error: " + error.message)
                 });
         }
     });

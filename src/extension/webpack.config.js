@@ -1,6 +1,6 @@
 const path = require('path');
 const dotenv = require('dotenv');
-const {DefinePlugin} = require('webpack');
+const { DefinePlugin } = require('webpack');
 
 dotenv.config();
 
@@ -15,7 +15,15 @@ module.exports = {
     },
     plugins: [
         new DefinePlugin({
-            'process.env': JSON.stringify(dotenv.config().parsed)
-        })
-    ]
+            'process.env': JSON.stringify(dotenv.config().parsed),
+        }),
+    ],
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader'],
+            },
+        ],
+    },
 };
