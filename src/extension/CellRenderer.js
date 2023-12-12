@@ -74,7 +74,7 @@ export class CellRenderer {
     };
 
     renderData = (apiData) => {
-        console.log("RENDER")
+        console.log("RENDER", apiData)
         CellRenderer.#tds.forEach((td, dataID) => {
             td.setAttribute('data-id', dataID.toString());
             const cellsCount = apiData[dataID]["subjects"].length;

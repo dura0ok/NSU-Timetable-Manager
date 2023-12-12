@@ -11,16 +11,22 @@ export class Storage {
     }
 
     #fetch = () => {
-        return localStorage.getItem(this.#key);
+        return JSON.parse(localStorage.getItem(this.#key));
     };
 
     store = (data) => {
-        localStorage.setItem(this.#key, JSON.stringify(data));
+        const curData = this.#fetch()
+        if(curData){
+            curData[CELLS_KEY] = data
+            localStorage.setItem(this.#key, JSON.stringify(curData));
+            return
+        }
+        localStorage.setItem(this.#key, JSON.stringify(data))
     };
 
     clear = () => {
         try {
-            const data = JSON.parse(this.#fetch());
+            const data = this.#fetch();
 
             data.forEach(item => {
                 item.subjects = [];
@@ -35,19 +41,20 @@ export class Storage {
 
     async fetchTimeTableData() {
         const localData = this.#fetch();
+        console.log(localData)
 
         if (localData) {
             console.log("Data available in local storage");
-            return JSON.parse(localData)[CELLS_KEY];
+            return localData[CELLS_KEY];
         }
 
         const res = await ServerAgent.fetchTimeTableData(this.#groupID);
         this.store(res)
-        return JSON.parse(this.#fetch())[CELLS_KEY]
+        return this.#fetch()[CELLS_KEY]
     }
 
     exportToBlob = () => {
-        const data = this.#fetch();
+        const data = JSON.stringify(this.#fetch());
         return new Blob([data], {type: 'application/json'});
     };
 

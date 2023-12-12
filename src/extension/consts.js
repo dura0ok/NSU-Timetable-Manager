@@ -8,6 +8,8 @@ export const CELLS_KEY = "cells"
 export const SUBJECT_KEY = "subjects"
 export const PERIODICITY = "periodicity"
 
+export const SUBJECT_NAME_KEY = "name.short_name"
+
 export const RENDER_DATA_EVENT = "render_data"
 
 export const HIDE = "none"

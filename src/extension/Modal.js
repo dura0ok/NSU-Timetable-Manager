@@ -2,7 +2,8 @@ import {getWeekNum, subjectSelectors, subjectType, subjectTypeNames, weekType} f
 import {ObjectHelper} from "./ObjectHelper"
 import {FunctionParser} from "./FunctionParser"
 import {SubmitHandlers} from "./SubmitHandlers"
-import {HIDE, PERIODICITY, RENDER_DATA_EVENT, SHOW, SUBJECT_KEY} from "./consts";
+import {HIDE, PERIODICITY, RENDER_DATA_EVENT, SHOW, SUBJECT_KEY, SUBJECT_NAME_KEY} from "./consts";
+import {showErrorToast} from "./toasts";
 
 const modalCss = `
   .modal-custom-edit {
@@ -209,6 +210,14 @@ export class Modal {
         }
 
         const asyncTasks = [];
+        console.log(formData, typeof formData)
+
+        if(formData[SUBJECT_NAME_KEY].trim() === ""){
+            this.handleClose(e);
+            showErrorToast("Имя предмета не может быть пустым!!")
+            return
+        }
+
         Object.keys(formData).forEach(dataKey => {
             const key = dataKey.split(".")[0];
             //if (key !== "room") return;
@@ -220,6 +229,7 @@ export class Modal {
                 asyncTasks.push(task);
             } else {
                 let value = formData[dataKey]
+                console.log(dataKey, value)
                 if (dataKey === PERIODICITY) {
                     value = parseInt(getWeekNum(value))
                 }
