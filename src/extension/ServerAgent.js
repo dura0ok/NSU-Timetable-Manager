@@ -12,6 +12,6 @@ export class ServerAgent {
             throw new Error("Can't load data from the server.");
         }
 
-        return apiData["result"]["cells"];
+        return apiData["result"];
     }
 }

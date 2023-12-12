@@ -3,6 +3,8 @@ export const IS_EMPTY_FLAG = "is_empty"
 
 export const SHORT_NAME = "short_name"
 export const CELL_DOM_SELECTOR = ".cell"
+
+export const CELLS_KEY = "cells"
 export const SUBJECT_KEY = "subjects"
 export const PERIODICITY = "periodicity"
 

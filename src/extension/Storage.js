@@ -1,4 +1,5 @@
 import {ServerAgent} from "./ServerAgent";
+import {CELLS_KEY} from "./consts";
 
 export class Storage {
     #groupID;
@@ -37,12 +38,12 @@ export class Storage {
 
         if (localData) {
             console.log("Data available in local storage");
-            return JSON.parse(localData);
+            return JSON.parse(localData)[CELLS_KEY];
         }
 
         const res = await ServerAgent.fetchTimeTableData(this.#groupID);
         this.store(res)
-        return JSON.parse(this.#fetch())
+        return JSON.parse(this.#fetch())[CELLS_KEY]
     }
 
     exportToBlob = () => {

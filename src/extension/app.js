@@ -9,7 +9,6 @@ import "toastify-js/src/toastify.css"
 
     // TODO location undefined not onclick after change repeat previous undefined
     // TODO empty name error!
-    // todo times when export should be
     // todo after import update data from localstorage
     // todo render error clear storage
 
