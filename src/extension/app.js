@@ -5,6 +5,16 @@ import {Storage} from "./Storage";
 import {getGroupNumberFromURL} from "./Helper";
 import {RENDER_DATA_EVENT} from "./consts";
 
+    // TODO location undefined not onclick after change repeat previous undefined
+    // TODO empty name error!
+    // TODO add elective lab
+    // todo if error import or empty name notify it
+    // todo times when export should be
+    // todo after import update data from localstorage
+    // todo render error clear storage
+    // todo add no type subject 0 code
+
+
 try {
     const groupID = getGroupNumberFromURL()
     const emitter = new EventEmitter()
@@ -15,9 +25,6 @@ try {
     const cellRenderer = new CellRenderer(m, emitter)
     cellRenderer.renderData(timetableData)
 
-    document.querySelectorAll(".subject").forEach((el) => {
-        el.addEventListener("click", (e) => m.handleEdit(e, timetableData));
-    });
 
 
     const navbar = document.querySelector(".main_head")
@@ -98,7 +105,7 @@ try {
                     emitter.emit(RENDER_DATA_EVENT, updatedData)
                 })
                 .catch((error) => {
-                    // Handle errors during the import process
+
                     console.error("Import error:", error.message);
                 });
         }

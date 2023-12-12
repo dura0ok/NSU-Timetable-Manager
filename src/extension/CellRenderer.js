@@ -2,7 +2,7 @@ import {ObjectHelper} from "./ObjectHelper";
 import {insertCells, subjectSelectors, weekType} from "./subject";
 import {FunctionParser} from "./FunctionParser";
 import {CustomRenderHandlersManager} from "./customRenderHandlers";
-import {RENDER_DATA_EVENT} from "./consts";
+import {RENDER_DATA_EVENT, SUBJECT_KEY} from "./consts";
 
 export class CellRenderer {
     static #tds = document.querySelectorAll(
@@ -41,7 +41,7 @@ export class CellRenderer {
     }
 
     renderCell = (cell, cellIndex, index, apiData) => {
-        const subjectData = apiData[cellIndex]['subjects'][index];
+        const subjectData = apiData[cellIndex][SUBJECT_KEY][index];
         this.renderSubject(cell, subjectData);
     };
 
@@ -63,6 +63,10 @@ export class CellRenderer {
                     }
                     element[property] = value;
                 }
+                if(dataKey === "tutor.href" && (value === null || value === "#")){
+                    element.removeAttribute("href")
+                    element.classList.remove("tutor")
+                }
             }
         });
         CellRenderer.#renderWeek(el, subjectData);
@@ -70,12 +74,15 @@ export class CellRenderer {
     };
 
     renderData = (apiData) => {
-
+        console.log("RENDER")
         CellRenderer.#tds.forEach((td, dataID) => {
             td.setAttribute('data-id', dataID.toString());
             const cellsCount = apiData[dataID]["subjects"].length;
             td.querySelectorAll(".cell").forEach((cell) => cell.remove());
             insertCells(td, cellsCount);
+            td.querySelectorAll(".subject").forEach((el) => {
+                el.addEventListener("click", (e) => this.m.handleEdit(e, apiData));
+            });
             const cells = td.querySelectorAll('.cell');
             cells.forEach((cell, index) => {
                 this.renderCell(cell, dataID, index, apiData);

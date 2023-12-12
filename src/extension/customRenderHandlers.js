@@ -11,11 +11,14 @@ export class CustomRenderHandlersManager {
 
         const location = subjectData["location"]
         if (location[IS_EMPTY_FLAG]) {
-            return;
+            element.onclick = function() {
+                return false;
+            }
         }
 
         const room_view = `room_view('${location.block}', ${location.level}, ${location.x}, ${location.y})`;
         element.setAttribute("onclick", room_view);
+
     };
 
     static #renderType = (element, key) => {

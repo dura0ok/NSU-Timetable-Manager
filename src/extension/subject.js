@@ -70,4 +70,6 @@ export const insertCells = (tdElement, n) => {
     for (let i = 0; i < n; i++) {
         tdElement.insertAdjacentHTML("beforeend", cellHtml);
     }
+
+
 }

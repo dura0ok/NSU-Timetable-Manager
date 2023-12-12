@@ -132,6 +132,7 @@ export class Modal {
 
     handleEdit(e, timeTableData) {
         e.preventDefault();
+        console.log("ASDASD")
         this.#originalEvent = e;
         let subjectData = this.getClickedObjData(e, timeTableData);
         if (!timeTableData) {

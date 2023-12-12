@@ -32,6 +32,7 @@ export class SubmitHandlers {
                 ObjectHelper.setValueByDotNotation(data, "room.location", r["location"])
                 resolve()
             } catch (error) {
+                ObjectHelper.setValueByDotNotation(data, "room.name", value)
                 ObjectHelper.setValueByDotNotation(data, "room.location", {IS_EMPTY_FLAG: true})
                 resolve()
             }
@@ -54,6 +55,7 @@ export class SubmitHandlers {
                 ObjectHelper.setValueByDotNotation(data, "tutor.href", r["href"])
                 resolve()
             } catch (error) {
+                ObjectHelper.setValueByDotNotation(data, "tutor.name", value)
                 ObjectHelper.setValueByDotNotation(data, "tutor.href", "#")
                 resolve()
             }
