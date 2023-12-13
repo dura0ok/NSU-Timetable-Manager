@@ -10,13 +10,9 @@ export class CustomRenderHandlersManager {
         const location = subjectData["location"]
 
         if (location[IS_EMPTY_FLAG]) {
-            const clonedElement = element.cloneNode(true);
-            clonedElement.innerText = subjectData["name"]
-            element.parentNode.replaceChild(clonedElement, element);
-            clonedElement.removeAttribute("href")
-            clonedElement.onclick = null
-            clonedElement.disabled = true
-            clonedElement.removeAttribute("onclick")
+            const parent = element.parentNode
+            element.remove()
+            parent.innerText += subjectData["name"]
             //console.log(element, element.innerText, subjectData, location)
             return
         }
@@ -34,6 +30,9 @@ export class CustomRenderHandlersManager {
         }
 
         const typeClass = subjectType.get(n)
+        if(typeClass === subjectType.get("0")){
+           element.remove()
+        }
         element.classList.remove(element.classList[1]);
         element.classList.add(typeClass);
         element.innerText = subjectTypeNames.get(n)

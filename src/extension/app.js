@@ -24,12 +24,12 @@ try {
               background-color: #e7e7e7;
               border: none;
               color: black;
-              padding: 15px 32px;
-              margin: 10px;
+              width: 140px;
+              height: 50px;
+              margin: 20px;
               text-align: center;
               text-decoration: none;
-            
-              font-size: 16px;
+              font-size: 17px;
         }
     `
     navbar.appendChild(navbarStyles)
@@ -44,13 +44,23 @@ try {
     navbar.appendChild(importBtn)
 
     const clearBtn = document.createElement("button")
-    clearBtn.innerText = "Очистить расписание"
+    clearBtn.innerText = "Очистить"
     navbar.appendChild(clearBtn)
 
     clearBtn.addEventListener("click", async () => {
         storage.clear()
         const updatedData = await storage.fetchTimeTableData()
         console.log("Cleared", updatedData)
+        emitter.emit(RENDER_DATA_EVENT, updatedData)
+    })
+
+    const truncateBtn = document.createElement("button")
+    truncateBtn.innerText = "Восстановить"
+    navbar.appendChild(truncateBtn)
+
+    truncateBtn.addEventListener("click", async () => {
+        storage.truncate()
+        const updatedData = await storage.fetchTimeTableData()
         emitter.emit(RENDER_DATA_EVENT, updatedData)
     })
 

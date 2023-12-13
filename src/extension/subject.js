@@ -39,7 +39,7 @@ export const subjectType = new Map(Object.entries({
 }))
 
 export const subjectTypeNames = new Map(Object.entries({
-    0: "🗇",
+    0: "—",
     3: "лаб",
     2: "пр",
     1: "лек",
