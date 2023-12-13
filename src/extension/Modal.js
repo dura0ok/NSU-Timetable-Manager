@@ -3,7 +3,7 @@ import {ObjectHelper} from "./ObjectHelper"
 import {FunctionParser} from "./FunctionParser"
 import {SubmitHandlers} from "./SubmitHandlers"
 import {HIDE, PERIODICITY, RENDER_DATA_EVENT, SHOW, SUBJECT_KEY, SUBJECT_NAME_KEY} from "./consts";
-import {showErrorToast} from "./toasts";
+import {ErrorDisplay} from "./ErrorDisplay";
 
 const modalCss = `
   .modal-custom-edit {
@@ -213,7 +213,7 @@ export class Modal {
 
         if (formData[SUBJECT_NAME_KEY].trim() === "") {
             this.handleClose(e);
-            showErrorToast("Имя предмета не может быть пустым!!")
+            ErrorDisplay.display("Имя предмета не может быть пустым!!")
             return
         }
 

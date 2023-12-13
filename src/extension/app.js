@@ -4,8 +4,8 @@ import {EventEmitter} from "./EventEmitter"
 import {Storage} from "./Storage";
 import {getGroupNumberFromURL} from "./Helper";
 import {RENDER_DATA_EVENT} from "./consts";
-import {showErrorToast} from "./toasts"
 import "toastify-js/src/toastify.css"
+import {ErrorDisplay} from "./ErrorDisplay";
 
 try {
     const groupID = getGroupNumberFromURL()
@@ -59,7 +59,7 @@ try {
     navbar.appendChild(truncateBtn)
 
     truncateBtn.addEventListener("click", async () => {
-        await storage.truncate()
+        await storage.restoreToDefaults()
         const updatedData = await storage.fetchTimeTableData()
         emitter.emit(RENDER_DATA_EVENT, updatedData)
     })
@@ -105,7 +105,7 @@ try {
                     emitter.emit(RENDER_DATA_EVENT, updatedData)
                 })
                 .catch((error) => {
-                    showErrorToast("Import error: " + error.message)
+                    ErrorDisplay.display("Import error: " + error.message)
                 });
         }
     });

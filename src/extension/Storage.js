@@ -14,7 +14,7 @@ export class Storage {
         return JSON.parse(localStorage.getItem(this.#key));
     };
 
-    truncate = async () => {
+    restoreToDefaults = async () => {
         localStorage.removeItem(this.#key)
         await this.fetchTimeTableData()
     }
@@ -68,7 +68,7 @@ export class Storage {
                     const contentType = blob.type;
                     if (contentType === 'application/json') {
                         const data = JSON.parse(reader.result.toString());
-                        await this.truncate();
+                        await this.restoreToDefaults();
                         this.store(data);
                         resolve(data);
                     } else {
