@@ -60,15 +60,15 @@ export class Storage {
         return new Blob([data], {type: 'application/json'});
     };
 
-    importFromBlob = (blob) => {
+    importFromBlob = async (blob) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
-            reader.onload = () => {
+            reader.onload = async () => {
                 try {
                     const contentType = blob.type;
                     if (contentType === 'application/json') {
                         const data = JSON.parse(reader.result.toString());
-                        this.truncate();
+                        await this.truncate();
                         this.store(data);
                         resolve(data);
                     } else {
