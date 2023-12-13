@@ -64,8 +64,15 @@ export class CellRenderer {
                     element[property] = value;
                 }
                 if (dataKey === "tutor.href" && (value === null || value === "#")) {
-                    element.removeAttribute("href")
-                    element.classList.remove("tutor")
+                    const tutorValueWithoutHref = ObjectHelper.getValueByDotNotation(subjectData, "tutor.name")
+                    const parent = element.parentNode
+                    if(tutorValueWithoutHref){
+                        //debugger;
+                        element.remove()
+                        const t = parent.innerHTML
+                        parent.innerHTML = t + "<br>" + tutorValueWithoutHref
+                        parent.addEventListener("click", (e) => this.m.handleEdit(e));
+                    }
                 }
             }
         });
@@ -80,7 +87,7 @@ export class CellRenderer {
             td.querySelectorAll(".cell").forEach((cell) => cell.remove());
             insertCells(td, cellsCount);
             td.querySelectorAll(".subject").forEach((el) => {
-                el.addEventListener("click", (e) => this.m.handleEdit(e, apiData));
+                el.addEventListener("click", (e) => this.m.handleEdit(e));
             });
             const cells = td.querySelectorAll('.cell');
             cells.forEach((cell, index) => {

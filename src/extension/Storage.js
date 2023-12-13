@@ -14,8 +14,9 @@ export class Storage {
         return JSON.parse(localStorage.getItem(this.#key));
     };
 
-    truncate = () => {
+    truncate = async () => {
         localStorage.removeItem(this.#key)
+        await this.fetchTimeTableData()
     }
 
     store = (data) => {

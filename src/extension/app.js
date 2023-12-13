@@ -59,7 +59,7 @@ try {
     navbar.appendChild(truncateBtn)
 
     truncateBtn.addEventListener("click", async () => {
-        storage.truncate()
+        await storage.truncate()
         const updatedData = await storage.fetchTimeTableData()
         emitter.emit(RENDER_DATA_EVENT, updatedData)
     })
