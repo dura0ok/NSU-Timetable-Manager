@@ -14,9 +14,13 @@ export class Storage {
         return JSON.parse(localStorage.getItem(this.#key));
     };
 
+    truncate = () => {
+        localStorage.removeItem(this.#key)
+    }
+
     store = (data) => {
         const curData = this.#fetch()
-        if(curData){
+        if (curData) {
             curData[CELLS_KEY] = data
             localStorage.setItem(this.#key, JSON.stringify(curData));
             return
@@ -28,11 +32,11 @@ export class Storage {
         try {
             const data = this.#fetch();
 
-            data.forEach(item => {
+            data[CELLS_KEY].forEach(item => {
                 item.subjects = [];
             });
 
-            this.store(data);
+            this.store(data[CELLS_KEY]);
         } catch (error) {
             console.error("An error occurred while clearing subjects:", error);
             // Handle the error as needed, e.g., log it, show a user-friendly message, etc.
@@ -41,10 +45,7 @@ export class Storage {
 
     async fetchTimeTableData() {
         const localData = this.#fetch();
-        console.log(localData)
-
         if (localData) {
-            console.log("Data available in local storage");
             return localData[CELLS_KEY];
         }
 
@@ -66,6 +67,7 @@ export class Storage {
                     const contentType = blob.type;
                     if (contentType === 'application/json') {
                         const data = JSON.parse(reader.result.toString());
+                        this.truncate();
                         this.store(data);
                         resolve(data);
                     } else {

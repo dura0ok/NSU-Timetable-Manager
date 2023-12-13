@@ -7,15 +7,21 @@ export class CustomRenderHandlersManager {
             return
         }
 
-        element.innerText = subjectData["name"]
-
         const location = subjectData["location"]
+
         if (location[IS_EMPTY_FLAG]) {
-            element.onclick = function() {
-                return false;
-            }
+            const clonedElement = element.cloneNode(true);
+            clonedElement.innerText = subjectData["name"]
+            element.parentNode.replaceChild(clonedElement, element);
+            clonedElement.removeAttribute("href")
+            clonedElement.onclick = null
+            clonedElement.disabled = true
+            clonedElement.removeAttribute("onclick")
+            //console.log(element, element.innerText, subjectData, location)
+            return
         }
 
+        element.innerText = subjectData["name"]
         const room_view = `room_view('${location.block}', ${location.level}, ${location.x}, ${location.y})`;
         element.setAttribute("onclick", room_view);
 

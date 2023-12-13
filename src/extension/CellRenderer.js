@@ -63,7 +63,7 @@ export class CellRenderer {
                     }
                     element[property] = value;
                 }
-                if(dataKey === "tutor.href" && (value === null || value === "#")){
+                if (dataKey === "tutor.href" && (value === null || value === "#")) {
                     element.removeAttribute("href")
                     element.classList.remove("tutor")
                 }
@@ -74,7 +74,6 @@ export class CellRenderer {
     };
 
     renderData = (apiData) => {
-        console.log("RENDER", apiData)
         CellRenderer.#tds.forEach((td, dataID) => {
             td.setAttribute('data-id', dataID.toString());
             const cellsCount = apiData[dataID]["subjects"].length;

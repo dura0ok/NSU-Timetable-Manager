@@ -60,9 +60,9 @@ export class Modal {
     }));
 
 
-    constructor(timeTableData, storage, eventEmitter) {
+    constructor(storage, eventEmitter) {
         this.#modalWrapperNode = this.setupModal()
-        this.#modalWrapperNode.querySelector(".modal-form").addEventListener("submit", (e) => this.handleSubmit(e, timeTableData))
+        this.#modalWrapperNode.querySelector(".modal-form").addEventListener("submit", (e) => this.handleSubmit(e))
         this.#modalWrapperNode.querySelector(".close-modal").addEventListener("click", this.handleClose.bind(this))
         this.eventEmitter = eventEmitter;
         this.#storage = storage;
@@ -131,10 +131,10 @@ export class Modal {
     `;
     }
 
-    handleEdit(e, timeTableData) {
+    async handleEdit(e) {
         e.preventDefault();
-        console.log("ASDASD")
         this.#originalEvent = e;
+        const timeTableData = await this.#storage.fetchTimeTableData()
         let subjectData = this.getClickedObjData(e, timeTableData);
         if (!timeTableData) {
             this.#modalWrapperNode.querySelector(".submit-delete-modal").style.display = HIDE
@@ -180,7 +180,7 @@ export class Modal {
         this.#storage.store(timeTableData);
     }
 
-    async handleSubmit(currentEvent, timeTableData) {
+    async handleSubmit(currentEvent) {
         currentEvent.preventDefault();
         const e = this.#originalEvent;
 
@@ -188,7 +188,7 @@ export class Modal {
             this.#originalEvent = null;
             return;
         }
-
+        const timeTableData = await this.#storage.fetchTimeTableData()
 
         const formNode = this.#modalWrapperNode.querySelector('.modal-form');
         const formData = Object.fromEntries(new FormData(formNode));
@@ -210,9 +210,8 @@ export class Modal {
         }
 
         const asyncTasks = [];
-        console.log(formData, typeof formData)
 
-        if(formData[SUBJECT_NAME_KEY].trim() === ""){
+        if (formData[SUBJECT_NAME_KEY].trim() === "") {
             this.handleClose(e);
             showErrorToast("Имя предмета не может быть пустым!!")
             return
@@ -229,7 +228,6 @@ export class Modal {
                 asyncTasks.push(task);
             } else {
                 let value = formData[dataKey]
-                console.log(dataKey, value)
                 if (dataKey === PERIODICITY) {
                     value = parseInt(getWeekNum(value))
                 }

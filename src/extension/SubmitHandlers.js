@@ -1,6 +1,6 @@
 import {ObjectHelper} from "./ObjectHelper";
 import {EnvConfigParser} from "./EnvConfigParser";
-import {REQUEST_SUCCESS_FLAG} from "./consts";
+import {IS_EMPTY_FLAG, REQUEST_SUCCESS_FLAG} from "./consts";
 import {concatHostPath} from "./Helper";
 
 export class SubmitHandlers {
@@ -33,7 +33,8 @@ export class SubmitHandlers {
                 resolve()
             } catch (error) {
                 ObjectHelper.setValueByDotNotation(data, "room.name", value)
-                ObjectHelper.setValueByDotNotation(data, "room.location", {IS_EMPTY_FLAG: true})
+                console.log(IS_EMPTY_FLAG)
+                ObjectHelper.setValueByDotNotation(data, "room.location", {[IS_EMPTY_FLAG]: true});
                 resolve()
             }
         });

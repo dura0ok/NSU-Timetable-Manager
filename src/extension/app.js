@@ -7,21 +7,14 @@ import {RENDER_DATA_EVENT} from "./consts";
 import {showErrorToast} from "./toasts"
 import "toastify-js/src/toastify.css"
 
-    // TODO location undefined not onclick after change repeat previous undefined
-    // todo after import update data from localstorage
-    // todo render error clear storage
-
-
 try {
     const groupID = getGroupNumberFromURL()
     const emitter = new EventEmitter()
     const storage = new Storage(groupID)
     const timetableData = await storage.fetchTimeTableData(groupID)
-    console.log(timetableData)
-    const m = new Modal(timetableData, storage, emitter)
+    const m = new Modal(storage, emitter)
     const cellRenderer = new CellRenderer(m, emitter)
     cellRenderer.renderData(timetableData)
-
 
 
     const navbar = document.querySelector(".main_head")
@@ -56,8 +49,8 @@ try {
 
     clearBtn.addEventListener("click", async () => {
         storage.clear()
-        console.log("Cleared")
         const updatedData = await storage.fetchTimeTableData()
+        console.log("Cleared", updatedData)
         emitter.emit(RENDER_DATA_EVENT, updatedData)
     })
 
