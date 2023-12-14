@@ -1,6 +1,9 @@
 import {ServerAgent} from "./ServerAgent";
 import {CELLS_KEY} from "./consts";
 
+const sleep = (ms) =>
+    new Promise(resolve => setTimeout(resolve, ms));
+
 export class Storage {
     #groupID;
     #key
@@ -16,6 +19,8 @@ export class Storage {
 
     restoreToDefaults = async () => {
         localStorage.removeItem(this.#key)
+        // TODO SLEEP FIX NULL STATE
+        // await sleep(20000)
         await this.fetchTimeTableData()
     }
 
@@ -67,9 +72,10 @@ export class Storage {
                 try {
                     const contentType = blob.type;
                     if (contentType === 'application/json') {
+                        //debugger;
                         const data = JSON.parse(reader.result.toString());
                         await this.restoreToDefaults();
-                        this.store(data);
+                        this.store(data[CELLS_KEY]);
                         resolve(data);
                     } else {
                         reject(new Error('Invalid file format. Expected JSON file.'));

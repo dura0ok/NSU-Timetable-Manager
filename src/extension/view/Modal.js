@@ -1,8 +1,8 @@
-import {getWeekNum, subjectSelectors, subjectType, subjectTypeNames, weekType} from "./subject"
-import {ObjectHelper} from "./ObjectHelper"
-import {FunctionParser} from "./FunctionParser"
-import {SubmitHandlers} from "./SubmitHandlers"
-import {HIDE, PERIODICITY, RENDER_DATA_EVENT, SHOW, SUBJECT_KEY, SUBJECT_NAME_KEY} from "./consts";
+import {getWeekNum, subjectSelectors, subjectType, subjectTypeNames, weekType} from "../model/subject"
+import {DotNotationHelper} from "../model/DotNotationHelper"
+import {FunctionParser} from "../model/FunctionParser"
+import {SubmitHandler} from "../model/SubmitHandler"
+import {HIDE, PERIODICITY, RENDER_DATA_EVENT, SHOW, SUBJECT_KEY, SUBJECT_NAME_KEY} from "../model/consts";
 import {ErrorDisplay} from "./ErrorDisplay";
 
 const modalCss = `
@@ -54,9 +54,9 @@ export class Modal {
     #storage;
 
     #submitHandlerMap = new Map(Object.entries({
-        'room': SubmitHandlers.roomSubmitHandler,
-        'type': SubmitHandlers.typeSubmitHandler,
-        'tutor': SubmitHandlers.tutorSubmitHandler
+        'room': SubmitHandler.roomSubmitHandler,
+        'type': SubmitHandler.typeSubmitHandler,
+        'tutor': SubmitHandler.tutorSubmitHandler
     }));
 
 
@@ -231,7 +231,7 @@ export class Modal {
                 if (dataKey === PERIODICITY) {
                     value = parseInt(getWeekNum(value))
                 }
-                ObjectHelper.setValueByDotNotation(subjectData, dataKey, value);
+                DotNotationHelper.setValueByDotNotation(subjectData, dataKey, value);
             }
         });
 
@@ -253,7 +253,7 @@ export class Modal {
         subjectSelectors.forEach(({dataKey}) => {
             const input = this.#modalWrapperNode.querySelector(`[name="${dataKey}"]`)
             if (input) {
-                const value = ObjectHelper.getValueByDotNotation(subjectData, dataKey)
+                const value = DotNotationHelper.getValueByDotNotation(subjectData, dataKey)
                 if (!value) {
                     input.value = ""
                     return

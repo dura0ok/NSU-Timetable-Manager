@@ -2,7 +2,7 @@ import Toastify from 'toastify-js';
 
 import 'toastify-js/src/toastify.css';
 
-export class ErrorDisplay{
+export class ErrorDisplay {
     static display = (message) => {
         Toastify({
             text: message,

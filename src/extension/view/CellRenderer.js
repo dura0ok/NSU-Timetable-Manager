@@ -1,8 +1,8 @@
-import {ObjectHelper} from "./ObjectHelper";
-import {insertCells, subjectSelectors, weekType} from "./subject";
-import {FunctionParser} from "./FunctionParser";
+import {DotNotationHelper} from "../model/DotNotationHelper";
+import {insertCells, subjectSelectors, weekType} from "../model/subject";
+import {FunctionParser} from "../model/FunctionParser";
 import {CustomRenderHandlersManager} from "./customRenderHandlers";
-import {RENDER_DATA_EVENT, SUBJECT_KEY} from "./consts";
+import {RENDER_DATA_EVENT, SUBJECT_KEY} from "../model/consts";
 
 export class CellRenderer {
     static #tds = document.querySelectorAll(
@@ -55,7 +55,7 @@ export class CellRenderer {
             const element = el.querySelector(selector);
             const funcName = FunctionParser.parseFunctionName(property);
             if (element) {
-                const value = ObjectHelper.getValueByDotNotation(subjectData, dataKey);
+                const value = DotNotationHelper.getValueByDotNotation(subjectData, dataKey);
                 if (value !== null) {
                     if (funcName !== "") {
                         window[funcName](element, value);
@@ -64,9 +64,9 @@ export class CellRenderer {
                     element[property] = value;
                 }
                 if (dataKey === "tutor.href" && (value === null || value === "#")) {
-                    const tutorValueWithoutHref = ObjectHelper.getValueByDotNotation(subjectData, "tutor.name")
+                    const tutorValueWithoutHref = DotNotationHelper.getValueByDotNotation(subjectData, "tutor.name")
                     const parent = element.parentNode
-                    if(tutorValueWithoutHref){
+                    if (tutorValueWithoutHref) {
                         //debugger;
                         element.remove()
                         const t = parent.innerHTML

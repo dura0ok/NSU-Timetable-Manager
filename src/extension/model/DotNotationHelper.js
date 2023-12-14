@@ -1,4 +1,4 @@
-export class ObjectHelper {
+export class DotNotationHelper {
     static getValueByDotNotation(obj, key) {
         const keys = key.split('.');
         let value = obj;

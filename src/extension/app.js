@@ -1,14 +1,14 @@
-import {CellRenderer} from "./CellRenderer";
-import {Modal} from "./Modal";
-import {EventEmitter} from "./EventEmitter"
-import {Storage} from "./Storage";
-import {getGroupNumberFromURL} from "./Helper";
-import {RENDER_DATA_EVENT} from "./consts";
+import {CellRenderer} from "./view/CellRenderer";
+import {Modal} from "./view/Modal";
+import {EventEmitter} from "./model/EventEmitter"
+import {Storage} from "./model/Storage";
+import {RENDER_DATA_EVENT} from "./model/consts";
 import "toastify-js/src/toastify.css"
-import {ErrorDisplay} from "./ErrorDisplay";
+import {ErrorDisplay} from "./view/ErrorDisplay";
+import {StringHelper} from "./model/StringHelper";
 
 try {
-    const groupID = getGroupNumberFromURL()
+    const groupID = StringHelper.getGroupNumberFromURL()
     const emitter = new EventEmitter()
     const storage = new Storage(groupID)
     const timetableData = await storage.fetchTimeTableData(groupID)

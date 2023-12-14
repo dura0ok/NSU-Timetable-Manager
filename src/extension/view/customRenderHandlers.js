@@ -1,5 +1,5 @@
-import {subjectType, subjectTypeNames, weekType} from "./subject";
-import {IS_EMPTY_FLAG} from "./consts";
+import {subjectType, subjectTypeNames, weekType} from "../model/subject";
+import {IS_EMPTY_FLAG} from "../model/consts";
 
 export class CustomRenderHandlersManager {
     static #renderMap = (element, subjectData) => {
@@ -30,8 +30,8 @@ export class CustomRenderHandlersManager {
         }
 
         const typeClass = subjectType.get(n)
-        if(typeClass === subjectType.get("0")){
-           element.remove()
+        if (typeClass === subjectType.get("0")) {
+            element.remove()
         }
         element.classList.remove(element.classList[1]);
         element.classList.add(typeClass);
