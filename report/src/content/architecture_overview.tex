@@ -24,14 +24,14 @@
 				\centering
 				\def\svgwidth{\columnwidth}
 				\input{server_classes.pdf_tex}
-				\caption{Аналитические классы \Serverbf}
+				\caption{Диаграмма классов \Serverbf}
 			\end{figure}
 		
 			\begin{figure}[H]
 				\centering
 				\def\svgwidth{\columnwidth}
 				\input{server_packages.pdf_tex}
-				\caption{Пакеты \Serverbf}
+				\caption{Диаграмма пакетов \Serverbf}
 			\end{figure}
 		
 			\Serverbf{} представляет собой REST-сервер с API, который по запросу парсит сайт с расписанием НГУ и возвращает информацию о расписании группы, аудитории, преподавателе или временах начала пар. Компонента сделан в <<Чистой архитектуре>>
@@ -47,8 +47,40 @@
 				
 				\item \textit{config-parsing} --- представляет собой пакет, отвечающий за парсинг конфигурации сервера.
 			\end{itemize}
-			
 		\subsection{\Extension{}}
+			\begin{figure}[H]
+				\centering
+				\def\svgwidth{\columnwidth}
+				\input{ext_classes.pdf_tex}
+				\caption{Диаграмма классов \Extensionbf}
+			\end{figure}
+			
+			\begin{figure}[H]
+				\centering
+				\def\svgwidth{\columnwidth}
+				\input{ext_packages.pdf_tex}
+				\caption{Диаграмма пакетов \Extensionbf}
+			\end{figure}
+			
+			\Extensionbf{} представляет собой расширение для браузеров, являющееся фронтендом проекта. Архитектурно \Extensionbf{} реализован с использованием паттерна MVC.
+			
+			\begin{itemize}
+				\item \textit{model} --- представляет собой слой dto и бизнес-логики;
+				
+				\item \textit{view} --- представляет собой слой представления, то есть то что пользователь непосредственно видит и с чем взаимодействует (сообщения об ошибках, формы для ввода, ...);
+				
+				\item \textit{controller} --- представляет собой слой классов, отвечающих за обработку пользовательских действий (нажатия на кнопки, изменения предметов, ...);
+			\end{itemize}
+	\section{Компоненты сторонних производителей}	
+		\begin{itemize}
+			\item \textbf{python-dotenv} --- библиотека под Python для парсинга файлов .env. Используется в подсистеме \Serverbf{} для парсинга начальной конфигурации.
+			
+			\item \textbf{beautifulsoup4} ---- библиотека под Python для парсинга текстовых документов. Используется в подсистеме \Serverbf{} для парсинга информации из HTML-документов.
+			
+			\item \textbf{fastapi} --- библиотека под Python для создания своего API. Используется в подсистеме \Serverbf{} для создания конечных точек.
+			
+			\item \textbf{Toastify} --- библиотека под JS, предоставляющая способ показа различных уведомлений в браузерах. Используется в подсистеме \Extensionbf{}.
+		\end{itemize}
 	\section{Схема развёртывания проекта}
 		\subsubsection{Развёртывание \Extensionbf{}}
 			Сборка расширения в файлы bundle.js и manifest.json и дальнейшее добавление в каталог расширений современных браузеров.
