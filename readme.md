@@ -1,5 +1,5 @@
-# NSU-timetable manager
+# Менеджер расписания НГУ
 
-* [Report](report)
-* [Model](model)
-* [Sources](src)
+* [Отчёт](report)
+* [UML-модель](model)
+* [Исходный код](src)
